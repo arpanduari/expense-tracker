@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Email Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 30px auto;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+
+        .header {
+            text-align: center;
+            padding-bottom: 20px;
+        }
+
+        .header h1 {
+            color: #4CAF50;
+            margin: 0;
+        }
+
+        .content {
+            text-align: center;
+            color: #333;
+        }
+
+        .otp {
+            font-size: 24px;
+            font-weight: bold;
+            background-color: #f1f5f9;
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: inline-block;
+            margin: 20px 0;
+            letter-spacing: 3px;
+            color: #111827;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #6b7280;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Email Verification</h1>
+    </div>
+    <div class="content">
+        <p>Hello,</p>
+        <p>Thank you for registering. Please use the OTP below to verify your email address:</p>
+        <div class="otp">${OTP}</div>
+        <p>This OTP will expire in <strong>5 minutes</strong>.</p>
+    </div>
+    <div class="footer">
+        <p>If you did not request this email, please ignore it.</p>
+        <p>©${YEAR} Expense Tracker. All rights reserved.</p>
+    </div>
+</div>
+</body>
+</html>
