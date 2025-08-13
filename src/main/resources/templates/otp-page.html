@@ -5,53 +5,119 @@
     <title>Email Verification</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f3f4f6;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f1eb 0%, #e8ddd4 100%);
             margin: 0;
-            padding: 0;
+            padding: 20px;
+            min-height: 100vh;
         }
 
         .container {
-            max-width: 500px;
-            margin: 30px auto;
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            padding: 30px;
+            max-width: 520px;
+            margin: 40px auto;
+            background: linear-gradient(145deg, #ffffff 0%, #fefdfb 100%);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(101, 67, 33, 0.15), 0 4px 8px rgba(101, 67, 33, 0.08);
+            padding: 40px;
+            border: 1px solid #f0e6d6;
         }
 
         .header {
             text-align: center;
-            padding-bottom: 20px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #e8ddd4;
+            margin-bottom: 30px;
         }
 
         .header h1 {
-            color: #4CAF50;
+            color: #654321;
             margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-accent {
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, #8b4513 0%, #cd853f 100%);
+            margin: 15px auto 0;
+            border-radius: 2px;
         }
 
         .content {
             text-align: center;
-            color: #333;
+            color: #4a3728;
+            line-height: 1.6;
+        }
+
+        .content p {
+            margin: 16px 0;
+            font-size: 16px;
+        }
+
+        .greeting {
+            font-size: 18px;
+            font-weight: 500;
+            color: #654321;
         }
 
         .otp {
-            font-size: 24px;
-            font-weight: bold;
-            background-color: #f1f5f9;
-            padding: 10px 20px;
-            border-radius: 5px;
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #f4f0e8 0%, #ede4d3 100%);
+            padding: 20px 30px;
+            border-radius: 12px;
             display: inline-block;
-            margin: 20px 0;
-            letter-spacing: 3px;
-            color: #111827;
+            margin: 30px 0;
+            letter-spacing: 8px;
+            color: #654321;
+            border: 2px solid #d4c4a8;
+            box-shadow: 0 4px 12px rgba(101, 67, 33, 0.1);
+            font-family: 'Courier New', monospace;
+        }
+
+        .expiry-notice {
+            background-color: #fef7f0;
+            border-left: 4px solid #cd853f;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 25px 0;
+            color: #8b4513;
+            font-weight: 500;
         }
 
         .footer {
-            margin-top: 20px;
-            font-size: 12px;
-            color: #6b7280;
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #e8ddd4;
+            font-size: 13px;
+            color: #8b7355;
             text-align: center;
+            line-height: 1.5;
+        }
+
+        .footer p {
+            margin: 8px 0;
+        }
+
+        .company-name {
+            font-weight: 600;
+            color: #654321;
+        }
+
+        /* Responsive design */
+        @media (max-width: 600px) {
+            .container {
+                margin: 20px auto;
+                padding: 30px 25px;
+            }
+
+            .otp {
+                font-size: 28px;
+                letter-spacing: 6px;
+                padding: 18px 25px;
+            }
         }
     </style>
 </head>
@@ -59,16 +125,20 @@
 <div class="container">
     <div class="header">
         <h1>Email Verification</h1>
+        <div class="brand-accent"></div>
     </div>
     <div class="content">
-        <p>Hello,</p>
-        <p>Thank you for registering. Please use the OTP below to verify your email address:</p>
+        <p class="greeting">Hello,</p>
+        <p>Thank you for registering with <span class="company-name">ExpenseWise</span>. Please use the verification code below to complete your email verification:</p>
         <div class="otp">${OTP}</div>
-        <p>This OTP will expire in <strong>5 minutes</strong>.</p>
+        <div class="expiry-notice">
+            <strong>Important:</strong> This verification code will expire in <strong>5 minutes</strong>.
+        </div>
+        <p>Please enter this code in the verification page to activate your account.</p>
     </div>
     <div class="footer">
-        <p>If you did not request this email, please ignore it.</p>
-        <p>©${YEAR} Expense Tracker. All rights reserved.</p>
+        <p>If you did not request this verification, please ignore this email.</p>
+        <p>©${YEAR} <span class="company-name">ExpenseWise</span>. All rights reserved.</p>
     </div>
 </div>
 </body>
