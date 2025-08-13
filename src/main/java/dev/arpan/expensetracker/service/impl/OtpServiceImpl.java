@@ -59,6 +59,7 @@ public class OtpServiceImpl implements OtpService {
 
 
         OtpVerification otpVerification = OtpUtil.createOtpVerification(toEmail);
+        otpVerificationRepository.save(otpVerification);
         sendOtp(toEmail, otpVerification.getOtp());
         return OtpResendResponse.builder()
                 .message("OTP Resend successfully. Please check your email for verification.")
