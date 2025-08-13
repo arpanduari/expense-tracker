@@ -28,6 +28,13 @@ spring:
           starttls:
             enable: true
 
+  rabbitmq:
+    host: {RABBITMQ_HOST}
+    port: {RABBITMQ_PORT}
+    username: {RABBITMQ_USERNAME}
+    password: {RABBITMQ_PASSWORD}
+    virtual-host: /
+
 springdoc:
   api-docs:
     path: /api-docs
@@ -37,3 +44,8 @@ springdoc:
 api:
   base: /api
   version: /v1
+
+app:
+  queue:
+    otp:
+     queue: otpQueue
