@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class RabbitMQConfig {
-    @Value("${app.queue.otp.queue}")
+    @Value("${app.queue.otp}")
     private String otpQueueName;
 
     @Bean

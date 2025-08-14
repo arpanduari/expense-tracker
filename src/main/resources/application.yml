@@ -47,7 +47,6 @@ api:
 
 app:
   queue:
-    otp:
-      queue: otpQueue
+    otp: otpQueue
   cors:
     allowed-origins: "http://localhost:3000"

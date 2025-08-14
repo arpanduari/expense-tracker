@@ -5,7 +5,6 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.MalformedParameterizedTypeException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,9 +16,10 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class OtpProducer {
     private final RabbitTemplate rabbitTemplate;
-    @Value("${app.queue.otp.queue}")
+    @Value("${app.queue.otp}")
     private String otpQueueName;
-    public void sendOtpMessage(String email, String otp){
+
+    public void sendOtpMessage(String email, String otp) {
         Map<String, String> payLoad = new HashMap<>();
         payLoad.put("email", email);
         payLoad.put("otp", otp);
