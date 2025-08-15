@@ -1,6 +1,7 @@
 package dev.arpan.expensetracker.config;
 
 import dev.arpan.expensetracker.filter.JWTTokenValidatorFilter;
+import dev.arpan.expensetracker.filter.RateLimiterFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -30,6 +31,7 @@ import java.util.List;
 public class ProjectSecurityConfig {
     private final ApiProperties apiProperties;
     private final JWTTokenValidatorFilter jwtTokenValidatorFilter;
+    private final RateLimiterFilter rateLimiterFilter;
 
     @Value("${app.cors.allowed-origins}")
     private List<String> allowedOrigins;
@@ -52,6 +54,7 @@ public class ProjectSecurityConfig {
         httpSecurity.formLogin(AbstractHttpConfigurer::disable);
         httpSecurity.httpBasic(AbstractHttpConfigurer::disable);
         httpSecurity.addFilterBefore(jwtTokenValidatorFilter, BasicAuthenticationFilter.class);
+        httpSecurity.addFilterBefore(rateLimiterFilter, BasicAuthenticationFilter.class);
         return httpSecurity.build();
     }
 

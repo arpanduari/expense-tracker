@@ -15,8 +15,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class OtpConsumer {
     private final EmailService emailService;
+
     @RabbitListener(queues = "${app.queue.otp}")
-    public void receiveOtpMessage(Map<String, String> message){
+    public void receiveOtpMessage(Map<String, String> message) {
         String email = message.get("email");
         String otp = message.get("otp");
         emailService.sendOtp(email, otp);
