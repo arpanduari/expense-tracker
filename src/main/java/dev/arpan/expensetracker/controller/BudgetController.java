@@ -1,14 +1,19 @@
 package dev.arpan.expensetracker.controller;
 
+import dev.arpan.expensetracker.constants.PageConstants;
 import dev.arpan.expensetracker.dto.BudgetRequest;
 import dev.arpan.expensetracker.dto.BudgetResponse;
 import dev.arpan.expensetracker.service.BudgetService;
 import dev.arpan.expensetracker.utils.UserUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -31,7 +36,8 @@ public class BudgetController {
     private final BudgetService budgetService;
 
     @GetMapping
-    @Operation(summary = "Get budget for the current month or Get the default budget",
+    @Operation(
+            summary = "Get budget for the current month or Get the default budget",
             description = "Fetches a user BudgetResponse Object from the database using the provided month",
             responses = {
                     @ApiResponse(
@@ -41,17 +47,46 @@ public class BudgetController {
                     )
             }
     )
-    public ResponseEntity<BudgetResponse> getBudget(@RequestParam(required = false, value = "month")
-                                                    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-                                                    LocalDate month,
-                                                    Authentication authentication) {
+    public ResponseEntity<BudgetResponse> getBudget(
+            @RequestParam(required = false, value = "month")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            @Parameter(
+                    name = "month",
+                    description = "Any ISO date within the target month",
+                    example = "2025-01-01"
+            )
+            LocalDate month,
+            Authentication authentication) {
         Long userId = UserUtil.getUserId(authentication);
         BudgetResponse budgetResponse = budgetService.getBudget(userId, month);
         return ResponseEntity.ok(budgetResponse);
     }
 
     @PostMapping("/default")
-    public ResponseEntity<BudgetResponse> setDefaultBudget(@RequestBody BudgetRequest budgetRequest,
+    @Operation(
+            summary = "Set a default budget for the logged-in user",
+            description = "Creates or updates the default budget for the authenticated user. "
+                    + "Requires a valid authentication token. "
+                    + "Returns the BudgetResponse object representing the default budget.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Default budget set successfully",
+                            content = @Content(
+                                    schema = @Schema(implementation = BudgetResponse.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Invalid request (e.g., missing or malformed data)"
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized - User is not authenticated"
+                    )
+            }
+    )
+    public ResponseEntity<BudgetResponse> setDefaultBudget(@RequestBody @Valid BudgetRequest budgetRequest,
                                                            Authentication authentication) {
         Long userId = UserUtil.getUserId(authentication);
         BudgetResponse budgetResponse = budgetService.setDefaultBudget(userId, budgetRequest);
@@ -60,6 +95,29 @@ public class BudgetController {
     }
 
     @GetMapping("/default")
+    @Operation(
+            summary = "Get the default budget of the logged-in user",
+            description = "Fetches the default budget associated with the authenticated user. "
+                    + "Requires a valid authentication token. "
+                    + "Returns the BudgetResponse object if a default budget is set.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Default budget retrieved successfully",
+                            content = @Content(
+                                    schema = @Schema(implementation = BudgetResponse.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized - User is not authenticated"
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "No default budget found for the user"
+                    )
+            }
+    )
     public ResponseEntity<BudgetResponse> getDefaultBudget(Authentication authentication) {
         Long userId = UserUtil.getUserId(authentication);
         BudgetResponse defaultBudget = budgetService.getDefaultBudget(userId);
@@ -67,7 +125,30 @@ public class BudgetController {
     }
 
     @PostMapping("/monthly")
-    public ResponseEntity<BudgetResponse> setMonthlyBudget(@RequestBody BudgetRequest budgetRequest,
+    @Operation(
+            summary = "Set a monthly budget for the logged-in user",
+            description = "Creates a new monthly budget associated with the authenticated user. "
+                    + "Requires a valid authentication token. "
+                    + "Returns the created BudgetResponse object on success.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "Monthly budget created successfully",
+                            content = @Content(
+                                    schema = @Schema(implementation = BudgetResponse.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Invalid request (e.g., missing or malformed data)"
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized - User is not authenticated"
+                    )
+            }
+    )
+    public ResponseEntity<BudgetResponse> setMonthlyBudget(@RequestBody @Valid BudgetRequest budgetRequest,
                                                            Authentication authentication) {
         Long userId = UserUtil.getUserId(authentication);
         BudgetResponse budgetResponse = budgetService.setBudget(userId, budgetRequest);
@@ -76,9 +157,34 @@ public class BudgetController {
     }
 
     @GetMapping("/overrides")
+    @Operation(
+            summary = "Get all override budgets of the logged-in user",
+            description = "Fetches a paginated list of override budgets created by the authenticated user. "
+                    + "Requires a valid authentication token. "
+                    + "Defaults to page=0 and size=10 if not provided.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Paginated list of override budgets retrieved successfully",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = BudgetResponse.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized - User is not authenticated"
+                    )
+            }
+    )
     public ResponseEntity<Page<BudgetResponse>> getAllOverrideBudgets(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = PageConstants.DEFAULT_PAGE_NUMBER)
+            @Min(PageConstants.MIN_PAGE_NUMBER)
+            int page,
+            @RequestParam(defaultValue = PageConstants.DEFAULT_PAGE_SIZE)
+            @Min(PageConstants.MIN_PAGE_SIZE_LIMIT)
+            @Max(PageConstants.MAX_PAGE_SIZE_LIMIT)
+            int size,
             Authentication authentication
     ) {
         Long userId = UserUtil.getUserId(authentication);
@@ -87,9 +193,30 @@ public class BudgetController {
     }
 
     @GetMapping("/history")
+    @Operation(
+            summary = "Get user's historical budgets",
+            description = "Fetches paginated budget history for the authenticated user.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successfully retrieved budget history",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = BudgetResponse.class)
+                            )
+                    ),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized - Invalid or missing JWT"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden - User not allowed to access this resource")
+            }
+    )
     public ResponseEntity<Page<BudgetResponse>> getAllHistoryBudgets(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = PageConstants.DEFAULT_PAGE_NUMBER)
+            @Min(PageConstants.MIN_PAGE_NUMBER)
+            int page,
+            @RequestParam(defaultValue = PageConstants.DEFAULT_PAGE_SIZE)
+            @Min(PageConstants.MIN_PAGE_SIZE_LIMIT)
+            @Max(PageConstants.MAX_PAGE_SIZE_LIMIT)
+            int size,
             Authentication authentication
     ) {
         Long userId = UserUtil.getUserId(authentication);
@@ -98,7 +225,51 @@ public class BudgetController {
     }
 
     @DeleteMapping("/monthly/{month}")
-    public ResponseEntity<Void> deleteMonthlyBudget(@PathVariable LocalDate month, Authentication authentication) {
+    @Operation(
+            summary = "Delete monthly budget",
+            description = """
+                    Permanently deletes the budget for the specified month for the authenticated user.
+                    The `month` path variable must be an ISO-8601 date (`yyyy-MM-dd`).
+                    Recommended: use the first day of the month (e.g., `2025-08-01`).
+                    """,
+            responses = {
+                    @ApiResponse(
+                            responseCode = "204",
+                            description = "Budget deleted successfully"
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Invalid month format or month out of allowed range"
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized – missing or invalid token"
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden – user not allowed to delete this budget"
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Budget for the given month not found"
+                    ),
+                    @ApiResponse(
+                            responseCode = "409",
+                            description = "Conflict – deletion blocked by business rule (e.g., locked/approved month)"
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Internal server error"
+                    )
+            }
+    )
+    public ResponseEntity<Void> deleteMonthlyBudget(@PathVariable
+                                                    @Parameter(name = "month",
+                                                            description = "Any ISO date within the target month",
+                                                            example = "2025-01-01",
+                                                            required = true)
+                                                    LocalDate month,
+                                                    Authentication authentication) {
         Long userId = UserUtil.getUserId(authentication);
         budgetService.deleteBudget(userId, month);
         return ResponseEntity.noContent().build();

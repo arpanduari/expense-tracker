@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 8/17/25
  */
 @RestController
-@RequestMapping("${api.base}${api.version}/users")
+@RequestMapping("${api.base}${api.version}/user")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
