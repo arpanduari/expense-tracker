@@ -1,15 +1,11 @@
 package dev.arpan.expensetracker.service;
 
-import dev.arpan.expensetracker.dto.*;
+import dev.arpan.expensetracker.dto.UserDto;
 
 /**
  * @author arpan
- * @since 8/3/25
+ * @since 8/17/25
  */
 public interface UserService {
-    RegisterResponse createUser(RegisterRequestDTO registerRequestDTO);
     UserDto getUserByUsername(String username);
-    RefreshResponseDTO refreshToken(RefreshRequest refreshRequest);
-    LoginResponseDTO login(LoginRequestDTO loginRequest);
 }
-
