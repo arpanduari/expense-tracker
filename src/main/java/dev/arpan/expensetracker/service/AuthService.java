@@ -8,7 +8,13 @@ import dev.arpan.expensetracker.dto.*;
  */
 public interface AuthService {
     RegisterResponse createUser(RegisterRequestDTO registerRequestDTO);
+
     RefreshResponseDTO refreshToken(RefreshRequest refreshRequest);
+
     LoginResponseDTO login(LoginRequestDTO loginRequest);
+
+    ForgotPasswordResponse forgotPassword(ForgotPasswordRequest forgotPasswordRequest);
+
+    ResetPasswordResponse resetPassword(ResetPasswordRequest resetPasswordRequest);
 }
 

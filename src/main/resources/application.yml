@@ -29,10 +29,10 @@ spring:
             enable: true
 
   rabbitmq:
-    host: { RABBITMQ_HOST }
-    port: { RABBITMQ_PORT }
-    username: { RABBITMQ_USERNAME }
-    password: { RABBITMQ_PASSWORD }
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
     virtual-host: /
 
 springdoc:
@@ -48,5 +48,9 @@ api:
 app:
   queue:
     otp: otpQueue
+    forgot-password: forgotPasswordQueue
+  frontend:
+    path: http://localhost:3001
+  logo: https://i.imghippo.com/files/SuCD1097ccM.png
   cors:
     allowed-origins: "http://localhost:3000, http://localhost:3001, http://localhost:3002, http://localhost:3003, http://localhose:3004"

@@ -127,13 +127,15 @@
 <body>
 <div class="container">
     <div class="header">
-        <img src="expensewise-transparent.png" alt="ExpenseWise Logo" style="width: 300px; height: 60px; object-fit: contain; margin-bottom:24px; display: block; margin-left: auto; margin-right: auto;">
+        <img src="${APP_LOGO}" alt="ExpenseWise Logo"
+             style="width: 300px; height: 60px; object-fit: contain; margin-bottom:24px; display: block; margin-left: auto; margin-right: auto;">
         <h2>Email Verification</h2>
         <div class="brand-accent"></div>
     </div>
     <div class="content">
         <p class="greeting">Hello,</p>
-        <p>Thank you for registering with <span class="company-name">ExpenseWise</span>. Please use the verification code below to complete your email verification:</p>
+        <p>Thank you for registering with <span class="company-name">ExpenseWise</span>. Please use the verification
+            code below to complete your email verification:</p>
         <div class="otp">${OTP}</div>
         <div class="expiry-notice">
             <strong>Important:</strong> This verification code will expire in <strong>5 minutes</strong>.

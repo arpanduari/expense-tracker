@@ -57,7 +57,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException exception, WebRequest request) {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .apiPath(request.getDescription(false))
-                .status(HttpStatus.NOT_FOUND)
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .status(HttpStatus.NOT_FOUND.getReasonPhrase())
                 .errorMessage(exception.getMessage())
                 .timestamp(LocalDateTime.now())
                 .build();
@@ -70,12 +71,27 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException exception, WebRequest request) {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .apiPath(request.getDescription(false))
-                .status(HttpStatus.FORBIDDEN)
+                .statusCode(HttpStatus.FORBIDDEN.value())
+                .status(HttpStatus.FORBIDDEN.getReasonPhrase())
                 .errorMessage(exception.getMessage())
                 .timestamp(LocalDateTime.now())
                 .build();
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
+                .body(errorResponse);
+    }
+
+    @ExceptionHandler(PasswordResetTokenAlreadySentException.class)
+    public ResponseEntity<ErrorResponse> handlePasswordResetTokenAlreadySentException(PasswordResetTokenAlreadySentException exception, WebRequest webRequest) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .apiPath(webRequest.getDescription(false))
+                .status(HttpStatus.TOO_MANY_REQUESTS.getReasonPhrase())
+                .errorMessage(exception.getMessage())
+                .statusCode(HttpStatus.TOO_MANY_REQUESTS.value())
+                .timestamp(LocalDateTime.now())
+                .build();
+        return ResponseEntity
+                .status(HttpStatus.TOO_MANY_REQUESTS)
                 .body(errorResponse);
     }
 }

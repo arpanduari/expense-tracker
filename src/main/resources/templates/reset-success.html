@@ -30,9 +30,8 @@
             border-radius: 24px;
             padding: 48px 32px;
             text-align: center;
-            box-shadow:
-                0 25px 50px -12px rgba(101, 67, 33, 0.3),
-                0 0 0 1px rgba(205, 133, 63, 0.2);
+            box-shadow: 0 25px 50px -12px rgba(101, 67, 33, 0.3),
+            0 0 0 1px rgba(205, 133, 63, 0.2);
         }
 
         .logo {
@@ -253,8 +252,9 @@
 <div class="page-container">
     <!-- Logo -->
     <div class="logo">
-        <img src="expensewise-transparent.png" alt="ExpenseWise Logo" style="width: 300px; height: 60px; object-fit: contain; margin-bottom: 16px; display: block; margin-left: auto; margin-right: auto;">
-        
+        <img src="${APP_LOGO}" alt="ExpenseWise Logo"
+             style="width: 300px; height: 60px; object-fit: contain; margin-bottom: 16px; display: block; margin-left: auto; margin-right: auto;">
+
     </div>
 
     <!-- Success Icon -->
@@ -273,11 +273,11 @@
 
     <!-- Welcome Text -->
     <p class="welcome-text">Welcome back!</p>
-    <p class="description">Your account is now secure with your new password. You can continue managing your expenses and budgets.</p>
+    <p class="description">Your account is now secure with your new password. You can continue managing your expenses
+        and budgets.</p>
 
     <!-- Login Button -->
     <a href="${LOGIN_URL}" class="login-button">Login to Your Account</a>
-
 
 
     <!-- Footer -->

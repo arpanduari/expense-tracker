@@ -7,7 +7,6 @@ import dev.arpan.expensetracker.entity.User;
 import dev.arpan.expensetracker.messaging.OtpProducer;
 import dev.arpan.expensetracker.repository.OtpVerificationRepository;
 import dev.arpan.expensetracker.repository.UserRepository;
-import dev.arpan.expensetracker.service.EmailService;
 import dev.arpan.expensetracker.service.OtpService;
 import dev.arpan.expensetracker.utils.OtpUtil;
 import lombok.RequiredArgsConstructor;
@@ -24,10 +23,10 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 public class OtpServiceImpl implements OtpService {
-    private final EmailService emailService;
     private final OtpVerificationRepository otpVerificationRepository;
     private final UserRepository userRepository;
     private final OtpProducer otpProducer;
+
     @Override
     public void sendOtp(String toEmail, String otp) {
         otpProducer.sendOtpMessage(toEmail, otp);

@@ -12,5 +12,6 @@ public interface OtpService {
     void sendOtp(String toEmail, String otp);
 
     VerifyResponse verifyOtp(String token, String otp);
+
     OtpResendResponse resendOtp(String toEmail);
 }

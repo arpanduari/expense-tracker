@@ -3,6 +3,7 @@ package dev.arpan.expensetracker.controller;
 import dev.arpan.expensetracker.constants.PageConstants;
 import dev.arpan.expensetracker.dto.CategoryRequest;
 import dev.arpan.expensetracker.dto.CategoryResponse;
+import dev.arpan.expensetracker.dto.ErrorResponse;
 import dev.arpan.expensetracker.service.CategoryService;
 import dev.arpan.expensetracker.utils.UserUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -117,15 +118,24 @@ public class CategoryController {
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "Invalid request (e.g., missing or malformed data)"
+                            description = "Invalid request (e.g., missing or malformed data)",
+                            content = @Content(
+                                    schema = @Schema(implementation = ErrorResponse.class)
+                            )
                     ),
                     @ApiResponse(
                             responseCode = "401",
-                            description = "Unauthorized - User is not authenticated"
+                            description = "Unauthorized - User is not authenticated",
+                            content = @Content(
+                                    schema = @Schema(implementation = ErrorResponse.class)
+                            )
                     ),
                     @ApiResponse(
                             responseCode = "404",
-                            description = "Category not found for the given id"
+                            description = "Category not found for the given id",
+                            content = @Content(
+                                    schema = @Schema(implementation = ErrorResponse.class)
+                            )
                     )
             }
     )

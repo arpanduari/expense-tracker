@@ -137,4 +137,19 @@ public class AuthController {
         return ResponseEntity.ok(otpResendResponse);
     }
 
+    @PostMapping("/reset-password")
+    public ResponseEntity<ResetPasswordResponse> resetPassword(@RequestBody @Valid ResetPasswordRequest resetPasswordRequest) {
+        ResetPasswordResponse resetPasswordResponse = authService.resetPassword(resetPasswordRequest);
+        return ResponseEntity.ok(resetPasswordResponse);
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<ForgotPasswordResponse> forgotPassword(
+            @Valid
+            @RequestBody
+            ForgotPasswordRequest forgotPasswordRequest
+    ) {
+        ForgotPasswordResponse forgotPasswordResponse = authService.forgotPassword(forgotPasswordRequest);
+        return ResponseEntity.ok(forgotPasswordResponse);
+    }
 }

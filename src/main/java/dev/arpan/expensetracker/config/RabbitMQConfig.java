@@ -16,11 +16,19 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
     @Value("${app.queue.otp}")
-    private String otpQueueName;
+    private String otpQueue;
+
+    @Value("${app.queue.forgot-password}")
+    private String forgotPasswordQueue;
 
     @Bean
     public Queue otpQueue() {
-        return new Queue(otpQueueName, true, false, false);
+        return new Queue(otpQueue, true, false, false);
+    }
+
+    @Bean
+    public Queue forgotPasswordQueue() {
+        return new Queue(forgotPasswordQueue, true, false, false);
     }
 
     @Bean
