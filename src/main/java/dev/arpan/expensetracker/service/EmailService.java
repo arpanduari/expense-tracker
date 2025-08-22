@@ -6,6 +6,12 @@ package dev.arpan.expensetracker.service;
  */
 public interface EmailService {
     void sendOtp(String toEmail, String otp);
+
     void sendForgotPassword(String toEmail, String link);
+
+    void sendResetPassword(String toEmail, String link);
+
     void sendEmail(String toEmail, String subject, String content);
+
+
 }

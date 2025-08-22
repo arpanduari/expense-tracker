@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
 /**
  * @author arpan
@@ -18,17 +20,35 @@ import java.time.LocalDate;
 @Service
 @RequiredArgsConstructor
 public class ReportServiceImpl implements ReportService {
-    private ReportRepository reportRepository;
+    private final ReportRepository reportRepository;
 
     @Override
     public MonthlyReportResponse getMonthlyReport(Long userId, LocalDate month) {
-        IMonthlyReportResponse monthlyReportResponse = reportRepository.findMonthlyReport(userId, month)
-                .orElseThrow(() -> new ResourceNotFoundException("Monthly Report", "month", month.toString()));
-        return ReportMapper.toMonthlyReportResponse(monthlyReportResponse);
+        if (month == null) {
+            month = LocalDate.now();
+        }
+
+        LocalDate startDate = month.withDayOfMonth(1);
+        LocalDate endDate = month.withDayOfMonth(month.lengthOfMonth());
+        String monthYear = getMonthYear(startDate);
+
+        IMonthlyReportResponse monthlyReportResponse = reportRepository.findMonthlyReport(userId, startDate, endDate)
+                .orElseThrow(() -> new ResourceNotFoundException("Monthly Report", "date", monthYear));
+
+        MonthlyReportResponse mappedResult = ReportMapper.toMonthlyReportResponse(monthlyReportResponse);
+        mappedResult.setMonth(monthYear);
+        return mappedResult;
     }
 
     @Override
     public CategoryWiseMonthlyExpenseResponse getCategoryWiseMonthlyExpense(LocalDate month) {
+        if (month == null) {
+            month = LocalDate.now();
+        }
+        LocalDate startDate = month.withDayOfMonth(1);
+        LocalDate endDate = month.withDayOfMonth(month.lengthOfMonth());
+        String monthYear = getMonthYear(startDate);
+
         return null;
     }
 
@@ -45,5 +65,17 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public InsightResponse getInsight(LocalDate month) {
         return null;
+    }
+
+    public static String getMonthName(LocalDate date) {
+        return date.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+    }
+
+    public static Integer getYear(LocalDate date) {
+        return date.getYear();
+    }
+
+    public static String getMonthYear(LocalDate date) {
+        return getMonthName(date) + "-" + getYear(date);
     }
 }

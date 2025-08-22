@@ -41,6 +41,8 @@ public class ProjectSecurityConfig {
         httpSecurity.authorizeHttpRequests(request -> request
                 .requestMatchers(apiProperties.getFullPath() + "/auth/**")
                 .permitAll()
+                .requestMatchers(apiProperties.getFullPath() + "/auth/change-password")
+                .authenticated()
                 .requestMatchers("/api-docs/**", "/swagger-ui/**", "/swagger-ui.html/**")
                 .permitAll()
                 .anyRequest()

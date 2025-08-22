@@ -1,11 +1,12 @@
 <!DOCTYPE html>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Password Reset Successful</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Duployan:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Duployan:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -30,7 +31,7 @@
             padding: 48px 32px;
             text-align: center;
             box-shadow: 0 25px 50px -12px rgba(101, 67, 33, 0.3),
-            0 0 0 1px rgba(205, 133, 63, 0.2);
+                0 0 0 1px rgba(205, 133, 63, 0.2);
         }
 
         .logo {
@@ -232,10 +233,12 @@
                 transform: scale(0.8);
                 opacity: 0.8;
             }
+
             50% {
                 transform: scale(1.2);
                 opacity: 1;
             }
+
             100% {
                 transform: scale(1);
                 opacity: 1;
@@ -247,41 +250,46 @@
         }
     </style>
 </head>
+
 <body>
-<div class="page-container">
-    <!-- Logo -->
-    <div class="logo">
-        <img src="${APP_LOGO}" alt="ExpenseWise Logo" style="width: 270px; height: 60px; object-fit: contain; margin-bottom: 32px; display: block; margin-left: auto; margin-right: auto;">
+    <div class="page-container">
+        <!-- Logo -->
+        <div class="logo">
+            <img src="${APP_LOGO}" alt="ExpenseWise Logo"
+                style="width: 270px; height: 60px; object-fit: contain; margin-bottom: 32px; display: block; margin-left: auto; margin-right: auto;">
+        </div>
+
+        <!-- Success Icon -->
+        <div class="success-icon-container">
+            <div class="success-checkmark">✓</div>
+        </div>
+
+        <!-- Title -->
+        <h1 class="title">Password Reset Successful</h1>
+
+        <!-- Success Message -->
+        <div class="success-message">
+            <h2>Great! Your password has been reset successfully.</h2>
+            <p>You can now log in to your <span class="company-name">ExpenseWise</span> account with your new password.
+            </p>
+        </div>
+
+        <!-- Welcome Text -->
+        <p class="welcome-text">Welcome back!</p>
+        <p class="description">Your account is now secure with your new password. You can continue managing your
+            expenses
+            and budgets.</p>
+
+        <!-- Login Button -->
+        <a href="${LOGIN_URL}" class="login-button">Login to Your Account</a>
+
+
+        <!-- Footer -->
+        <div class="footer">
+            <p class="support-text">If you experience any issues logging in, please contact our support team.</p>
+            <p>©${YEAR} <span class="company-name">ExpenseWise</span>. All rights reserved.</p>
+        </div>
     </div>
-
-    <!-- Success Icon -->
-    <div class="success-icon-container">
-        <div class="success-checkmark">✓</div>
-    </div>
-
-    <!-- Title -->
-    <h1 class="title">Password Reset Successful</h1>
-
-    <!-- Success Message -->
-    <div class="success-message">
-        <h2>Great! Your password has been reset successfully.</h2>
-        <p>You can now log in to your <span class="company-name">ExpenseWise</span> account with your new password.</p>
-    </div>
-
-    <!-- Welcome Text -->
-    <p class="welcome-text">Welcome back!</p>
-    <p class="description">Your account is now secure with your new password. You can continue managing your expenses
-        and budgets.</p>
-
-    <!-- Login Button -->
-    <a href="${LOGIN_URL}" class="login-button">Login to Your Account</a>
-
-
-    <!-- Footer -->
-    <div class="footer">
-        <p class="support-text">If you experience any issues logging in, please contact our support team.</p>
-        <p>© ${YEAR} <span class="company-name">ExpenseWise</span>. All rights reserved.</p>
-    </div>
-</div>
 </body>
+
 </html>

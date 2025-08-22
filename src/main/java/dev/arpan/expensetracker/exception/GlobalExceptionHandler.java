@@ -94,4 +94,30 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.TOO_MANY_REQUESTS)
                 .body(errorResponse);
     }
+
+    @ExceptionHandler(PasswordNotMatchingException.class)
+    public ResponseEntity<ErrorResponse> handlerPasswordNotMatchingException(PasswordNotMatchingException exception, WebRequest webRequest) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .apiPath(webRequest.getDescription(false))
+                .status(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .errorMessage(exception.getMessage())
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .timestamp(LocalDateTime.now())
+                .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(errorResponse);
+    }
+
+    @ExceptionHandler(PasswordPolicyViolationException.class)
+    public ResponseEntity<ErrorResponse> handlerPasswordPolicyViolation(PasswordPolicyViolationException exception, WebRequest webRequest) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .apiPath(webRequest.getDescription(false))
+                .status(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .errorMessage(exception.getMessage())
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .timestamp(LocalDateTime.now())
+                .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(errorResponse);
+    }
 }

@@ -33,11 +33,12 @@ spring:
     port: ${RABBITMQ_PORT}
     username: ${RABBITMQ_USERNAME}
     password: ${RABBITMQ_PASSWORD}
-    virtual-host: /
+    virtual-host: ${RABBITMQ_VIRTUAL_HOST}
 
 springdoc:
   api-docs:
     path: /api-docs
+
   swagger-ui:
     path: /swagger-ui.html
 
@@ -49,8 +50,12 @@ app:
   queue:
     otp: otpQueue
     forgot-password: forgotPasswordQueue
+    reset-password: resetPasswordQueue
+
   frontend:
     path: http://localhost:3001
+
   logo: https://i.imghippo.com/files/SuCD1097ccM.png
+
   cors:
     allowed-origins: "http://localhost:3000, http://localhost:3001, http://localhost:3002, http://localhost:3003, http://localhose:3004"

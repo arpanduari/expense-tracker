@@ -41,6 +41,7 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
                 if (jwtUtil.isTokenExpired(claims.getExpiration())) {
                     throw new BadRequestException("Invalid or Expired token");
                 }
+
                 User user = User.builder()
                         .id(userId)
                         .username(username)
@@ -49,6 +50,7 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
                 CustomUserDetails customUserDetails = new CustomUserDetails(user);
                 Authentication authentication = new UsernamePasswordAuthenticationToken(customUserDetails, null, Collections.emptyList());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+
                 if (jwtUtil.shouldRefreshToken(claims.getExpiration())) {
                     String newToken = jwtUtil.generateAccessToken(username, userId);
                     response.setHeader(JWTConstants.JWT_HEADER, newToken);
@@ -63,6 +65,7 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return request.getRequestURI().startsWith("/api/v1/auth");
+        return request.getRequestURI().startsWith("/api/v1/auth") &&
+                !request.getRequestURI().equals("/api/v1/auth/change-password");
     }
 }
