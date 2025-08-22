@@ -1,12 +1,9 @@
 <!DOCTYPE html>
-
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Password Reset Successful</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Duployan:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -15,8 +12,8 @@
         }
 
         body {
-            font-family: "Merienda", sans-serif;
-            background: #D2B48C;
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #D2B48C;
             min-height: 100vh;
             padding: 20px;
             line-height: 1.5;
@@ -25,48 +22,30 @@
         .page-container {
             max-width: 520px;
             margin: 40px auto;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            background-color: #ffffff;
             border-radius: 24px;
             padding: 48px 32px;
             text-align: center;
-            box-shadow: 0 25px 50px -12px rgba(101, 67, 33, 0.3),
-                0 0 0 1px rgba(205, 133, 63, 0.2);
-        }
-
-        .logo {
-            color: #8B4513;
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 40px;
-            letter-spacing: -0.025em;
-        }
-
-        .logo-subtitle {
-            font-size: 12px;
-            color: #A0522D;
-            font-weight: 400;
-            margin-top: 4px;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
+            border: 1px solid #cd853f;
         }
 
         .success-icon-container {
             width: 80px;
             height: 80px;
-            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            background-color: #22c55e;
             border-radius: 50%;
-            margin: 0 auto 16px;
+            margin: 0 auto 32px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 8px 32px rgba(34, 197, 94, 0.3);
+            position: relative;
         }
 
         .success-checkmark {
             color: white;
             font-size: 40px;
             font-weight: bold;
+            line-height: 1;
         }
 
         .title {
@@ -74,16 +53,14 @@
             font-weight: 600;
             color: #654321;
             margin-bottom: 16px;
-            letter-spacing: -0.025em;
         }
 
         .success-message {
-            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            background-color: #f0fdf4;
             border: 2px solid #bbf7d0;
             border-radius: 16px;
             padding: 24px 28px;
             margin: 32px 0;
-            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.1);
         }
 
         .success-message h2 {
@@ -118,24 +95,22 @@
             line-height: 1.6;
         }
 
+        /* Email-safe button styling */
         .login-button {
             display: inline-block;
-            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
-            color: #FFF8DC;
-            text-decoration: none;
+            background-color: #8B4513 !important;
+            color: #FFF8DC !important;
+            text-decoration: none !important;
             padding: 16px 32px;
             border-radius: 12px;
             font-weight: 500;
             font-size: 16px;
             margin-bottom: 32px;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(139, 69, 19, 0.2);
+            border: none;
         }
 
         .login-button:hover {
-            background: linear-gradient(135deg, #654321 0%, #8B4513 100%);
-            transform: translateY(-1px);
-            box-shadow: 0 8px 24px rgba(139, 69, 19, 0.3);
+            background-color: #654321 !important;
         }
 
         .footer {
@@ -174,49 +149,22 @@
             }
 
             .success-icon-container {
-                width: 80px;
-                height: 80px;
+                width: 70px;
+                height: 70px;
             }
 
             .success-checkmark {
                 font-size: 32px;
             }
-
-            .security-tips {
-                padding: 20px 24px;
-            }
         }
-
-        /* Animation for success icon */
-        /* @keyframes checkmarkPop {
-            0% {
-                transform: scale(0.8);
-                opacity: 0.8;
-            }
-
-            50% {
-                transform: scale(1.2);
-                opacity: 1;
-            }
-
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-        } */
-
-        /* .success-icon-container {
-            animation: checkmarkPop 0.6s ease-out;
-        } */
     </style>
 </head>
-
 <body>
     <div class="page-container">
         <!-- Logo -->
-        <div class="logo">
+        <div style="margin-bottom: 32px;">
             <img src="${APP_LOGO}" alt="ExpenseWise Logo"
-                style="width: 270px; height: 60px; object-fit: contain; margin-bottom: 32px; display: block; margin-left: auto; margin-right: auto;">
+                style="width: 270px; height: 60px; object-fit: contain; display: block; margin: 0 auto;">
         </div>
 
         <!-- Success Icon -->
@@ -230,19 +178,23 @@
         <!-- Success Message -->
         <div class="success-message">
             <h2>Great! Your password has been reset successfully.</h2>
-            <p>You can now log in to your <span class="company-name">ExpenseWise</span> account with your new password.
-            </p>
+            <p>You can now log in to your <span class="company-name">ExpenseWise</span> account with your new password.</p>
         </div>
 
         <!-- Welcome Text -->
         <p class="welcome-text">Welcome back!</p>
-        <p class="description">Your account is now secure with your new password. You can continue managing your
-            expenses
-            and budgets.</p>
+        <p class="description">Your account is now secure with your new password. You can continue managing your expenses and budgets.</p>
 
-        <!-- Login Button -->
-        <a href="${LOGIN_URL}" class="login-button">Login to Your Account</a>
-
+        <!-- Login Button with inline styles for email compatibility -->
+        <table cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto;">
+            <tr>
+                <td style="background-color: #8B4513; border-radius: 12px; padding: 16px 32px;">
+                    <a href="${LOGIN_URL}" style="color: #FFF8DC; text-decoration: none; font-weight: 500; font-size: 16px; display: block;">
+                        Login to Your Account
+                    </a>
+                </td>
+            </tr>
+        </table>
 
         <!-- Footer -->
         <div class="footer">
@@ -251,5 +203,4 @@
         </div>
     </div>
 </body>
-
 </html>
