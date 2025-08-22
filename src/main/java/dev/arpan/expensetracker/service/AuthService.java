@@ -16,5 +16,7 @@ public interface AuthService {
     ForgotPasswordResponse forgotPassword(ForgotPasswordRequest forgotPasswordRequest);
 
     ResetPasswordResponse resetPassword(ResetPasswordRequest resetPasswordRequest);
+
+    ChangePasswordResponse changePassword(Long userId, ChangePasswordRequest changePasswordRequest);
 }
 

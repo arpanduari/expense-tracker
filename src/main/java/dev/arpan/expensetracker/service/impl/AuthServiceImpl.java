@@ -5,10 +5,13 @@ import dev.arpan.expensetracker.dto.*;
 import dev.arpan.expensetracker.entity.OtpVerification;
 import dev.arpan.expensetracker.entity.PasswordResetToken;
 import dev.arpan.expensetracker.entity.User;
+import dev.arpan.expensetracker.exception.PasswordNotMatchingException;
+import dev.arpan.expensetracker.exception.PasswordPolicyViolationException;
 import dev.arpan.expensetracker.exception.PasswordResetTokenAlreadySentException;
 import dev.arpan.expensetracker.exception.ResourceNotFoundException;
 import dev.arpan.expensetracker.mapper.UserMapper;
 import dev.arpan.expensetracker.messaging.ForgotPasswordMessageProducer;
+import dev.arpan.expensetracker.messaging.ResetSuccessMessageProducer;
 import dev.arpan.expensetracker.repository.OtpVerificationRepository;
 import dev.arpan.expensetracker.repository.PasswordResetTokenRepository;
 import dev.arpan.expensetracker.repository.UserRepository;
@@ -47,6 +50,7 @@ public class AuthServiceImpl implements AuthService {
     private final ForgotPasswordUtil forgotPasswordUtil;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final ForgotPasswordMessageProducer forgotPasswordMessageProducer;
+    private final ResetSuccessMessageProducer resetSuccessMessageProducer;
 
     @Value("${app.frontend.path}")
     private String frontendPath;
@@ -54,6 +58,9 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public RegisterResponse createUser(RegisterRequestDTO registerRequestDTO) {
         User user = UserMapper.toUser(registerRequestDTO);
+
+        isValidPassword(user.getUsername(), user.getEmail(), registerRequestDTO.getPassword());
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = userRepository.save(user);
         OtpVerification otpVerification = OtpUtil.createOtpVerification(savedUser.getEmail());
@@ -147,11 +154,62 @@ public class AuthServiceImpl implements AuthService {
         }
         User user = userRepository.findById(passwordResetToken.getUser().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", passwordResetToken.getUser().getId() + ""));
+        isValidPassword(user.getUsername(), user.getEmail(), resetPasswordRequest.getNewPassword());
         user.setPassword(passwordEncoder.encode(resetPasswordRequest.getNewPassword()));
         userRepository.save(user);
+        String loginPath = frontendPath + "/login";
+        resetSuccessMessageProducer.sendResetSuccessMessage(user.getEmail(), loginPath);
         passwordResetTokenRepository.delete(passwordResetToken);
         return ResetPasswordResponse.builder()
                 .message("Password reset successful")
                 .build();
+    }
+
+    @Override
+    public ChangePasswordResponse changePassword(Long userId, ChangePasswordRequest changePasswordRequest) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId + ""));
+
+        isValidPassword(user.getUsername(), user.getEmail(), changePasswordRequest.getNewPassword());
+
+        if (!passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword())) {
+            throw new PasswordNotMatchingException("Old password does not match");
+        }
+
+        if (passwordEncoder.matches(changePasswordRequest.getNewPassword(), user.getPassword())) {
+            throw new PasswordNotMatchingException("New password cannot be same as old password");
+        }
+
+        user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
+        userRepository.save(user);
+
+        return ChangePasswordResponse.builder()
+                .isPasswordChanged(true)
+                .message("Password changed successfully")
+                .build();
+    }
+
+    public void isValidPassword(String username, String email, String newPassword) {
+        if (newPassword.length() < 8) {
+            throw new PasswordPolicyViolationException("Password must be at least 8 characters long");
+        }
+        if (!newPassword.matches(".*[A-Z].*")) {
+            throw new PasswordPolicyViolationException("Password must contain at least one uppercase letter");
+        }
+        if (!newPassword.matches(".*[a-z].*")) {
+            throw new PasswordPolicyViolationException("Password must contain at least one lowercase letter");
+        }
+        if (!newPassword.matches(".*\\d.*")) {
+            throw new PasswordPolicyViolationException("Password must contain at least one digit");
+        }
+        if (!newPassword.matches(".*[^a-zA-Z0-9].*")) {
+            throw new PasswordPolicyViolationException("Password must contain at least one special character");
+        }
+        if (newPassword.toLowerCase().contains(username.toLowerCase())) {
+            throw new PasswordPolicyViolationException("Password cannot contain your username");
+        }
+        if (newPassword.toLowerCase().contains(email.toLowerCase())) {
+            throw new PasswordPolicyViolationException("Password cannot contain your email");
+        }
     }
 }

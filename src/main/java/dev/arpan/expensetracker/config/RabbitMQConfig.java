@@ -21,6 +21,9 @@ public class RabbitMQConfig {
     @Value("${app.queue.forgot-password}")
     private String forgotPasswordQueue;
 
+    @Value("${app.queue.reset-password}")
+    private String resetPasswordQueue;
+
     @Bean
     public Queue otpQueue() {
         return new Queue(otpQueue, true, false, false);
@@ -29,6 +32,11 @@ public class RabbitMQConfig {
     @Bean
     public Queue forgotPasswordQueue() {
         return new Queue(forgotPasswordQueue, true, false, false);
+    }
+
+    @Bean
+    public Queue resetPasswordQueue() {
+        return new Queue(resetPasswordQueue, true, false, false);
     }
 
     @Bean

@@ -3,6 +3,7 @@ package dev.arpan.expensetracker.controller;
 import dev.arpan.expensetracker.dto.*;
 import dev.arpan.expensetracker.service.AuthService;
 import dev.arpan.expensetracker.service.OtpService;
+import dev.arpan.expensetracker.utils.UserUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,6 +15,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -151,5 +153,15 @@ public class AuthController {
     ) {
         ForgotPasswordResponse forgotPasswordResponse = authService.forgotPassword(forgotPasswordRequest);
         return ResponseEntity.ok(forgotPasswordResponse);
+    }
+
+    @PatchMapping("/change-password")
+    public ResponseEntity<ChangePasswordResponse> changePassword(
+            @Valid @RequestBody ChangePasswordRequest changePasswordRequest,
+            Authentication authentication
+    ) {
+        Long userId = UserUtil.getUserId(authentication);
+        ChangePasswordResponse changePasswordResponse = authService.changePassword(userId, changePasswordRequest);
+        return ResponseEntity.ok(changePasswordResponse);
     }
 }

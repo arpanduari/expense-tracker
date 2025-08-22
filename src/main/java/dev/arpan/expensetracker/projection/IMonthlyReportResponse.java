@@ -7,9 +7,9 @@ package dev.arpan.expensetracker.projection;
 public interface IMonthlyReportResponse {
     String getMonth();
 
-    double getBudget();
+    Double getBudget();
 
-    double getTotalExpenses();
+    Double getTotalExpenses();
 
-    double getNetSavings();
+    Double getNetSavings();
 }

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.time.Year;
 import java.util.Map;
 
@@ -41,6 +42,17 @@ public class EmailServiceImpl implements EmailService {
             Map<String, String> data = Map.of("RESET_LINK", link);
             String emailContent = emailTemplateService.getEmailContent("forgot-password.html", data);
             sendEmail(toEmail, "ExpenseWise - Forgot Password", emailContent);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void sendResetPassword(String toEmail, String link) {
+        try {
+            Map<String, String> data = Map.of("LOGIN_URL", link, "YEAR", LocalDate.now().getYear() + "");
+            String emailContent = emailTemplateService.getEmailContent("reset-success.html", data);
+            sendEmail(toEmail, "ExpenseWise - Reset Password", emailContent);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
