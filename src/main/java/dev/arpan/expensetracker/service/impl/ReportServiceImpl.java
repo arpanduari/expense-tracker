@@ -3,6 +3,7 @@ package dev.arpan.expensetracker.service.impl;
 import dev.arpan.expensetracker.dto.*;
 import dev.arpan.expensetracker.exception.ResourceNotFoundException;
 import dev.arpan.expensetracker.mapper.ReportMapper;
+import dev.arpan.expensetracker.projection.ICategoryExpenseResponse;
 import dev.arpan.expensetracker.projection.IMonthlyReportResponse;
 import dev.arpan.expensetracker.repository.ReportRepository;
 import dev.arpan.expensetracker.service.ReportService;
@@ -48,7 +49,7 @@ public class ReportServiceImpl implements ReportService {
         LocalDate startDate = month.withDayOfMonth(1);
         LocalDate endDate = month.withDayOfMonth(month.lengthOfMonth());
         String monthYear = getMonthYear(startDate);
-
+        ICategoryExpenseResponse response = reportRepository.findCategoryExpenseByUserId(userId, startDate, endDate);
         return null;
     }
 
