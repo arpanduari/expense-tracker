@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Reset Your Password - ExpenseWise</title>
+    <title>Password Changed Successfully - ExpenseWise</title>
     <!--[if !mso]><!-->
     <style type="text/css">
         /* Reset styles for email clients */
@@ -43,7 +43,7 @@
         }
 
         .email-container {
-            max-width: 480px !important;
+            max-width: 520px !important;
             margin: 0 auto !important;
             background-color: #ffffff !important;
             border-radius: 16px !important;
@@ -52,13 +52,13 @@
         }
 
         .header-section {
-            padding: 40px 32px 20px 32px !important;
+            padding: 30px 20px 15px 20px !important;
             text-align: center !important;
             background-color: #ffffff;
         }
 
         .content-section {
-            padding: 20px 32px 40px 32px !important;
+            padding: 15px 20px 30px 20px !important;
             text-align: center !important;
             background-color: #ffffff;
         }
@@ -68,28 +68,58 @@
             height: auto !important;
             max-width: 100% !important;
             display: block !important;
-            margin: 0 auto 30px auto !important;
+            margin: 0 auto 25px auto !important;
+        }
+
+        .success-icon {
+            width: 70px !important;
+            height: 70px !important;
+            display: block !important;
+            margin: 0 auto 25px auto !important;
         }
 
         .main-title {
-            font-size: 28px !important;
+            font-size: 24px !important;
             font-weight: 600 !important;
             color: #654321 !important;
-            margin: 0 0 20px 0 !important;
+            margin: 0 0 15px 0 !important;
             line-height: 1.2 !important;
         }
 
-        .greeting-text {
+        .success-box {
+            background-color: #f0fdf4 !important;
+            border: 2px solid #bbf7d0 !important;
+            border-radius: 12px !important;
+            padding: 15px !important;
+            margin: 20px 0 !important;
+        }
+
+        .success-title {
+            color: #15803d !important;
             font-size: 16px !important;
-            color: #8B7355 !important;
+            font-weight: 600 !important;
             margin: 0 0 8px 0 !important;
         }
 
-        .description-text {
+        .success-text {
+            color: #166534 !important;
+            font-size: 14px !important;
+            margin: 0 !important;
+            line-height: 1.4 !important;
+        }
+
+        .welcome-heading {
             font-size: 16px !important;
+            font-weight: 500 !important;
+            color: #654321 !important;
+            margin: 15px 0 8px 0 !important;
+        }
+
+        .description-text {
+            font-size: 14px !important;
             color: #8B7355 !important;
-            margin: 0 0 30px 0 !important;
-            line-height: 1.5 !important;
+            margin: 0 0 25px 0 !important;
+            line-height: 1.4 !important;
         }
 
         .company-highlight {
@@ -99,11 +129,11 @@
 
         /* Button table for maximum email client compatibility */
         .button-table {
-            margin: 30px auto !important;
+            margin: 20px auto !important;
         }
 
         .button-cell {
-            background-color: #654321 !important;
+            background-color: #8B4513 !important;
             border-radius: 8px !important;
             padding: 0 !important;
         }
@@ -111,35 +141,13 @@
         .button-link {
             display: block !important;
             padding: 16px 32px !important;
-            background-color: #654321 !important;
+            background-color: #8B4513 !important;
             color: #FFF8DC !important;
             text-decoration: none !important;
             font-weight: 500 !important;
             font-size: 16px !important;
             border-radius: 8px !important;
             text-align: center !important;
-        }
-
-        .alternative-text {
-            font-size: 14px !important;
-            color: #8B7355 !important;
-            margin: 20px 0 8px 0 !important;
-        }
-
-        .reset-link {
-            font-size: 14px !important;
-            color: #D2691E !important;
-            text-decoration: underline !important;
-            word-break: break-all;
-            margin: 0 0 20px 0 !important;
-            display: block !important;
-        }
-
-        .security-notice {
-            font-size: 14px !important;
-            color: #8B7355 !important;
-            margin: 20px 0 !important;
-            line-height: 1.4 !important;
         }
 
         .footer-section {
@@ -149,17 +157,15 @@
             background-color: #ffffff;
         }
 
-        .signature-text {
+        .footer-text {
             font-size: 14px !important;
             color: #8B7355 !important;
             margin: 8px 0 !important;
+            line-height: 1.4 !important;
         }
 
-        .team-name {
-            font-size: 14px !important;
+        .support-text {
             color: #A0522D !important;
-            font-style: italic !important;
-            margin: 0 !important;
         }
 
         /* Responsive styles */
@@ -188,7 +194,7 @@
 
             .main-title {
                 font-size: 20px !important;
-                margin: 0 0 12px 0 !important;
+                margin: 0 0 10px 0 !important;
             }
 
             .logo-img {
@@ -196,18 +202,39 @@
                 margin: 0 auto 20px auto !important;
             }
 
-            .greeting-text {
-                font-size: 15px !important;
+            .success-icon {
+                width: 60px !important;
+                height: 60px !important;
+                margin: 0 auto 20px auto !important;
+            }
+
+            .success-box {
+                padding: 12px !important;
+                margin: 15px 0 !important;
+            }
+
+            .success-title {
+                font-size: 14px !important;
                 margin: 0 0 6px 0 !important;
             }
 
-            .description-text {
+            .success-text {
+                font-size: 13px !important;
+            }
+
+
+            .welcome-heading {
                 font-size: 14px !important;
+                margin: 10px 0 6px 0 !important;
+            }
+
+            .description-text {
+                font-size: 13px !important;
                 margin: 0 0 20px 0 !important;
             }
 
             .button-table {
-                margin: 20px auto !important;
+                margin: 15px auto !important;
             }
 
             .button-link {
@@ -215,24 +242,8 @@
                 font-size: 14px !important;
             }
 
-            .alternative-text {
-                font-size: 13px !important;
-                margin: 15px 0 6px 0 !important;
-            }
-
-            .reset-link {
-                font-size: 13px !important;
-                margin: 0 0 15px 0 !important;
-            }
-
-            .security-notice {
-                font-size: 13px !important;
-                margin: 15px 0 !important;
-            }
-
-            .signature-text,
-            .team-name {
-                font-size: 13px !important;
+            .footer-text {
+                font-size: 12px !important;
                 margin: 6px 0 !important;
             }
         }
@@ -252,47 +263,43 @@
                         <td class="header-section">
                             <img src="${APP_LOGO}" alt="ExpenseWise Logo" class="logo-img">
                             
+                            <!-- Success Icon -->
+                            <img src="https://cdn-icons-png.flaticon.com/512/14090/14090371.png" alt="Success" class="success-icon">
+                            
                             <!-- Main Title -->
-                            <h1 class="main-title">Reset your password</h1>
+                            <h1 class="main-title">Password Changed Successfully</h1>
                         </td>
                     </tr>
 
                     <!-- Content Section -->
                     <tr>
                         <td class="content-section">
-                            <!-- Greeting -->
-                            <p class="greeting-text">Hey ${USER_NAME},</p>
+                            <!-- Success Message Box -->
+                            <div class="success-box">
+                                <h2 class="success-title">Your password has been updated successfully!</h2>
+                                <p class="success-text">Your <span class="company-highlight">ExpenseWise</span> account is now secured with your new password.</p>
+                            </div>
 
-                            <!-- Description -->
-                            <p class="description-text">
-                                A request has been received to change the password for your <span class="company-highlight">ExpenseWise</span> account.
-                            </p>
+                            <!-- Welcome Text -->
+                            <p class="welcome-heading">Your account remains secure!</p>
+                            <p class="description-text">You can continue using your account normally. Remember to keep your new password safe and don't share it with anyone.</p>
 
-                            <!-- Reset Button -->
+                            <!-- Login Button -->
                             <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="button-table">
                                 <tr>
                                     <td class="button-cell">
-                                        <a href="${RESET_LINK}" class="button-link">Reset Password</a>
+                                        <a href="${LOGIN_URL}" class="button-link">Continue to Dashboard</a>
                                     </td>
                                 </tr>
                             </table>
-
-                            <!-- Alternative link -->
-                            <p class="alternative-text">If the link doesn't work, paste this link to your browser:</p>
-                            <a href="${RESET_LINK}" class="reset-link">${RESET_LINK}</a>
-
-                            <!-- Security notice -->
-                            <p class="security-notice">
-                                If you didn't request a password change, ignore this email.
-                            </p>
                         </td>
                     </tr>
 
                     <!-- Footer Section -->
                     <tr>
                         <td class="footer-section">
-                            <p class="signature-text">Thank you,</p>
-                            <p class="team-name">ExpenseWise Team</p>
+                            <p class="footer-text support-text">If you didn't make this change or have concerns about your account security, please contact our support team.</p>
+                            <p class="footer-text">©${YEAR} <span class="company-highlight">ExpenseWise</span>. All rights reserved.</p>
                         </td>
                     </tr>
 
