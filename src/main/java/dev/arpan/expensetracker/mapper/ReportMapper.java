@@ -1,6 +1,8 @@
 package dev.arpan.expensetracker.mapper;
 
+import dev.arpan.expensetracker.dto.CategoryExpenseResponse;
 import dev.arpan.expensetracker.dto.MonthlyReportResponse;
+import dev.arpan.expensetracker.projection.ICategoryExpenseResponse;
 import dev.arpan.expensetracker.projection.IMonthlyReportResponse;
 
 import java.util.Optional;
@@ -19,6 +21,14 @@ public final class ReportMapper {
                 .budget(Optional.ofNullable(monthlyReportResponse.getBudget()).orElse(0.0d))
                 .netSavings(Optional.ofNullable(monthlyReportResponse.getNetSavings()).orElse(0.0d))
                 .totalExpenses(Optional.ofNullable(monthlyReportResponse.getTotalExpenses()).orElse(0.0d))
+                .build();
+    }
+
+    public static CategoryExpenseResponse toCategoryExpenseResponse(ICategoryExpenseResponse categoryExpenseResponse) {
+        return CategoryExpenseResponse.builder()
+                .category(categoryExpenseResponse.getCategory())
+                .amount(categoryExpenseResponse.getAmount())
+                .percentage(categoryExpenseResponse.getPercentage())
                 .build();
     }
 }

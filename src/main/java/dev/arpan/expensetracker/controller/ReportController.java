@@ -38,6 +38,8 @@ public class ReportController {
             @RequestParam(required = false) LocalDate month,
             Authentication authentication
     ) {
+        Long userId = UserUtil.getUserId(authentication);
+        reportService.getCategoryWiseMonthlyExpense(userId, month);
         return null;
     }
 

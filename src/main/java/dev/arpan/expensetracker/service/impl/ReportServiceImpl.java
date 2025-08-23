@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.TextStyle;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -42,15 +43,21 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public CategoryWiseMonthlyExpenseResponse getCategoryWiseMonthlyExpense(LocalDate month) {
+    public CategoryWiseMonthlyExpenseResponse getCategoryWiseMonthlyExpense(Long userId, LocalDate month) {
         if (month == null) {
             month = LocalDate.now();
         }
         LocalDate startDate = month.withDayOfMonth(1);
         LocalDate endDate = month.withDayOfMonth(month.lengthOfMonth());
         String monthYear = getMonthYear(startDate);
-        ICategoryExpenseResponse response = reportRepository.findCategoryExpenseByUserId(userId, startDate, endDate);
-        return null;
+        List<ICategoryExpenseResponse> response = reportRepository.findCategoryExpenseByUserId(userId, startDate, endDate);
+        List<CategoryExpenseResponse> result = response.stream()
+                .map(ReportMapper::toCategoryExpenseResponse)
+                .toList();
+        return CategoryWiseMonthlyExpenseResponse.builder()
+                .month(monthYear)
+                .categoryWiseExpenses(result)
+                .build();
     }
 
     @Override
