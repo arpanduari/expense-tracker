@@ -39,25 +39,29 @@ public class ReportController {
             Authentication authentication
     ) {
         Long userId = UserUtil.getUserId(authentication);
-        reportService.getCategoryWiseMonthlyExpense(userId, month);
-        return null;
+        CategoryWiseMonthlyExpenseResponse response = reportService.getCategoryWiseMonthlyExpense(userId, month);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/yearly")
     public ResponseEntity<YearlyReportResponse> getYearlyReport(
-            @RequestParam(required = false) LocalDate year,
+            @RequestParam(required = false) Integer year,
             Authentication authentication
     ) {
-        return null;
+        Long userId = UserUtil.getUserId(authentication);
+        YearlyReportResponse response = reportService.getYearlyReport(userId, year);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/top-expenses")
     public ResponseEntity<TopExpenseResponse> getTopExpenses(
             @RequestParam(required = false) LocalDate month,
-            @RequestParam(required = false, defaultValue = "5") int limit,
+            @RequestParam(required = false, defaultValue = "5") int size,
             Authentication authentication
     ) {
-        return null;
+        Long userId = UserUtil.getUserId(authentication);
+        TopExpenseResponse response = reportService.getTopExpense(userId, month, size);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/insights")
@@ -65,6 +69,8 @@ public class ReportController {
             @RequestParam(required = false) LocalDate month,
             Authentication authentication
     ) {
-        return null;
+        Long userId = UserUtil.getUserId(authentication);
+        InsightResponse insightResponse = reportService.getInsight(userId, month);
+        return ResponseEntity.ok(insightResponse);
     }
 }

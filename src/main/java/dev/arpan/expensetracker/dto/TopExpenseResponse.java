@@ -17,5 +17,6 @@ import java.util.List;
 @Builder
 public class TopExpenseResponse {
     private String month;
-    private List<ExpenseResponseDTO> topExpenses;
+    private Integer year;
+    private List<CategoryWiseTopExpense> topExpenses;
 }

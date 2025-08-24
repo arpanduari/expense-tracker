@@ -59,6 +59,28 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
+    public void sendChangePasswordSuccessMail(String toEmail, String loginLink) {
+        try {
+            Map<String, String> data = Map.of("LOGIN_URL", loginLink);
+            String emailContent = emailTemplateService.getEmailContent("change-success.html", data);
+            sendEmail(toEmail, "ExpenseWise - Password Changed", emailContent);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void sendAccountCreatedSuccessMail(String toEmail, String username, String loginUrl) {
+        try {
+            Map<String, String> data = Map.of("USER_NAME", username, "LOGIN_URL", loginUrl);
+            String emailContent = emailTemplateService.getEmailContent("create-success.html", data);
+            sendEmail(toEmail, "ExpenseWise - Account Created", emailContent);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public void sendEmail(String toEmail, String subject, String content) {
         try {
             MimeMessage message = mailSender.createMimeMessage();

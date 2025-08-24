@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.Map;
 
 /**
@@ -28,6 +29,7 @@ public class EmailTemplateServiceImpl implements EmailTemplateService {
             htmlContent = htmlContent.replace("${" + entry.getKey() + "}", entry.getValue());
         }
         htmlContent = htmlContent.replace("${APP_LOGO}", logoUrl);
+        htmlContent = htmlContent.replace("${YEAR}", LocalDate.now().getYear() + "");
         return htmlContent;
     }
 

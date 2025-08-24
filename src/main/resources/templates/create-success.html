@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
+    xmlns:o="urn:schemas-microsoft-com:office:office">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,16 +10,23 @@
     <!--[if !mso]><!-->
     <style type="text/css">
         /* Reset styles for email clients */
-        body, table, td, p, a, li, blockquote {
+        body,
+        table,
+        td,
+        p,
+        a,
+        li,
+        blockquote {
             -webkit-text-size-adjust: 100%;
             -ms-text-size-adjust: 100%;
         }
-        
-        table, td {
+
+        table,
+        td {
             mso-table-lspace: 0pt;
             mso-table-rspace: 0pt;
         }
-        
+
         img {
             -ms-interpolation-mode: bicubic;
             border: 0;
@@ -215,21 +224,21 @@
             .email-wrapper {
                 padding: 10px 0 !important;
             }
-            
+
             .email-container {
                 width: 95% !important;
                 margin: 0 auto !important;
                 max-width: 400px !important;
             }
-            
+
             .header-section {
                 padding: 20px 15px 10px 15px !important;
             }
-            
+
             .content-section {
                 padding: 15px 15px 20px 15px !important;
             }
-            
+
             .footer-section {
                 padding: 15px !important;
             }
@@ -313,6 +322,7 @@
     </style>
     <!--<![endif]-->
 </head>
+
 <body>
     <!-- Email Wrapper Table -->
     <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" class="email-wrapper">
@@ -320,18 +330,19 @@
             <td align="center">
                 <!-- Main Email Container -->
                 <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="email-container">
-                    
+
                     <!-- Header Section with Logo -->
                     <tr>
                         <td class="header-section">
                             <img src="${APP_LOGO}" alt="ExpenseWise Logo" class="logo-img">
-                            
+
                             <!-- Welcome Icon -->
-                            <img src="https://cdn-icons-png.flaticon.com/512/14090/14090371.png" alt="Welcome" class="welcome-icon">
-                            
+                            <img src="https://cdn-icons-png.flaticon.com/512/14090/14090371.png" alt="Welcome"
+                                class="welcome-icon">
+
                             <!-- Main Title -->
                             <h1 class="main-title">Welcome to ExpenseWise!</h1>
-                            
+
                             <!-- Brand Accent -->
                             <div class="brand-accent"></div>
                         </td>
@@ -343,15 +354,18 @@
                             <!-- Welcome Message Box -->
                             <div class="welcome-box">
                                 <h2 class="welcome-title">🎉 Your account has been created successfully!</h2>
-                                <p class="welcome-text">Welcome to the <span class="company-highlight">ExpenseWise</span> family. You're now ready to take control of your finances!</p>
+                                <p class="welcome-text">Welcome to the <span
+                                        class="company-highlight">ExpenseWise</span> family. You're now ready to take
+                                    control of your finances!</p>
                             </div>
 
                             <!-- Greeting -->
-                            <p class="greeting-text">Hello ${USER_NAME},</p>
-                            
+                            <p class="greeting-text">Hello, ${USER_NAME},</p>
+
                             <!-- Description -->
                             <p class="description-text">
-                                Thank you for joining <span class="company-highlight">ExpenseWise</span>! We're excited to help you manage your expenses, track your spending, and achieve your financial goals.
+                                Thank you for joining <span class="company-highlight">ExpenseWise</span>! We're excited
+                                to help you manage your expenses, track your spending, and achieve your financial goals.
                             </p>
 
                             <!-- Get Started Button -->
@@ -368,8 +382,10 @@
                     <!-- Footer Section -->
                     <tr>
                         <td class="footer-section">
-                            <p class="footer-text support-text">Need help getting started? Check out our help center or contact our support team.</p>
-                            <p class="footer-text">©${YEAR} <span class="company-highlight">ExpenseWise</span>. All rights reserved.</p>
+                            <p class="footer-text support-text">Need help getting started? Check out our help center or
+                                contact our support team.</p>
+                            <p class="footer-text">©${YEAR} <span class="company-highlight">ExpenseWise</span>. All
+                                rights reserved.</p>
                         </td>
                     </tr>
 
@@ -378,4 +394,5 @@
         </tr>
     </table>
 </body>
+
 </html>

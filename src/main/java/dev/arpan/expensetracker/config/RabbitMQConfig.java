@@ -24,6 +24,12 @@ public class RabbitMQConfig {
     @Value("${app.queue.reset-password}")
     private String resetPasswordQueue;
 
+    @Value("${app.queue.change-password}")
+    private String changePasswordQueue;
+
+    @Value("${app.queue.account-created}")
+    private String accountCreatedQueue;
+
     @Bean
     public Queue otpQueue() {
         return new Queue(otpQueue, true, false, false);
@@ -37,6 +43,16 @@ public class RabbitMQConfig {
     @Bean
     public Queue resetPasswordQueue() {
         return new Queue(resetPasswordQueue, true, false, false);
+    }
+
+    @Bean
+    public Queue changePasswordQueue() {
+        return new Queue(changePasswordQueue, true, false, false);
+    }
+
+    @Bean
+    public Queue accountCreatedQueue() {
+        return new Queue(accountCreatedQueue, true, false, false);
     }
 
     @Bean

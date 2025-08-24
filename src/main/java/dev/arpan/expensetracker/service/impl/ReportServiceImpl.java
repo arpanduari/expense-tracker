@@ -4,6 +4,7 @@ import dev.arpan.expensetracker.dto.*;
 import dev.arpan.expensetracker.exception.ResourceNotFoundException;
 import dev.arpan.expensetracker.mapper.ReportMapper;
 import dev.arpan.expensetracker.projection.ICategoryExpenseResponse;
+import dev.arpan.expensetracker.projection.IInsightResponse;
 import dev.arpan.expensetracker.projection.IMonthlyReportResponse;
 import dev.arpan.expensetracker.repository.ReportRepository;
 import dev.arpan.expensetracker.service.ReportService;
@@ -12,8 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.TextStyle;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * @author arpan
@@ -61,18 +61,73 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public YearlyReportResponse getYearlyReport(LocalDate year) {
-        return null;
+    public YearlyReportResponse getYearlyReport(Long userId, Integer year) {
+        if (year == null) {
+            year = LocalDate.now().getYear();
+        }
+        Map<String, MonthlyYearResponse> monthlyReports = new LinkedHashMap<>();
+        for (int month = 1; month <= 12; ++month) {
+            LocalDate date = LocalDate.of(year, month, 1);
+            String monthName = getMonthName(date);
+            try {
+                MonthlyReportResponse response = getMonthlyReport(userId, date);
+                monthlyReports.put(monthName, ReportMapper.toMonthlyYearResponse(response));
+            } catch (ResourceNotFoundException e) {
+                monthlyReports.put(
+                        monthName,
+                        MonthlyYearResponse.builder()
+                                .budget(0.0d)
+                                .totalExpenses(0.0d)
+                                .netSavings(0.0d)
+                                .build()
+                );
+            }
+        }
+        return YearlyReportResponse.builder()
+                .monthlyReports(monthlyReports)
+                .year(year)
+                .build();
     }
 
     @Override
-    public TopExpenseResponse getTopExpense(LocalDate month, int limit) {
-        return null;
+    public TopExpenseResponse getTopExpense(Long userId, LocalDate month, int limit) {
+        if (month == null) {
+            month = LocalDate.now();
+        }
+
+        LocalDate startDate = month.withDayOfMonth(1);
+        LocalDate endDate = month.withDayOfMonth(month.lengthOfMonth());
+
+        List<CategoryWiseTopExpense> categoryWiseTopExpenses = reportRepository
+                .findCategoryWiseTopExpense(userId, limit, startDate, endDate)
+                .stream()
+                .map(ReportMapper::toCategoryWiseTopExpense)
+                .toList();
+        return TopExpenseResponse
+                .builder()
+                .month(getMonthName(startDate))
+                .year(getYear(startDate))
+                .topExpenses(categoryWiseTopExpenses)
+                .build();
     }
 
     @Override
-    public InsightResponse getInsight(LocalDate month) {
-        return null;
+    public InsightResponse getInsight(Long userId, LocalDate month) {
+        if (month == null) {
+            month = LocalDate.now();
+        }
+        LocalDate startDate = month.withDayOfMonth(1);
+        LocalDate endDate = month.withDayOfMonth(month.lengthOfMonth());
+
+        Optional<IInsightResponse> insightResponse = reportRepository.findInsight(userId, startDate, endDate);
+        InsightResponse response = insightResponse.map(ReportMapper::toInsightResponse)
+                .orElse(
+                        InsightResponse.builder()
+                                .build()
+                );
+        response.setMonth(getMonthName(startDate));
+        response.setYear(getYear(startDate));
+        return response;
     }
 
     public static String getMonthName(LocalDate date) {

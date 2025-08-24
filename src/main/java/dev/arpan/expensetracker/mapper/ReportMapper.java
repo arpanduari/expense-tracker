@@ -1,8 +1,9 @@
 package dev.arpan.expensetracker.mapper;
 
-import dev.arpan.expensetracker.dto.CategoryExpenseResponse;
-import dev.arpan.expensetracker.dto.MonthlyReportResponse;
+import dev.arpan.expensetracker.dto.*;
 import dev.arpan.expensetracker.projection.ICategoryExpenseResponse;
+import dev.arpan.expensetracker.projection.ICategoryWiseTopExpense;
+import dev.arpan.expensetracker.projection.IInsightResponse;
 import dev.arpan.expensetracker.projection.IMonthlyReportResponse;
 
 import java.util.Optional;
@@ -31,4 +32,32 @@ public final class ReportMapper {
                 .percentage(categoryExpenseResponse.getPercentage())
                 .build();
     }
+
+    public static MonthlyYearResponse toMonthlyYearResponse(MonthlyReportResponse monthlyReportResponse) {
+        return MonthlyYearResponse.builder()
+                .budget(monthlyReportResponse.getBudget())
+                .totalExpenses(monthlyReportResponse.getTotalExpenses())
+                .netSavings(monthlyReportResponse.getNetSavings())
+                .build();
+    }
+
+    public static CategoryWiseTopExpense toCategoryWiseTopExpense(ICategoryWiseTopExpense categoryWiseTopExpense) {
+        return CategoryWiseTopExpense.builder()
+                .category(categoryWiseTopExpense.getCategory())
+                .amount(categoryWiseTopExpense.getAmount())
+                .percentage(categoryWiseTopExpense.getPercentage())
+                .build();
+    }
+
+    public static InsightResponse toInsightResponse(IInsightResponse insightResponse) {
+        return InsightResponse.builder()
+                .mostExpensiveDay(insightResponse.getMostExpensiveDay())
+                .amountOnMostExpensiveDay(insightResponse.getAmountOnMostExpensiveDay())
+                .averageDailySpending(insightResponse.getAverageDailySpending())
+                .expensiveCategory(insightResponse.getExpensiveCategory())
+                .expensiveCategorySpending(insightResponse.getExpensiveCategorySpending())
+                .totalSpending(insightResponse.getTotalSpending())
+                .build();
+    }
+
 }

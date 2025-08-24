@@ -4,12 +4,14 @@ import dev.arpan.expensetracker.dto.OtpResendResponse;
 import dev.arpan.expensetracker.dto.VerifyResponse;
 import dev.arpan.expensetracker.entity.OtpVerification;
 import dev.arpan.expensetracker.entity.User;
+import dev.arpan.expensetracker.messaging.AccountCreatedMessageProducer;
 import dev.arpan.expensetracker.messaging.OtpProducer;
 import dev.arpan.expensetracker.repository.OtpVerificationRepository;
 import dev.arpan.expensetracker.repository.UserRepository;
 import dev.arpan.expensetracker.service.OtpService;
 import dev.arpan.expensetracker.utils.OtpUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +28,9 @@ public class OtpServiceImpl implements OtpService {
     private final OtpVerificationRepository otpVerificationRepository;
     private final UserRepository userRepository;
     private final OtpProducer otpProducer;
+    private final AccountCreatedMessageProducer accountCreatedMessageProducer;
+    @Value("${app.frontend.path}")
+    private String frontendPath;
 
     @Override
     public void sendOtp(String toEmail, String otp) {
@@ -47,6 +52,11 @@ public class OtpServiceImpl implements OtpService {
         user.setVerified(true);
         user.setVerifiedDate(LocalDate.now());
         userRepository.save(user);
+
+        String loginUrl = frontendPath + "/login";
+
+        accountCreatedMessageProducer.sendAccountCreatedMessage(user.getEmail(), user.getUsername(), loginUrl);
+
         otpVerificationRepository.delete(otpVerification);
         return new VerifyResponse("OTP verified successfully", HttpStatus.OK);
 

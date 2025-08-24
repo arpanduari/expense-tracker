@@ -11,7 +11,10 @@ public interface EmailService {
 
     void sendResetPassword(String toEmail, String link);
 
-    void sendEmail(String toEmail, String subject, String content);
+    void sendChangePasswordSuccessMail(String toEmail, String loginLink);
 
+    void sendAccountCreatedSuccessMail(String toEmail, String username, String loginLink);
+
+    void sendEmail(String toEmail, String subject, String content);
 
 }

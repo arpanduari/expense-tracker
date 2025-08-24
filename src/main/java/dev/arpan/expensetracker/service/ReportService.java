@@ -10,9 +10,13 @@ import java.time.LocalDate;
  */
 public interface ReportService {
     MonthlyReportResponse getMonthlyReport(Long userId, LocalDate month);
+
     CategoryWiseMonthlyExpenseResponse getCategoryWiseMonthlyExpense(Long userId, LocalDate month);
-    YearlyReportResponse getYearlyReport(LocalDate year);
-    TopExpenseResponse getTopExpense(LocalDate month, int limit);
-    InsightResponse getInsight(LocalDate month);
+
+    YearlyReportResponse getYearlyReport(Long userId, Integer year);
+
+    TopExpenseResponse getTopExpense(Long userId, LocalDate month, int limit);
+
+    InsightResponse getInsight(Long userId, LocalDate month);
 }
 

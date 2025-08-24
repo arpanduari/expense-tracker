@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * @author arpan
@@ -17,5 +17,5 @@ import java.util.List;
 @Builder
 public class YearlyReportResponse {
     private Integer year;
-    private List<MonthlyReportResponse> monthlyReports;
+    private Map<String, MonthlyYearResponse> monthlyReports;
 }

@@ -10,6 +10,7 @@ import dev.arpan.expensetracker.exception.PasswordPolicyViolationException;
 import dev.arpan.expensetracker.exception.PasswordResetTokenAlreadySentException;
 import dev.arpan.expensetracker.exception.ResourceNotFoundException;
 import dev.arpan.expensetracker.mapper.UserMapper;
+import dev.arpan.expensetracker.messaging.ChangePasswordMessageProducer;
 import dev.arpan.expensetracker.messaging.ForgotPasswordMessageProducer;
 import dev.arpan.expensetracker.messaging.ResetSuccessMessageProducer;
 import dev.arpan.expensetracker.repository.OtpVerificationRepository;
@@ -51,6 +52,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final ForgotPasswordMessageProducer forgotPasswordMessageProducer;
     private final ResetSuccessMessageProducer resetSuccessMessageProducer;
+    private final ChangePasswordMessageProducer changePasswordMessageProducer;
 
     @Value("${app.frontend.path}")
     private String frontendPath;
@@ -157,8 +159,10 @@ public class AuthServiceImpl implements AuthService {
         isValidPassword(user.getUsername(), user.getEmail(), resetPasswordRequest.getNewPassword());
         user.setPassword(passwordEncoder.encode(resetPasswordRequest.getNewPassword()));
         userRepository.save(user);
+
         String loginPath = frontendPath + "/login";
         resetSuccessMessageProducer.sendResetSuccessMessage(user.getEmail(), loginPath);
+
         passwordResetTokenRepository.delete(passwordResetToken);
         return ResetPasswordResponse.builder()
                 .message("Password reset successful")
@@ -182,6 +186,9 @@ public class AuthServiceImpl implements AuthService {
 
         user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
         userRepository.save(user);
+
+        String loginPath = frontendPath + "/login";
+        changePasswordMessageProducer.sendChangePasswordMessage(user.getEmail(), loginPath);
 
         return ChangePasswordResponse.builder()
                 .isPasswordChanged(true)

@@ -51,7 +51,8 @@ app:
     otp: otpQueue
     forgot-password: forgotPasswordQueue
     reset-password: resetPasswordQueue
-
+    change-password: changePasswordQueue
+    account-created: accountCreatedQueue
   frontend:
     path: http://localhost:3001
 
