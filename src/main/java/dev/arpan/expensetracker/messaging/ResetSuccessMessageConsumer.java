@@ -20,6 +20,7 @@ public class ResetSuccessMessageConsumer {
     public void receiveResetSuccessMessage(Map<String, String> message) {
         String email = message.get("email");
         String link = message.get("link");
-        emailService.sendResetPassword(email, link);
+        String username = message.get("username");
+        emailService.sendResetPassword(email, link, username);
     }
 }

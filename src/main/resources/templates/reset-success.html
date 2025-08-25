@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
+      xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,12 +13,12 @@
             -webkit-text-size-adjust: 100%;
             -ms-text-size-adjust: 100%;
         }
-        
+
         table, td {
             mso-table-lspace: 0pt;
             mso-table-rspace: 0pt;
         }
-        
+
         img {
             -ms-interpolation-mode: bicubic;
             border: 0;
@@ -173,21 +174,21 @@
             .email-wrapper {
                 padding: 10px 0 !important;
             }
-            
+
             .email-container {
                 width: 95% !important;
                 margin: 0 auto !important;
                 max-width: 400px !important;
             }
-            
+
             .header-section {
                 padding: 20px 15px 10px 15px !important;
             }
-            
+
             .content-section {
                 padding: 10px 15px 20px 15px !important;
             }
-            
+
             .footer-section {
                 padding: 15px !important;
             }
@@ -250,61 +251,66 @@
     <!--<![endif]-->
 </head>
 <body>
-    <!-- Email Wrapper Table -->
-    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" class="email-wrapper">
-        <tr>
-            <td align="center">
-                <!-- Main Email Container -->
-                <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="email-container">
-                    
-                    <!-- Header Section with Logo -->
-                    <tr>
-                        <td class="header-section">
-                            <img src="${APP_LOGO}" alt="ExpenseWise Logo" class="logo-img">
-                            
-                            <!-- Success Icon -->
-                            <img src="https://cdn-icons-png.flaticon.com/512/14090/14090371.png" alt="Success" class="success-icon">
-                            
-                            <!-- Main Title -->
-                            <h1 class="main-title">Password Reset Successful</h1>
-                        </td>
-                    </tr>
+<!-- Email Wrapper Table -->
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" class="email-wrapper">
+    <tr>
+        <td align="center">
+            <!-- Main Email Container -->
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="email-container">
 
-                    <!-- Content Section -->
-                    <tr>
-                        <td class="content-section">
-                            <!-- Success Message Box -->
-                            <div class="success-box">
-                                <h2 class="success-title">Great! Your password has been reset successfully.</h2>
-                                <p class="success-text">You can now log in to your <span class="company-highlight">ExpenseWise</span> account with your new password.</p>
-                            </div>
+                <!-- Header Section with Logo -->
+                <tr>
+                    <td class="header-section">
+                        <img src="${APP_LOGO}" alt="ExpenseWise Logo" class="logo-img">
 
-                            <!-- Welcome Text -->
-                            <p class="welcome-heading">Welcome back! ${USER_NAME}</p>
-                            <p class="description-text">Your account is now secure with your new password. You can continue managing your expenses and budgets.</p>
+                        <!-- Success Icon -->
+                        <img src="https://cdn-icons-png.flaticon.com/512/14090/14090371.png" alt="Success"
+                             class="success-icon">
 
-                            <!-- Login Button -->
-                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="button-table">
-                                <tr>
-                                    <td class="button-cell">
-                                        <a href="${LOGIN_URL}" class="button-link">Login to Your Account</a>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
+                        <!-- Main Title -->
+                        <h1 class="main-title">Password Reset Successful</h1>
+                    </td>
+                </tr>
 
-                    <!-- Footer Section -->
-                    <tr>
-                        <td class="footer-section">
-                            <p class="footer-text support-text">If you experience any issues logging in, please contact our support team.</p>
-                            <p class="footer-text">©${YEAR} <span class="company-highlight">ExpenseWise</span>. All rights reserved.</p>
-                        </td>
-                    </tr>
+                <!-- Content Section -->
+                <tr>
+                    <td class="content-section">
+                        <!-- Success Message Box -->
+                        <div class="success-box">
+                            <h2 class="success-title">Great! Your password has been reset successfully.</h2>
+                            <p class="success-text">You can now log in to your <span class="company-highlight">ExpenseWise</span>
+                                account with your new password.</p>
+                        </div>
 
-                </table>
-            </td>
-        </tr>
-    </table>
+                        <!-- Welcome Text -->
+                        <p class="welcome-heading">Welcome back! ${USER_NAME}</p>
+                        <p class="description-text">Your account is now secure with your new password. You can continue
+                            managing your expenses and budgets.</p>
+
+                        <!-- Login Button -->
+                        <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="button-table">
+                            <tr>
+                                <td class="button-cell">
+                                    <a href="${LOGIN_URL}" class="button-link">Login to Your Account</a>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+                <!-- Footer Section -->
+                <tr>
+                    <td class="footer-section">
+                        <p class="footer-text support-text">If you experience any issues logging in, please contact our
+                            support team.</p>
+                        <p class="footer-text">©${YEAR} <span class="company-highlight">ExpenseWise</span>. All rights
+                            reserved.</p>
+                    </td>
+                </tr>
+
+            </table>
+        </td>
+    </tr>
+</table>
 </body>
 </html>

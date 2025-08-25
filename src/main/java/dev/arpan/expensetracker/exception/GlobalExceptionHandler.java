@@ -1,6 +1,7 @@
 package dev.arpan.expensetracker.exception;
 
 import dev.arpan.expensetracker.dto.ErrorResponse;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,14 @@ public class GlobalExceptionHandler {
         ex.getBindingResult()
                 .getFieldErrors()
                 .forEach(fieldError -> response.put(fieldError.getField(), fieldError.getDefaultMessage()));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Map<String, String>> handleConstraintViolation(ConstraintViolationException ex) {
+        Map<String, String> response = new HashMap<>();
+        ex.getConstraintViolations()
+                .forEach(constraintViolation -> response.put(constraintViolation.getPropertyPath()
+                        .toString(), constraintViolation.getMessage()));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 

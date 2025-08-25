@@ -4,6 +4,7 @@ import dev.arpan.expensetracker.dto.OtpResendResponse;
 import dev.arpan.expensetracker.dto.VerifyResponse;
 import dev.arpan.expensetracker.entity.OtpVerification;
 import dev.arpan.expensetracker.entity.User;
+import dev.arpan.expensetracker.exception.ResourceNotFoundException;
 import dev.arpan.expensetracker.messaging.AccountCreatedMessageProducer;
 import dev.arpan.expensetracker.messaging.OtpProducer;
 import dev.arpan.expensetracker.repository.OtpVerificationRepository;
@@ -33,8 +34,8 @@ public class OtpServiceImpl implements OtpService {
     private String frontendPath;
 
     @Override
-    public void sendOtp(String toEmail, String otp) {
-        otpProducer.sendOtpMessage(toEmail, otp);
+    public void sendOtp(String toEmail, String otp, String username) {
+        otpProducer.sendOtpMessage(toEmail, otp, username);
     }
 
     @Override
@@ -66,11 +67,11 @@ public class OtpServiceImpl implements OtpService {
     public OtpResendResponse resendOtp(String toEmail) {
         otpVerificationRepository.findByEmail(toEmail)
                 .orElseThrow(() -> new RuntimeException("Invalid email"));
-
-
         OtpVerification otpVerification = OtpUtil.createOtpVerification(toEmail);
         otpVerificationRepository.save(otpVerification);
-        sendOtp(toEmail, otpVerification.getOtp());
+        User user = userRepository.findByEmail(toEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "email", toEmail));
+        sendOtp(toEmail, otpVerification.getOtp(), user.getUsername());
         return OtpResendResponse.builder()
                 .message("OTP Resend successfully. Please check your email for verification.")
                 .verificationUrl("/verify-otp?token=" + otpVerification.getToken())

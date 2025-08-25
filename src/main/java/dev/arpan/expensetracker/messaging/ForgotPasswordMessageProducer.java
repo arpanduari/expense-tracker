@@ -19,8 +19,8 @@ public class ForgotPasswordMessageProducer {
     @Value("${app.queue.forgot-password}")
     private String queueName;
 
-    public void sendForgotPasswordMessage(String email, String link) {
-        Map<String, String> payLoad = Map.of("email", email, "link", link);
+    public void sendForgotPasswordMessage(String email, String link, String username) {
+        Map<String, String> payLoad = Map.of("email", email, "link", link, "username" , username);
         rabbitTemplate.convertAndSend(queueName, payLoad);
     }
 

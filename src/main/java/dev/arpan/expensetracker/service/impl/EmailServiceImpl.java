@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.time.Year;
 import java.util.Map;
 
 /**
@@ -26,9 +25,9 @@ public class EmailServiceImpl implements EmailService {
     private final EmailTemplateService emailTemplateService;
 
     @Override
-    public void sendOtp(String toEmail, String otp) {
+    public void sendOtp(String toEmail, String otp, String username) {
         try {
-            Map<String, String> data = Map.of("OTP", otp, "YEAR", Year.now().getValue() + "");
+            Map<String, String> data = Map.of("OTP", otp, "USERNAME", username);
             String emailContent = emailTemplateService.getEmailContent("otp-page.html", data);
             sendEmail(toEmail, "ExpenseWise - OTP", emailContent);
         } catch (IOException ex) {
@@ -37,9 +36,9 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void sendForgotPassword(String toEmail, String link) {
+    public void sendForgotPassword(String toEmail, String link, String username) {
         try {
-            Map<String, String> data = Map.of("RESET_LINK", link);
+            Map<String, String> data = Map.of("RESET_LINK", link, "USERNAME", username);
             String emailContent = emailTemplateService.getEmailContent("forgot-password.html", data);
             sendEmail(toEmail, "ExpenseWise - Forgot Password", emailContent);
         } catch (IOException e) {
@@ -48,9 +47,9 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void sendResetPassword(String toEmail, String link) {
+    public void sendResetPassword(String toEmail, String link, String username) {
         try {
-            Map<String, String> data = Map.of("LOGIN_URL", link, "YEAR", LocalDate.now().getYear() + "");
+            Map<String, String> data = Map.of("LOGIN_URL", link, "USERNAME", username);
             String emailContent = emailTemplateService.getEmailContent("reset-success.html", data);
             sendEmail(toEmail, "ExpenseWise - Reset Password", emailContent);
         } catch (IOException e) {

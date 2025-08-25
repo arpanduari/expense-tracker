@@ -19,10 +19,11 @@ public class OtpProducer {
     @Value("${app.queue.otp}")
     private String otpQueueName;
 
-    public void sendOtpMessage(String email, String otp) {
+    public void sendOtpMessage(String email, String otp, String username) {
         Map<String, String> payLoad = new HashMap<>();
         payLoad.put("email", email);
         payLoad.put("otp", otp);
+        payLoad.put("username", username);
         rabbitTemplate.convertAndSend(otpQueueName, payLoad);
     }
 }

@@ -19,8 +19,8 @@ public class ResetSuccessMessageProducer {
     @Value("${app.queue.reset-password}")
     private String queueName;
 
-    public void sendResetSuccessMessage(String email, String link) {
-        Map<String, String> payLoad = Map.of("email", email, "link", link);
+    public void sendResetSuccessMessage(String email, String link, String username) {
+        Map<String, String> payLoad = Map.of("email", email, "link", link, "username", username);
         rabbitTemplate.convertAndSend(queueName, payLoad);
     }
 }

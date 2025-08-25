@@ -20,6 +20,7 @@ public class OtpConsumer {
     public void receiveOtpMessage(Map<String, String> message) {
         String email = message.get("email");
         String otp = message.get("otp");
-        emailService.sendOtp(email, otp);
+        String username = message.get("username");
+        emailService.sendOtp(email, otp, username);
     }
 }

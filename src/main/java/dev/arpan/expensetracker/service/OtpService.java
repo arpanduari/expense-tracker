@@ -9,7 +9,7 @@ import dev.arpan.expensetracker.dto.VerifyResponse;
  */
 public interface OtpService {
 
-    void sendOtp(String toEmail, String otp);
+    void sendOtp(String toEmail, String otp, String username);
 
     VerifyResponse verifyOtp(String token, String otp);
 

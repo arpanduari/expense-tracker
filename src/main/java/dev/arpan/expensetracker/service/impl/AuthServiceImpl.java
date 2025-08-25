@@ -67,7 +67,7 @@ public class AuthServiceImpl implements AuthService {
         User savedUser = userRepository.save(user);
         OtpVerification otpVerification = OtpUtil.createOtpVerification(savedUser.getEmail());
         otpVerificationRepository.save(otpVerification);
-        otpService.sendOtp(registerRequestDTO.getEmail(), otpVerification.getOtp());
+        otpService.sendOtp(registerRequestDTO.getEmail(), otpVerification.getOtp(), savedUser.getUsername());
         return RegisterResponse.builder()
                 .message("User registered successfully. Please check your email for verification.")
                 .verificationUrl("/verify?token=" + otpVerification.getToken())
@@ -140,7 +140,7 @@ public class AuthServiceImpl implements AuthService {
 
         String link = frontendPath + "/reset-password?token=" + uuid + "&id=" + passwordResetToken.getId();
 
-        forgotPasswordMessageProducer.sendForgotPasswordMessage(user.getEmail(), link);
+        forgotPasswordMessageProducer.sendForgotPasswordMessage(user.getEmail(), link, user.getUsername());
 
         return ForgotPasswordResponse.builder()
                 .message("Password reset link sent to your email")
@@ -161,7 +161,7 @@ public class AuthServiceImpl implements AuthService {
         userRepository.save(user);
 
         String loginPath = frontendPath + "/login";
-        resetSuccessMessageProducer.sendResetSuccessMessage(user.getEmail(), loginPath);
+        resetSuccessMessageProducer.sendResetSuccessMessage(user.getEmail(), loginPath, user.getUsername());
 
         passwordResetTokenRepository.delete(passwordResetToken);
         return ResetPasswordResponse.builder()

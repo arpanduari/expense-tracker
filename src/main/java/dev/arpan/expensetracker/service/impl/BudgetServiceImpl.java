@@ -17,7 +17,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.ResourceAccessException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -85,30 +84,6 @@ public class BudgetServiceImpl implements BudgetService {
             month = month.plusMonths(1);
         }
         return missingMonths;
-
-
-
-        /*
-        LocalDate now = LocalDate.now().withDayOfMonth(1);
-        LocalDate month = startDate.withDayOfMonth(1);
-
-        List<LocalDate> overrideMonths = budgetRepository.findAllOverrideBudgetMonths(userId)
-                .stream()
-                .map(date -> date.withDayOfMonth(1))
-                .collect(Collectors.toList());
-
-        List<LocalDate> allMonths = new ArrayList<>();
-
-        while (!month.isAfter(now)) {
-            allMonths.add(month);
-            month = month.plusMonths(1);
-        }
-        return allMonths.stream()
-                .filter(currMonth -> !overrideMonths.contains(currMonth))
-
-                .collect(Collectors.toList());
-        */
-//        return null;
     }
 
 
@@ -124,13 +99,16 @@ public class BudgetServiceImpl implements BudgetService {
 
     @Override
     public BudgetResponse setBudget(Long userId, BudgetRequest budgetRequest) {
-        Budget budget = BudgetMapper.toBudget(budgetRequest);
-        User user = UserUtil.createUserWithId(userId);
-        budget.setUser(user);
+        Budget budget = budgetRepository.findBudgetByUserIdAndMonth(userId, budgetRequest.getMonth())
+                .orElseGet(
+                        () -> {
+                            Budget newBudget = BudgetMapper.toBudget(budgetRequest);
+                            newBudget.setUser(UserUtil.createUserWithId(userId));
+                            return newBudget;
+                        }
+                );
+        BudgetMapper.updateBudget(budget, budgetRequest);
         Budget savedBudget = budgetRepository.save(budget);
-        if (savedBudget.getId() < 0L) {
-            throw new ResourceAccessException("Unable to save budget");
-        }
         return BudgetMapper.toBudgetResponse(savedBudget);
     }
 

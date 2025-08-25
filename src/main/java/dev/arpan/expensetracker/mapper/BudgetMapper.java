@@ -25,4 +25,8 @@ public final class BudgetMapper {
                 .month(budgetRequest.getMonth())
                 .build();
     }
+    public static void updateBudget(Budget budget, BudgetRequest budgetRequest){
+        budget.setAmount(budgetRequest.getAmount());
+        budget.setMonth(budgetRequest.getMonth());
+    }
 }

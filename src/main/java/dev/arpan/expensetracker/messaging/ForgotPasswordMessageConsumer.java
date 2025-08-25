@@ -13,13 +13,14 @@ import java.util.Map;
  */
 @Service
 @RequiredArgsConstructor
-public class ForgotPasswordConsumer {
+public class ForgotPasswordMessageConsumer {
     private final EmailService emailService;
 
     @RabbitListener(queues = "${app.queue.forgot-password}")
     public void receiveForgotPasswordMessage(Map<String, String> message) {
         String email = message.get("email");
         String link = message.get("link");
-        emailService.sendForgotPassword(email, link);
+        String username = message.get("username");
+        emailService.sendForgotPassword(email, link, username);
     }
 }
