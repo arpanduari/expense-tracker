@@ -32,7 +32,8 @@ public interface BudgetRepository extends JpaRepository<Budget, Long> {
             """ 
                      SELECT b FROM Budget b
                      where b.user.id = :userId
-                     AND  b.month = :month
+                     AND  month(b.month) = month(:month)
+                     and year(b.month) = year(:month)
                     """
     )
     Optional<Budget> findBudgetByUserIdAndMonth(@Param("userId") Long userId, @Param("month") LocalDate month);
