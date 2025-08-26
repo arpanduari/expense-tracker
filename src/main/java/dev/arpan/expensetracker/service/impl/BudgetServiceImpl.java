@@ -33,7 +33,6 @@ import java.util.stream.Collectors;
 public class BudgetServiceImpl implements BudgetService {
     private final BudgetRepository budgetRepository;
 
-    // TODO: Add updated month in
     @Transactional
     @Override
     public BudgetResponse setDefaultBudget(Long userId, BudgetRequest budgetRequest) {

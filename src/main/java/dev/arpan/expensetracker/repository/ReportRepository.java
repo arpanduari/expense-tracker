@@ -35,7 +35,7 @@ public interface ReportRepository extends JpaRepository<DummyEntity, Long> {
                                where
                                    b.user_id = :userId
                                    and (
-                                       b.month = :startDate
+                                       month(b.month) = month(:startDate)
                                        or b.month is null
                                    )
                                order by
