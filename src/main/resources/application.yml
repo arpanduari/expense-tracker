@@ -46,6 +46,15 @@ api:
   base: /api
   version: /v1
 
+cloudinary:
+  secret:
+    cloud-name: ${CLOUDINARY_CLOUD_NAME}
+    api-key: ${CLOUDINARY_API_KEY}
+    api-secret: ${CLOUDINARY_API_SECRET}
+
+
+
+
 app:
   queue:
     otp: otpQueue
@@ -53,6 +62,7 @@ app:
     reset-password: resetPasswordQueue
     change-password: changePasswordQueue
     account-created: accountCreatedQueue
+    profile-event: profileEventQueue
   frontend:
     path: http://localhost:3001
 

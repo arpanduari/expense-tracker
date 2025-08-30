@@ -1,5 +1,6 @@
 package dev.arpan.expensetracker.mapper;
 
+import dev.arpan.expensetracker.dto.ProfileImageEvent;
 import dev.arpan.expensetracker.dto.RegisterRequestDTO;
 import dev.arpan.expensetracker.dto.UserDto;
 import dev.arpan.expensetracker.entity.User;
@@ -26,6 +27,16 @@ public final class UserMapper {
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .currency(user.getCurrency())
+                .avatarUrl(user.getSecureUrl())
+                .build();
+    }
+
+    public static ProfileImageEvent toProfileImageEvent(User user) {
+        return ProfileImageEvent.builder()
+                .userId(user.getId())
+                .username(user.getUsername())
+                .publicId(user.getPublicId())
+                .secureUrl(user.getSecureUrl())
                 .build();
     }
 }

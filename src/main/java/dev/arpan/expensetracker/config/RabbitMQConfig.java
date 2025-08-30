@@ -30,6 +30,10 @@ public class RabbitMQConfig {
     @Value("${app.queue.account-created}")
     private String accountCreatedQueue;
 
+    @Value("${app.queue.profile-event}")
+    private String profileEventQueue;
+
+
     @Bean
     public Queue otpQueue() {
         return new Queue(otpQueue, true, false, false);
@@ -53,6 +57,11 @@ public class RabbitMQConfig {
     @Bean
     public Queue accountCreatedQueue() {
         return new Queue(accountCreatedQueue, true, false, false);
+    }
+
+    @Bean
+    public Queue profileEventQueue() {
+        return new Queue(profileEventQueue, true, false, false);
     }
 
     @Bean

@@ -20,4 +20,6 @@ public class UserDto {
     private String email;
     @Schema(description = "currency", example = "INR")
     private String currency;
+
+    private String avatarUrl;
 }

@@ -7,6 +7,7 @@ import dev.arpan.expensetracker.entity.User;
 import dev.arpan.expensetracker.exception.ResourceNotFoundException;
 import dev.arpan.expensetracker.messaging.AccountCreatedMessageProducer;
 import dev.arpan.expensetracker.messaging.OtpProducer;
+import dev.arpan.expensetracker.messaging.ProfileImageEventProducer;
 import dev.arpan.expensetracker.repository.OtpVerificationRepository;
 import dev.arpan.expensetracker.repository.UserRepository;
 import dev.arpan.expensetracker.service.OtpService;
@@ -30,6 +31,8 @@ public class OtpServiceImpl implements OtpService {
     private final UserRepository userRepository;
     private final OtpProducer otpProducer;
     private final AccountCreatedMessageProducer accountCreatedMessageProducer;
+    private final ProfileImageEventProducer profileImageEventProducer;
+
     @Value("${app.frontend.path}")
     private String frontendPath;
 
@@ -53,6 +56,9 @@ public class OtpServiceImpl implements OtpService {
         user.setVerified(true);
         user.setVerifiedDate(LocalDate.now());
         userRepository.save(user);
+
+        profileImageEventProducer.sendProfileImageEvent(user.getUsername());
+
 
         String loginUrl = frontendPath + "/login";
 

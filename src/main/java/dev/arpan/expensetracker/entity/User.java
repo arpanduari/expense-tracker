@@ -20,14 +20,23 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(unique = true, nullable = false)
     private String username;
+
     @JsonIgnore
     private String password;
+
     @Column(unique = true, nullable = false)
     private String email;
-    @Column(nullable = false, columnDefinition = "varchar(3) default 'INR'")
+
+    @Column(nullable = false, length = 3)
     private String currency = "INR";
+
+    private String publicId;
+    private String secureUrl;
+
     private boolean isVerified;
+
     private LocalDate verifiedDate;
 }
