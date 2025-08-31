@@ -19,19 +19,20 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class ProfileController {
     private final ProfileImageService profileImageService;
-
+    private final UserUtil userUtil;
+    
     @PostMapping("/profile-picture")
     public ResponseEntity<ProfilePictureUploadResponse> uploadProfilePicture(
             @RequestParam("file") MultipartFile file,
             Authentication authentication) {
-        Long userId = UserUtil.getUserId(authentication);
+        Long userId = userUtil.getUserId(authentication);
         ProfilePictureUploadResponse response = profileImageService.uploadProfileImage(userId, file);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/profile-picture")
     public ResponseEntity<ProfilePictureDeleteResponse> deleteProfilePicture(Authentication authentication){
-        Long userId = UserUtil.getUserId(authentication);
+        Long userId = userUtil.getUserId(authentication);
         ProfilePictureDeleteResponse profilePictureDeleteResponse = profileImageService.deleteProfileImage(userId);
         return ResponseEntity.ok(profilePictureDeleteResponse);
     }

@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final AuthService authService;
     private final OtpService otpService;
+    private final UserUtil userUtil;
 
     @PostMapping("/register")
     @Operation(
@@ -160,7 +161,7 @@ public class AuthController {
             @Valid @RequestBody ChangePasswordRequest changePasswordRequest,
             Authentication authentication
     ) {
-        Long userId = UserUtil.getUserId(authentication);
+        Long userId = userUtil.getUserId(authentication);
         ChangePasswordResponse changePasswordResponse = authService.changePassword(userId, changePasswordRequest);
         return ResponseEntity.ok(changePasswordResponse);
     }

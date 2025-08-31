@@ -16,4 +16,5 @@ import lombok.*;
 public class CategoryRequest {
     @Schema(description = "Category name", example = "FOOD")
     private String name;
+    private String icon;
 }

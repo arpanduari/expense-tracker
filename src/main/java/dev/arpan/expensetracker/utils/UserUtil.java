@@ -13,13 +13,13 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public final class UserUtil {
-    public static User createUserWithId(Long userId) {
+    public User createUserWithId(Long userId) {
         return User.builder()
                 .id(userId)
                 .build();
     }
 
-    public static Long getUserId(Authentication authentication) {
+    public Long getUserId(Authentication authentication) {
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
         return customUserDetails.getUser().getId();
     }

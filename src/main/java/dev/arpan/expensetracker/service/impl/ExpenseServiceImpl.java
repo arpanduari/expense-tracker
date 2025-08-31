@@ -31,10 +31,11 @@ import java.time.LocalTime;
 public class ExpenseServiceImpl implements ExpenseService {
     private final CategoryRepository categoryRepository;
     private final ExpenseRepository expenseRepository;
+    private final UserUtil userUtil;
 
     @Override
     public ExpenseResponseDTO addExpense(Long userId, ExpenseRequestDTO expenseRequestDTO) {
-        User user = UserUtil.createUserWithId(userId);
+        User user = userUtil.createUserWithId(userId);
         Expense expense = ExpenseMapper.toExpense(expenseRequestDTO);
         Category category = getCategory(expenseRequestDTO.getCategoryId());
         expense.setCategory(category);
@@ -50,7 +51,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     public ExpenseResponseDTO getExpenseById(Long userId, Long id) {
-        User user = UserUtil.createUserWithId(userId);
+        User user = userUtil.createUserWithId(userId);
         Expense expense = getExpense(id);
         if (isUserUnAuthorized(user, expense)) {
             throw new AccessDeniedException("You are not authorized to view this expense");
@@ -61,7 +62,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Override
     public Page<ExpenseResponseDTO> getExpenses(Long userId, int page, int size, String sortBy, String direction,
                                                 LocalDate startDate, LocalDate endDate, Long categoryId) {
-        User user = UserUtil.createUserWithId(userId);
+        User user = userUtil.createUserWithId(userId);
         Sort sort = "asc".equalsIgnoreCase(direction) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<Expense> expenses = expenseRepository.findExpenseByFilters(user.getId(), startDate, endDate, categoryId, pageable);
@@ -70,7 +71,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     public void deleteExpense(Long userId, Long id) {
-        User user = UserUtil.createUserWithId(userId);
+        User user = userUtil.createUserWithId(userId);
         Expense expense = getExpense(id);
         if (isUserUnAuthorized(user, expense)) {
             throw new AccessDeniedException("You are not authorized to delete this expense");
@@ -80,7 +81,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     public ExpenseResponseDTO updateExpense(Long userId, Long id, ExpenseRequestDTO expenseRequestDTO) {
-        User user = UserUtil.createUserWithId(userId);
+        User user = userUtil.createUserWithId(userId);
         Expense expense = getExpense(id);
         if (isUserUnAuthorized(user, expense)) {
             throw new AccessDeniedException("You are not authorized to update this expense");

@@ -32,11 +32,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BudgetServiceImpl implements BudgetService {
     private final BudgetRepository budgetRepository;
+    private final UserUtil userUtil;
 
     @Transactional
     @Override
     public BudgetResponse setDefaultBudget(Long userId, BudgetRequest budgetRequest) {
-        User user = UserUtil.createUserWithId(userId);
+        User user = userUtil.createUserWithId(userId);
         Budget defaultBudget = budgetRepository.findDefaultBudgetByUserId(userId)
                 .orElse(
                         Budget.builder()
@@ -102,7 +103,7 @@ public class BudgetServiceImpl implements BudgetService {
                 .orElseGet(
                         () -> {
                             Budget newBudget = BudgetMapper.toBudget(budgetRequest);
-                            newBudget.setUser(UserUtil.createUserWithId(userId));
+                            newBudget.setUser(userUtil.createUserWithId(userId));
                             return newBudget;
                         }
                 );

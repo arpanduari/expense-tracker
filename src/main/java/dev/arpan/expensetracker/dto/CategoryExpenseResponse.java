@@ -17,4 +17,5 @@ public class CategoryExpenseResponse {
     private String category;
     private double amount;
     private double percentage;
+    private String icon;
 }

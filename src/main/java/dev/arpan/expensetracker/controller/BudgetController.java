@@ -34,6 +34,7 @@ import java.time.LocalDate;
 @Tag(name = "Budget Management", description = "Operations related to Budget")
 public class BudgetController {
     private final BudgetService budgetService;
+    private final UserUtil userUtil;
 
     @GetMapping
     @Operation(
@@ -57,7 +58,7 @@ public class BudgetController {
             )
             LocalDate month,
             Authentication authentication) {
-        Long userId = UserUtil.getUserId(authentication);
+        Long userId = userUtil.getUserId(authentication);
         BudgetResponse budgetResponse = budgetService.getBudget(userId, month);
         return ResponseEntity.ok(budgetResponse);
     }
@@ -88,7 +89,7 @@ public class BudgetController {
     )
     public ResponseEntity<BudgetResponse> setDefaultBudget(@RequestBody @Valid BudgetRequest budgetRequest,
                                                            Authentication authentication) {
-        Long userId = UserUtil.getUserId(authentication);
+        Long userId = userUtil.getUserId(authentication);
         BudgetResponse budgetResponse = budgetService.setDefaultBudget(userId, budgetRequest);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(budgetResponse);
@@ -119,7 +120,7 @@ public class BudgetController {
             }
     )
     public ResponseEntity<BudgetResponse> getDefaultBudget(Authentication authentication) {
-        Long userId = UserUtil.getUserId(authentication);
+        Long userId = userUtil.getUserId(authentication);
         BudgetResponse defaultBudget = budgetService.getDefaultBudget(userId);
         return ResponseEntity.ok(defaultBudget);
     }
@@ -150,7 +151,7 @@ public class BudgetController {
     )
     public ResponseEntity<BudgetResponse> setMonthlyBudget(@RequestBody @Valid BudgetRequest budgetRequest,
                                                            Authentication authentication) {
-        Long userId = UserUtil.getUserId(authentication);
+        Long userId = userUtil.getUserId(authentication);
         BudgetResponse budgetResponse = budgetService.setBudget(userId, budgetRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(budgetResponse);
@@ -187,7 +188,7 @@ public class BudgetController {
             int size,
             Authentication authentication
     ) {
-        Long userId = UserUtil.getUserId(authentication);
+        Long userId = userUtil.getUserId(authentication);
         Page<BudgetResponse> budgetResponses = budgetService.getOverrideBudgets(userId, page, size);
         return ResponseEntity.status(HttpStatus.OK).body(budgetResponses);
     }
@@ -219,7 +220,7 @@ public class BudgetController {
             int size,
             Authentication authentication
     ) {
-        Long userId = UserUtil.getUserId(authentication);
+        Long userId = userUtil.getUserId(authentication);
         Page<BudgetResponse> budgetResponses = budgetService.getAllHistoryBudgets(userId, page, size);
         return ResponseEntity.status(HttpStatus.OK).body(budgetResponses);
     }
@@ -270,7 +271,7 @@ public class BudgetController {
                                                             required = true)
                                                     LocalDate month,
                                                     Authentication authentication) {
-        Long userId = UserUtil.getUserId(authentication);
+        Long userId = userUtil.getUserId(authentication);
         budgetService.deleteBudget(userId, month);
         return ResponseEntity.noContent().build();
     }

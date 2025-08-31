@@ -16,12 +16,14 @@ public final class CategoryMapper {
         return CategoryResponse.builder()
                 .id(category.getId())
                 .name(category.getName())
+                .icon(category.getIcon())
                 .build();
     }
 
     public static Category toCategory(CategoryRequest categoryRequest) {
         return Category.builder()
                 .name(categoryRequest.getName())
+                .icon(categoryRequest.getIcon())
                 .build();
     }
 }

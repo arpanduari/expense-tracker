@@ -18,4 +18,6 @@ public class CategoryResponse {
     private Long id;
     @Schema(description = "Category name", example = "FOOD")
     private String name;
+    @Schema(description = "Category icon", example = "\uD83C\uDF72")
+    private String icon;
 }

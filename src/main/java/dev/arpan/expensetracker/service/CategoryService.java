@@ -10,7 +10,10 @@ import org.springframework.data.domain.Page;
  */
 public interface CategoryService {
     Page<CategoryResponse> getCategories(Long userId, int page, int size);
+
     CategoryResponse createCategory(Long userId, CategoryRequest categoryRequest);
+
     CategoryResponse updateCategory(Long userId, Long id, CategoryRequest categoryRequest);
+
     void deleteCategory(Long userId, Long id);
 }

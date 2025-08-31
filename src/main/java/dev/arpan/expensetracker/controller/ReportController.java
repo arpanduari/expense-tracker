@@ -22,13 +22,14 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class ReportController {
     private final ReportService reportService;
-
+    private final UserUtil userUtil;
+    
     @GetMapping("/monthly")
     public ResponseEntity<MonthlyReportResponse> getMonthlyReport(
             @RequestParam(required = false) LocalDate month,
             Authentication authentication
     ) {
-        Long userId = UserUtil.getUserId(authentication);
+        Long userId = userUtil.getUserId(authentication);
         MonthlyReportResponse monthlyReportResponse = reportService.getMonthlyReport(userId, month);
         return ResponseEntity.ok(monthlyReportResponse);
     }
@@ -38,7 +39,7 @@ public class ReportController {
             @RequestParam(required = false) LocalDate month,
             Authentication authentication
     ) {
-        Long userId = UserUtil.getUserId(authentication);
+        Long userId = userUtil.getUserId(authentication);
         CategoryWiseMonthlyExpenseResponse response = reportService.getCategoryWiseMonthlyExpense(userId, month);
         return ResponseEntity.ok(response);
     }
@@ -48,7 +49,7 @@ public class ReportController {
             @RequestParam(required = false) Integer year,
             Authentication authentication
     ) {
-        Long userId = UserUtil.getUserId(authentication);
+        Long userId = userUtil.getUserId(authentication);
         YearlyReportResponse response = reportService.getYearlyReport(userId, year);
         return ResponseEntity.ok(response);
     }
@@ -59,7 +60,7 @@ public class ReportController {
             @RequestParam(required = false, defaultValue = "5") int size,
             Authentication authentication
     ) {
-        Long userId = UserUtil.getUserId(authentication);
+        Long userId = userUtil.getUserId(authentication);
         TopExpenseResponse response = reportService.getTopExpense(userId, month, size);
         return ResponseEntity.ok(response);
     }
@@ -69,7 +70,7 @@ public class ReportController {
             @RequestParam(required = false) LocalDate month,
             Authentication authentication
     ) {
-        Long userId = UserUtil.getUserId(authentication);
+        Long userId = userUtil.getUserId(authentication);
         InsightResponse insightResponse = reportService.getInsight(userId, month);
         return ResponseEntity.ok(insightResponse);
     }

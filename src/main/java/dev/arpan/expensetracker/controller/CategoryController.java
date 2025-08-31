@@ -32,7 +32,8 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Category Management", description = "Operations related to Category")
 public class CategoryController {
     private final CategoryService categoryService;
-
+    private final UserUtil userUtil;
+    
     @GetMapping
     @Operation(
             summary = "Get categories of the logged in user",
@@ -59,7 +60,7 @@ public class CategoryController {
             int size,
             Authentication authentication
     ) {
-        Long userId = UserUtil.getUserId(authentication);
+        Long userId = userUtil.getUserId(authentication);
         Page<CategoryResponse> categories = categoryService.getCategories(userId, page, size);
         return ResponseEntity.ok(categories);
     }
@@ -93,7 +94,7 @@ public class CategoryController {
     )
     public ResponseEntity<CategoryResponse> createCategory(@RequestBody @Valid CategoryRequest categoryRequest,
                                                            Authentication authentication) {
-        Long userId = UserUtil.getUserId(authentication);
+        Long userId = userUtil.getUserId(authentication);
         CategoryResponse categoryResponse = categoryService.createCategory(userId, categoryRequest);
         if (categoryResponse == null) {
             return ResponseEntity.badRequest().build();
@@ -142,7 +143,7 @@ public class CategoryController {
     public ResponseEntity<CategoryResponse> updateCategory(@PathVariable @Positive Long id,
                                                            @RequestBody @Valid CategoryRequest categoryRequest,
                                                            Authentication authentication) {
-        Long userId = UserUtil.getUserId(authentication);
+        Long userId = userUtil.getUserId(authentication);
         CategoryResponse categoryResponse = categoryService.updateCategory(userId, id, categoryRequest);
         if (categoryResponse == null) {
             return ResponseEntity.badRequest().build();
@@ -173,7 +174,7 @@ public class CategoryController {
             }
     )
     public ResponseEntity<Void> deleteCategory(@PathVariable @Positive Long id, Authentication authentication) {
-        Long userId = UserUtil.getUserId(authentication);
+        Long userId = userUtil.getUserId(authentication);
         categoryService.deleteCategory(userId, id);
         return ResponseEntity.noContent().build();
     }

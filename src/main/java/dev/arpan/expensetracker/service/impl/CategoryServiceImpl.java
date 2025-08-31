@@ -32,6 +32,7 @@ public class CategoryServiceImpl implements CategoryService {
         return categories.map(category -> CategoryResponse.builder()
                 .id(category.getId())
                 .name(category.getName())
+                .icon(category.getIcon())
                 .build()
         );
     }
@@ -54,6 +55,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = getCategory(id);
         checkCategoryByUser(user, category);
         category.setName(categoryRequest.getName());
+        category.setIcon(categoryRequest.getIcon());
         Category savedCategory = categoryRepository.save(category);
         return CategoryMapper.toCategoryResponse(savedCategory);
     }

@@ -33,7 +33,8 @@ import java.time.LocalDate;
 @Tag(name = "Expense Management", description = "Operations related to Expense")
 public class ExpenseController {
     private final ExpenseService expenseService;
-
+    private final UserUtil userUtil;
+    
     @PostMapping
     @Operation(
             summary = "Create a new expense",
@@ -58,7 +59,7 @@ public class ExpenseController {
     )
     public ResponseEntity<ExpenseResponseDTO> createExpense(@RequestBody @Valid ExpenseRequestDTO expenseRequestDTO,
                                                             Authentication authentication) {
-        Long userId = UserUtil.getUserId(authentication);
+        Long userId = userUtil.getUserId(authentication);
         ExpenseResponseDTO expenseResponseDTO = expenseService.addExpense(userId, expenseRequestDTO);
         return ResponseEntity.ok(expenseResponseDTO);
     }
@@ -100,7 +101,7 @@ public class ExpenseController {
             @PathVariable @Positive Long id,
             Authentication authentication
     ) {
-        Long userId = UserUtil.getUserId(authentication);
+        Long userId = userUtil.getUserId(authentication);
         ExpenseResponseDTO expenseResponseDTO = expenseService.getExpenseById(userId, id);
         return ResponseEntity.ok(expenseResponseDTO);
     }
@@ -145,7 +146,7 @@ public class ExpenseController {
     public ResponseEntity<ExpenseResponseDTO> updateExpense(@PathVariable @Positive Long id,
                                                             @RequestBody @Valid ExpenseRequestDTO expenseRequestDTO,
                                                             Authentication authentication) {
-        Long userId = UserUtil.getUserId(authentication);
+        Long userId = userUtil.getUserId(authentication);
         ExpenseResponseDTO expenseResponseDTO = expenseService.updateExpense(userId, id, expenseRequestDTO);
         return ResponseEntity.ok(expenseResponseDTO);
     }
@@ -163,7 +164,7 @@ public class ExpenseController {
     )
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteExpense(@PathVariable @Positive Long id, Authentication authentication) {
-        Long userId = UserUtil.getUserId(authentication);
+        Long userId = userUtil.getUserId(authentication);
         expenseService.deleteExpense(userId, id);
         return ResponseEntity.noContent().build();
     }
@@ -203,7 +204,7 @@ public class ExpenseController {
             @RequestParam(required = false) @Positive Long categoryId,
             Authentication authentication
     ) {
-        Long userId = UserUtil.getUserId(authentication);
+        Long userId = userUtil.getUserId(authentication);
         Page<ExpenseResponseDTO> expenseResponses = expenseService.getExpenses(userId, page, size, sortBy, direction,
                 startDate, endDate, categoryId);
         return ResponseEntity.ok(expenseResponses);
