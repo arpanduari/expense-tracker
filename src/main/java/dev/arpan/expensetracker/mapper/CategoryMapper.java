@@ -23,7 +23,8 @@ public final class CategoryMapper {
     public static Category toCategory(CategoryRequest categoryRequest) {
         return Category.builder()
                 .name(categoryRequest.getName())
-                .icon(categoryRequest.getIcon())
+                .icon(categoryRequest.getIcon() != null && !categoryRequest.getIcon().isBlank() ?
+                        categoryRequest.getIcon() : "\uD83D\uDCB8")
                 .build();
     }
 }
