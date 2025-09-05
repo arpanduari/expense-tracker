@@ -1,5 +1,6 @@
 package dev.arpan.expensetracker.report;
 
+import dev.arpan.expensetracker.expense.Expense;
 import dev.arpan.expensetracker.projection.ICategoryExpenseResponse;
 import dev.arpan.expensetracker.projection.ICategoryWiseTopExpense;
 import dev.arpan.expensetracker.projection.IInsightResponse;
@@ -17,7 +18,7 @@ import java.util.Optional;
  * @since 8/20/25
  */
 @Repository
-public interface ReportRepository extends JpaRepository<Void, Long> {
+public interface ReportRepository extends JpaRepository<Expense, Long> {
     @Query(
             value = """ 
                     select
