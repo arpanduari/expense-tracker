@@ -20,6 +20,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Objects;
 
 /**
  * @author arpan
@@ -36,6 +37,10 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
         if (jwt != null) {
             try {
                 Claims claims = jwtUtil.parseToken(jwt);
+                String sub = claims.get("sub", String.class);
+                if (!Objects.equals(sub, JWTConstants.JWT_SUBJECT)) {
+                    throw new BadRequestException("Invalid token");
+                }
                 String username = claims.get("username", String.class);
                 Long userId = claims.get(ApplicationConstants.USER_ID, Long.class);
                 if (jwtUtil.isTokenExpired(claims.getExpiration())) {

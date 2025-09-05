@@ -1,9 +1,14 @@
 package dev.arpan.expensetracker.controller;
 
+import dev.arpan.expensetracker.constants.FileNameConstants;
 import dev.arpan.expensetracker.dto.*;
+import dev.arpan.expensetracker.service.FileReportService;
 import dev.arpan.expensetracker.service.ReportService;
 import dev.arpan.expensetracker.utils.UserUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,8 +27,9 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class ReportController {
     private final ReportService reportService;
+    private final FileReportService fileReportService;
     private final UserUtil userUtil;
-    
+
     @GetMapping("/monthly")
     public ResponseEntity<MonthlyReportResponse> getMonthlyReport(
             @RequestParam(required = false) LocalDate month,
@@ -73,5 +79,15 @@ public class ReportController {
         Long userId = userUtil.getUserId(authentication);
         InsightResponse insightResponse = reportService.getInsight(userId, month);
         return ResponseEntity.ok(insightResponse);
+    }
+
+    @GetMapping("/excel/monthly")
+    public ResponseEntity<byte[]> getExcelReport(@RequestParam(required = false) LocalDate month, Authentication authentication) {
+        Long userId = userUtil.getUserId(authentication);
+        FileReportResponse fileReportResponse = fileReportService.generateMonthlyReport(userId, month);
+        return ResponseEntity.status(HttpStatus.OK)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileReportResponse.getFileName())
+                .contentType(MediaType.parseMediaType(FileNameConstants.EXCEL_MEDIA_TYPE))
+                .body(fileReportResponse.getFileData());
     }
 }

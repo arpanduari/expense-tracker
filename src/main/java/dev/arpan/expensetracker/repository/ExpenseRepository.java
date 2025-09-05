@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * @author arpan
@@ -29,4 +30,18 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
                                        @Param("startDate") LocalDate startDate,
                                        @Param("endDate") LocalDate endDate,
                                        @Param("categoryId") Long categoryId, Pageable pageable);
+    @Query(
+            """
+                                                SELECT e FROM Expense e
+                                                WHERE e.user.id = :userId
+                                                AND (:startDate IS NULL OR e.createdDate >= :startDate)
+                                                AND (:endDate IS NULL OR e.createdDate <= :endDate)
+                                                AND (:categoryId IS NULL OR e.category.id = :categoryId)
+
+                    """
+    )
+    List<Expense> findByFilters(@Param("userId") Long userId,
+                                @Param("startDate") LocalDate startDate,
+                                @Param("endDate") LocalDate endDate,
+                                @Param("categoryId") Long categoryId);
 }

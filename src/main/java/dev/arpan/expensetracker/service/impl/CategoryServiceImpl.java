@@ -9,6 +9,7 @@ import dev.arpan.expensetracker.exception.ResourceNotFoundException;
 import dev.arpan.expensetracker.mapper.CategoryMapper;
 import dev.arpan.expensetracker.repository.CategoryRepository;
 import dev.arpan.expensetracker.service.CategoryService;
+import dev.arpan.expensetracker.service.EmojiService;
 import dev.arpan.expensetracker.utils.UserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final UserUtil userUtil;
+    private final EmojiService emojiService;
 
     @Override
     public Page<CategoryResponse> getCategories(Long userId, int page, int size) {
@@ -42,6 +44,7 @@ public class CategoryServiceImpl implements CategoryService {
         User user = userUtil.createUserWithId(userId);
         Category newCategory = CategoryMapper.toCategory(categoryRequest);
         newCategory.setUser(user);
+        newCategory.setIcon(emojiService.getCategory(newCategory.getName()));
         Category savedCategory = categoryRepository.save(newCategory);
         if (savedCategory != null && savedCategory.getId() < 0L) {
             return null;
