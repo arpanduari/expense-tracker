@@ -1,6 +1,6 @@
 package dev.arpan.expensetracker.security;
 
-import dev.arpan.expensetracker.entity.User;
+import dev.arpan.expensetracker.user.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

@@ -1,6 +1,6 @@
 package dev.arpan.expensetracker.exception;
 
-import dev.arpan.expensetracker.dto.ErrorResponse;
+import dev.arpan.expensetracker.exception.dto.ErrorResponse;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
