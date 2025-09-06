@@ -63,7 +63,7 @@ public class AuthService {
         otpService.sendOtp(registerRequestDTO.getEmail(), otpVerification.getOtp(), savedUser.getUsername());
         return RegisterResponse.builder()
                 .message("User registered successfully. Please check your email for verification.")
-                .verificationUrl("/verify?token=" + otpVerification.getToken())
+                .verificationToken(otpVerification.getToken())
                 .build();
     }
 

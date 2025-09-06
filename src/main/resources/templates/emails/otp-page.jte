@@ -256,7 +256,7 @@
                 <!-- Header Section with Logo -->
                 <tr>
                     <td class="header-section">
-                        <img src="${APP_LOGO}" alt="ExpenseWise Logo" class="logo-img">
+                        <img src="@appLogo" alt="ExpenseWise Logo" class="logo-img">
 
                         <!-- Main Title -->
                         <h1 class="main-title">Email Verification</h1>
@@ -270,7 +270,7 @@
                 <tr>
                     <td class="content-section">
                         <!-- Greeting -->
-                        <p class="greeting-text">Hello, ${USER_NAME}</p>
+                        <p class="greeting-text">Hello, @username</p>
 
                         <!-- Description -->
                         <p class="description-text">
@@ -280,14 +280,14 @@
 
                         <!-- OTP Code -->
                         <div class="otp-container">
-                            <p class="otp-code">${OTP}</p>
+                            <p class="otp-code">@otp</p>
                         </div>
 
                         <!-- Expiry Notice -->
                         <div class="expiry-notice">
                             <p class="expiry-text">
                                 <strong>Important:</strong> This verification code will expire in <strong>5
-                                minutes</strong>.
+                                    minutes</strong>.
                             </p>
                         </div>
 
@@ -302,7 +302,7 @@
                 <tr>
                     <td class="footer-section">
                         <p class="footer-text">If you did not request this verification, please ignore this email.</p>
-                        <p class="footer-text">©${YEAR} <span class="company-highlight">ExpenseWise</span>. All rights
+                        <p class="footer-text">©@year <span class="company-highlight">ExpenseWise</span>. All rights
                             reserved.</p>
                     </td>
                 </tr>

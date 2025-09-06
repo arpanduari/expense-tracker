@@ -17,5 +17,5 @@ public class RegisterResponse {
     @Schema(description = "Message", example = "Registration successful")
     private String message;
     @Schema(description = "Verification URL")
-    private String verificationUrl;
+    private String verificationToken;
 }
