@@ -6,8 +6,6 @@ import dev.arpan.expensetracker.projection.IInsightResponse;
 import dev.arpan.expensetracker.projection.IMonthlyReportResponse;
 import dev.arpan.expensetracker.report.dto.*;
 
-import java.util.Optional;
-
 /**
  * @author arpan
  * @since 8/20/25
@@ -17,36 +15,23 @@ public final class ReportMapper {
     }
 
     public static MonthlyReportResponse toMonthlyReportResponse(IMonthlyReportResponse monthlyReportResponse) {
-        return MonthlyReportResponse.builder()
-                .month(monthlyReportResponse.getMonth())
-                .budget(Optional.ofNullable(monthlyReportResponse.getBudget()).orElse(0.0d))
-                .netSavings(Optional.ofNullable(monthlyReportResponse.getNetSavings()).orElse(0.0d))
-                .totalExpenses(Optional.ofNullable(monthlyReportResponse.getTotalExpenses()).orElse(0.0d))
-                .build();
+        return new MonthlyReportResponse(monthlyReportResponse.getMonth(), monthlyReportResponse.getBudget(),
+                monthlyReportResponse.getTotalExpenses(), monthlyReportResponse.getNetSavings());
     }
 
     public static CategoryExpenseResponse toCategoryExpenseResponse(ICategoryExpenseResponse categoryExpenseResponse) {
-        return CategoryExpenseResponse.builder()
-                .category(categoryExpenseResponse.getCategory())
-                .amount(categoryExpenseResponse.getAmount())
-                .percentage(categoryExpenseResponse.getPercentage())
-                .build();
+        return new CategoryExpenseResponse(categoryExpenseResponse.getCategory(), categoryExpenseResponse.getAmount(),
+                categoryExpenseResponse.getPercentage(), categoryExpenseResponse.getIcon());
     }
 
     public static MonthlyYearResponse toMonthlyYearResponse(MonthlyReportResponse monthlyReportResponse) {
-        return MonthlyYearResponse.builder()
-                .budget(monthlyReportResponse.getBudget())
-                .totalExpenses(monthlyReportResponse.getTotalExpenses())
-                .netSavings(monthlyReportResponse.getNetSavings())
-                .build();
+        return new MonthlyYearResponse(monthlyReportResponse.getBudget(), monthlyReportResponse.getTotalExpenses(),
+                monthlyReportResponse.getNetSavings());
     }
 
-    public static CategoryWiseTopExpense toCategoryWiseTopExpense(ICategoryWiseTopExpense categoryWiseTopExpense) {
-        return CategoryWiseTopExpense.builder()
-                .category(categoryWiseTopExpense.getCategory())
-                .amount(categoryWiseTopExpense.getAmount())
-                .percentage(categoryWiseTopExpense.getPercentage())
-                .build();
+    public static CategoryWiseTopExpenseResponse toCategoryWiseTopExpense(ICategoryWiseTopExpense categoryWiseTopExpense) {
+        return new CategoryWiseTopExpenseResponse(categoryWiseTopExpense.getCategory(), categoryWiseTopExpense.getAmount(),
+                categoryWiseTopExpense.getPercentage(), categoryWiseTopExpense.getIcon());
     }
 
     public static InsightResponse toInsightResponse(IInsightResponse insightResponse) {

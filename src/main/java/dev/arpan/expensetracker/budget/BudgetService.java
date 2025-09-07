@@ -1,11 +1,11 @@
 package dev.arpan.expensetracker.budget;
 
-import dev.arpan.expensetracker.constants.application.ApplicationConstants;
 import dev.arpan.expensetracker.budget.dto.BudgetRequest;
 import dev.arpan.expensetracker.budget.dto.BudgetResponse;
-import dev.arpan.expensetracker.user.User;
+import dev.arpan.expensetracker.constants.application.ApplicationConstants;
 import dev.arpan.expensetracker.exception.AccessDeniedException;
 import dev.arpan.expensetracker.exception.ResourceNotFoundException;
+import dev.arpan.expensetracker.user.User;
 import dev.arpan.expensetracker.user.util.UserUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -31,14 +31,14 @@ public class BudgetService {
     private final UserUtil userUtil;
 
     @Transactional
-    
+
     public BudgetResponse setDefaultBudget(Long userId, BudgetRequest budgetRequest) {
         User user = userUtil.createUserWithId(userId);
         Budget defaultBudget = budgetRepository.findDefaultBudgetByUserId(userId)
                 .orElse(
                         Budget.builder()
                                 .user(user)
-                                .amount(budgetRequest.getAmount())
+                                .amount(budgetRequest.amount())
                                 .month(null)
                                 .updatedAt(LocalDate.now().withDayOfMonth(1))
                                 .build()
@@ -54,7 +54,7 @@ public class BudgetService {
                     .collect(Collectors.toList());
             budgetRepository.saveAll(overrides);
         }
-        defaultBudget.setAmount(budgetRequest.getAmount());
+        defaultBudget.setAmount(budgetRequest.amount());
         defaultBudget.setMonth(null);
         defaultBudget.setUpdatedAt(LocalDate.now().withDayOfMonth(1));
         Budget updatedBudget = budgetRepository.save(defaultBudget);
@@ -83,7 +83,6 @@ public class BudgetService {
     }
 
 
-    
     public BudgetResponse getBudget(Long userId, LocalDate month) {
         if (month != null) {
             Budget budget = budgetRepository.findBudgetByUserIdAndMonth(userId, month)
@@ -93,9 +92,9 @@ public class BudgetService {
         return getDefaultBudget(userId);
     }
 
-    
+
     public BudgetResponse setBudget(Long userId, BudgetRequest budgetRequest) {
-        Budget budget = budgetRepository.findBudgetByUserIdAndMonth(userId, budgetRequest.getMonth())
+        Budget budget = budgetRepository.findBudgetByUserIdAndMonth(userId, budgetRequest.month())
                 .orElseGet(
                         () -> {
                             Budget newBudget = BudgetMapper.toBudget(budgetRequest);
@@ -108,7 +107,7 @@ public class BudgetService {
         return BudgetMapper.toBudgetResponse(savedBudget);
     }
 
-    
+
     public BudgetResponse getDefaultBudget(Long userId) {
         Budget budget = budgetRepository.findDefaultBudgetByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Default Budget", ApplicationConstants.USER_ID, userId + ""));
@@ -116,21 +115,20 @@ public class BudgetService {
     }
 
 
-    
     public Page<BudgetResponse> getOverrideBudgets(Long userId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Budget> budgets = budgetRepository.findAllOverrideBudgets(userId, pageable);
         return budgets.map(BudgetMapper::toBudgetResponse);
     }
 
-    
+
     public Page<BudgetResponse> getAllHistoryBudgets(Long userId, int page, int size) {
         Pageable pageRequest = PageRequest.of(page, size);
         Page<Budget> budgetResponses = budgetRepository.findAllByUserId(userId, pageRequest);
         return budgetResponses.map(BudgetMapper::toBudgetResponse);
     }
 
-    
+
     public void deleteBudget(Long userId, LocalDate month) {
         Budget budget = budgetRepository.findBudgetByUserIdAndMonth(userId, month)
                 .orElseThrow(() -> new ResourceNotFoundException("Budget", "userId", userId + ""));

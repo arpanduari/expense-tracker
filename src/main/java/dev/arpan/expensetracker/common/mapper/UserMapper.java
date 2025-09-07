@@ -1,8 +1,8 @@
 package dev.arpan.expensetracker.common.mapper;
 
-import dev.arpan.expensetracker.auth.dto.RegisterRequestDTO;
+import dev.arpan.expensetracker.auth.dto.RegisterRequest;
 import dev.arpan.expensetracker.user.User;
-import dev.arpan.expensetracker.user.dto.UserDto;
+import dev.arpan.expensetracker.user.dto.UserResponse;
 
 /**
  * @author arpan
@@ -12,21 +12,16 @@ public final class UserMapper {
     private UserMapper() {
     }
 
-    public static User toUser(RegisterRequestDTO registerRequestDTO) {
+    public static User toUser(RegisterRequest registerRequest) {
         return User.builder()
-                .username(registerRequestDTO.getUsername())
-                .email(registerRequestDTO.getEmail())
-                .password(registerRequestDTO.getPassword())
-                .currency(registerRequestDTO.getCurrency())
+                .username(registerRequest.username())
+                .email(registerRequest.email())
+                .password(registerRequest.password())
+                .currency(registerRequest.currency())
                 .build();
     }
 
-    public static UserDto toUserDto(User user) {
-        return UserDto.builder()
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .currency(user.getCurrency())
-                .avatarUrl(user.getSecureUrl())
-                .build();
+    public static UserResponse toUserResponse(User user) {
+        return new UserResponse(user.getUsername(), user.getEmail(), user.getCurrency(), user.getSecureUrl());
     }
 }

@@ -2,9 +2,9 @@ package dev.arpan.expensetracker.report.dto;
 
 /**
  * @author arpan
- * @since 8/20/25
+ * @since 8/23/25
  */
-public record CategoryExpenseResponse(
+public record CategoryWiseTopExpenseResponse(
         String category,
         double amount,
         double percentage,

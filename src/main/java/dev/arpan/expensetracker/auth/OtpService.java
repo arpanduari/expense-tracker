@@ -2,13 +2,13 @@ package dev.arpan.expensetracker.auth;
 
 import dev.arpan.expensetracker.auth.dto.OtpResendResponse;
 import dev.arpan.expensetracker.auth.dto.VerifyResponse;
-import dev.arpan.expensetracker.user.User;
+import dev.arpan.expensetracker.auth.util.OtpUtil;
 import dev.arpan.expensetracker.exception.ResourceNotFoundException;
 import dev.arpan.expensetracker.messaging.account.AccountCreatedMessageProducer;
 import dev.arpan.expensetracker.messaging.auth.OtpProducer;
 import dev.arpan.expensetracker.messaging.profile.ProfileImageEventProducer;
+import dev.arpan.expensetracker.user.User;
 import dev.arpan.expensetracker.user.UserRepository;
-import dev.arpan.expensetracker.auth.util.OtpUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -75,11 +75,7 @@ public class OtpService {
         User user = userRepository.findByEmail(toEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "email", toEmail));
         sendOtp(toEmail, otpVerification.getOtp(), user.getUsername());
-        return OtpResendResponse.builder()
-                .message("OTP Resend successfully. Please check your email for verification.")
-                .verificationUrl("/verify-otp?token=" + otpVerification.getToken())
-                .build();
-
+        return new OtpResendResponse("OTP Resend successfully. Please check your email for verification", otpVerification.getToken());
     }
 
 }

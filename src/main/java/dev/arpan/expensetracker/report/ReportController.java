@@ -84,8 +84,8 @@ public class ReportController {
         Long userId = userUtil.getUserId(authentication);
         FileReportResponse fileReportResponse = fileReportService.generateMonthlyReport(userId, month);
         return ResponseEntity.status(HttpStatus.OK)
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileReportResponse.getFileName())
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileReportResponse.fileName())
                 .contentType(MediaType.parseMediaType(FileNameConstants.EXCEL_MEDIA_TYPE))
-                .body(fileReportResponse.getFileData());
+                .body(fileReportResponse.fileData());
     }
 }

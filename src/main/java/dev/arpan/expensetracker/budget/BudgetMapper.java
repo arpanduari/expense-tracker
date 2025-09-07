@@ -10,22 +10,20 @@ import dev.arpan.expensetracker.budget.dto.BudgetResponse;
 public final class BudgetMapper {
     private BudgetMapper() {
     }
+
     public static BudgetResponse toBudgetResponse(Budget budget) {
-        return BudgetResponse.builder()
-                .id(budget.getId())
-                .amount(budget.getAmount())
-                .month(budget.getMonth())
-                .isDefault(budget.getMonth() == null)
-                .build();
+        return new BudgetResponse(budget.getId(), budget.getAmount(), budget.getMonth(), budget.getMonth() == null);
     }
+
     public static Budget toBudget(BudgetRequest budgetRequest) {
         return Budget.builder()
-                .amount(budgetRequest.getAmount())
-                .month(budgetRequest.getMonth())
+                .amount(budgetRequest.amount())
+                .month(budgetRequest.month())
                 .build();
     }
-    public static void updateBudget(Budget budget, BudgetRequest budgetRequest){
-        budget.setAmount(budgetRequest.getAmount());
-        budget.setMonth(budgetRequest.getMonth());
+
+    public static void updateBudget(Budget budget, BudgetRequest budgetRequest) {
+        budget.setAmount(budgetRequest.amount());
+        budget.setMonth(budgetRequest.month());
     }
 }

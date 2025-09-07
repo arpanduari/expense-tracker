@@ -10,4 +10,6 @@ public interface ICategoryExpenseResponse {
     double getAmount();
 
     double getPercentage();
+
+    String getIcon();
 }

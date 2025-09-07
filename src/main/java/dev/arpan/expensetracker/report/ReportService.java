@@ -51,10 +51,7 @@ public class ReportService {
         List<CategoryExpenseResponse> result = response.stream()
                 .map(ReportMapper::toCategoryExpenseResponse)
                 .toList();
-        return CategoryWiseMonthlyExpenseResponse.builder()
-                .month(monthYear)
-                .categoryWiseExpenses(result)
-                .build();
+        return new CategoryWiseMonthlyExpenseResponse(monthYear, result);
     }
 
 
@@ -72,18 +69,11 @@ public class ReportService {
             } catch (ResourceNotFoundException e) {
                 monthlyReports.put(
                         monthName,
-                        MonthlyYearResponse.builder()
-                                .budget(0.0d)
-                                .totalExpenses(0.0d)
-                                .netSavings(0.0d)
-                                .build()
+                        new MonthlyYearResponse(0.0d, 0.0d, 0.0d)
                 );
             }
         }
-        return YearlyReportResponse.builder()
-                .monthlyReports(monthlyReports)
-                .year(year)
-                .build();
+        return new YearlyReportResponse(year, monthlyReports);
     }
 
 
@@ -95,7 +85,7 @@ public class ReportService {
         LocalDate startDate = month.withDayOfMonth(1);
         LocalDate endDate = month.withDayOfMonth(month.lengthOfMonth());
 
-        List<CategoryWiseTopExpense> categoryWiseTopExpenses = reportRepository
+        List<CategoryWiseTopExpenseResponse> categoryWiseTopExpenses = reportRepository
                 .findCategoryWiseTopExpense(userId, limit, startDate, endDate)
                 .stream()
                 .map(ReportMapper::toCategoryWiseTopExpense)

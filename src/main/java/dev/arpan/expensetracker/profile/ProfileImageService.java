@@ -1,14 +1,14 @@
 package dev.arpan.expensetracker.profile;
 
 import com.github.atomfrede.jadenticon.Jadenticon;
-import dev.arpan.expensetracker.cloud.service.CloudinaryService;
 import dev.arpan.expensetracker.cloud.dto.CloudinaryUploadResponse;
+import dev.arpan.expensetracker.cloud.service.CloudinaryService;
 import dev.arpan.expensetracker.exception.ResourceNotFoundException;
 import dev.arpan.expensetracker.profile.dto.ProfilePictureDeleteResponse;
 import dev.arpan.expensetracker.profile.dto.ProfilePictureUploadResponse;
+import dev.arpan.expensetracker.profile.util.InMemoryMultipartFile;
 import dev.arpan.expensetracker.user.User;
 import dev.arpan.expensetracker.user.UserRepository;
-import dev.arpan.expensetracker.profile.util.InMemoryMultipartFile;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.batik.transcoder.TranscoderException;
@@ -57,10 +57,7 @@ public class ProfileImageService {
 
         userRepository.save(user);
 
-        return ProfilePictureUploadResponse.builder()
-                .message("Profile picture uploaded successfully")
-                .profilePictureUrl(user.getSecureUrl())
-                .build();
+        return new ProfilePictureUploadResponse(user.getSecureUrl(), "Profile picture uploaded successfully");
     }
 
 
@@ -68,10 +65,7 @@ public class ProfileImageService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId + ""));
         cloudinaryService.deleteFile(user.getUsername());
-        return ProfilePictureDeleteResponse.builder()
-                .deleted(true)
-                .message("Profile picture deleted successfully")
-                .build();
+        return new ProfilePictureDeleteResponse(true, "Profile picture deleted successfully");
     }
 
 

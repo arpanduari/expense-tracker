@@ -78,7 +78,8 @@ public interface ReportRepository extends JpaRepository<Expense, Long> {
                         )
                         select c.name as category,
                         ce.total_amount as amount,
-                        round(ce.total_amount / b.amount * 100, 2) as percentage
+                        round(ce.total_amount / b.amount * 100, 2) as percentage,
+                        c.icon as icon
                         from category_expense ce
                         join category c on c.id = ce.category_id and c.user_id = :userId
                         join budget_cte b on true
@@ -99,7 +100,8 @@ public interface ReportRepository extends JpaRepository<Expense, Long> {
                       LIMIT 1)
                     SELECT c.name AS category,
                           sum(e.amount) AS amount,
-                          round(sum(e.amount) / bc.budget * 100, 2) AS percentage
+                          round(sum(e.amount) / bc.budget * 100, 2) AS percentage,
+                          c.icon as icon
                     FROM budget_cte bc
                     JOIN expense e ON e.created_date BETWEEN :startDate AND :endDate
                     JOIN category c ON c.id = e.category_id

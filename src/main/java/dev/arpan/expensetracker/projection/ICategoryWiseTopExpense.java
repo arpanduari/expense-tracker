@@ -10,4 +10,6 @@ public interface ICategoryWiseTopExpense {
     double getAmount();
 
     double getPercentage();
+
+    String getIcon();
 }

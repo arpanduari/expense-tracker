@@ -1,11 +1,11 @@
 package dev.arpan.expensetracker.report;
 
 import dev.arpan.expensetracker.constants.file.FileNameConstants;
-import dev.arpan.expensetracker.report.dto.FileReportResponse;
-import dev.arpan.expensetracker.expense.Expense;
-import dev.arpan.expensetracker.user.User;
 import dev.arpan.expensetracker.exception.ResourceNotFoundException;
+import dev.arpan.expensetracker.expense.Expense;
 import dev.arpan.expensetracker.expense.ExpenseRepository;
+import dev.arpan.expensetracker.report.dto.FileReportResponse;
+import dev.arpan.expensetracker.user.User;
 import dev.arpan.expensetracker.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +30,7 @@ public class FileReportService {
     private final UserRepository userRepository;
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
-    
+
     public FileReportResponse generateMonthlyReport(Long userId, LocalDate month) {
         if (month == null) {
             month = LocalDate.now();
@@ -45,14 +45,10 @@ public class FileReportService {
         String fileName = String.format(FileNameConstants.REPORT_FILE_TEMPLATE, user.getUsername(),
                 startDate.format(dateTimeFormatter), endDate.format(dateTimeFormatter), "monthly",
                 FileNameConstants.REPORT_FILE_EXTENSION_XLSX);
-        return FileReportResponse.builder()
-                .fileData(report)
-                .fileName(fileName)
-                .build();
+        return new FileReportResponse(fileName, report);
     }
 
 
-    
     public byte[] generateExcelReport(User user, LocalDate month, List<Expense> expenses) {
         try (
                 Workbook workbook = new XSSFWorkbook();
@@ -101,7 +97,7 @@ public class FileReportService {
         }
     }
 
-    
+
     public byte[] generatePdfReport(LocalDate startDate, LocalDate endDate) {
         return new byte[0];
     }

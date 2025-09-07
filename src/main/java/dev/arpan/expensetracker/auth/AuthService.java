@@ -1,21 +1,21 @@
 package dev.arpan.expensetracker.auth;
 
 import dev.arpan.expensetracker.auth.dto.*;
+import dev.arpan.expensetracker.auth.util.ForgotPasswordUtil;
+import dev.arpan.expensetracker.auth.util.JWTUtil;
+import dev.arpan.expensetracker.auth.util.OtpUtil;
+import dev.arpan.expensetracker.common.mapper.UserMapper;
 import dev.arpan.expensetracker.constants.application.ApplicationConstants;
-import dev.arpan.expensetracker.user.User;
 import dev.arpan.expensetracker.exception.PasswordNotMatchingException;
 import dev.arpan.expensetracker.exception.PasswordPolicyViolationException;
 import dev.arpan.expensetracker.exception.PasswordResetTokenAlreadySentException;
 import dev.arpan.expensetracker.exception.ResourceNotFoundException;
-import dev.arpan.expensetracker.common.mapper.UserMapper;
 import dev.arpan.expensetracker.messaging.account.ChangePasswordMessageProducer;
-import dev.arpan.expensetracker.messaging.auth.ForgotPasswordMessageProducer;
 import dev.arpan.expensetracker.messaging.account.ResetSuccessMessageProducer;
-import dev.arpan.expensetracker.user.UserRepository;
+import dev.arpan.expensetracker.messaging.auth.ForgotPasswordMessageProducer;
 import dev.arpan.expensetracker.security.CustomUserDetails;
-import dev.arpan.expensetracker.auth.util.ForgotPasswordUtil;
-import dev.arpan.expensetracker.auth.util.JWTUtil;
-import dev.arpan.expensetracker.auth.util.OtpUtil;
+import dev.arpan.expensetracker.user.User;
+import dev.arpan.expensetracker.user.UserRepository;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,26 +51,24 @@ public class AuthService {
     @Value("${app.frontend.path}")
     private String frontendPath;
 
-    public RegisterResponse createUser(RegisterRequestDTO registerRequestDTO) {
-        User user = UserMapper.toUser(registerRequestDTO);
+    public RegisterResponse createUser(RegisterRequest registerRequest) {
+        User user = UserMapper.toUser(registerRequest);
 
-        isValidPassword(user.getUsername(), user.getEmail(), registerRequestDTO.getPassword());
+        isValidPassword(user.getUsername(), user.getEmail(), registerRequest.password());
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = userRepository.save(user);
         OtpVerification otpVerification = OtpUtil.createOtpVerification(savedUser.getEmail());
         otpVerificationRepository.save(otpVerification);
-        otpService.sendOtp(registerRequestDTO.getEmail(), otpVerification.getOtp(), savedUser.getUsername());
-        return RegisterResponse.builder()
-                .message("User registered successfully. Please check your email for verification.")
-                .verificationToken(otpVerification.getToken())
-                .build();
+        otpService.sendOtp(registerRequest.email(), otpVerification.getOtp(), savedUser.getUsername());
+        return new RegisterResponse("User registered successfully. Please check your email for verification.",
+                otpVerification.getToken());
     }
 
 
-    public RefreshResponseDTO refreshToken(RefreshRequest refreshRequest) {
+    public RefreshResponse refreshToken(RefreshRequest refreshRequest) {
         try {
-            Claims claims = jwtUtil.parseToken(refreshRequest.getRefreshToken());
+            Claims claims = jwtUtil.parseToken(refreshRequest.refreshToken());
             if (jwtUtil.isTokenExpired(claims.getExpiration())) {
                 return null;
             }
@@ -78,34 +76,27 @@ public class AuthService {
             Long userId = claims.get(ApplicationConstants.USER_ID, Long.class);
             String newAccessToken = jwtUtil.generateAccessToken(username, userId);
             String newRefreshToken = jwtUtil.generateRefreshToken(username, userId);
-            return RefreshResponseDTO.builder()
-                    .accessToken(newAccessToken)
-                    .refreshToken(newRefreshToken)
-                    .build();
+            return new RefreshResponse(newAccessToken, newRefreshToken);
         } catch (Exception ex) {
             return null;
         }
     }
 
-    public LoginResponseDTO login(LoginRequestDTO loginRequest) {
+    public LoginResponse login(LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUserIdentifier(),
-                        loginRequest.getPassword())
+                new UsernamePasswordAuthenticationToken(loginRequest.userIdentifier(),
+                        loginRequest.password())
         );
         Long userId = ((CustomUserDetails) authentication.getPrincipal()).getUser().getId();
         String accessToken = jwtUtil.generateAccessToken(authentication.getName(), userId);
         String refreshToken = jwtUtil.generateRefreshToken(authentication.getName(), userId);
-        return LoginResponseDTO.builder()
-                .token(accessToken)
-                .refreshToken(refreshToken)
-                .username(authentication.getName())
-                .build();
+        return new LoginResponse(accessToken, refreshToken, authentication.getName());
     }
 
     public ForgotPasswordResponse forgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
-        User user = userRepository.findByEmail(forgotPasswordRequest.getEmail())
+        User user = userRepository.findByEmail(forgotPasswordRequest.email())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username or email",
-                        forgotPasswordRequest.getEmail()));
+                        forgotPasswordRequest.email()));
 
         passwordResetTokenRepository.findByUserIdAndExpiryTimeAfter(user.getId(), LocalDateTime.now())
                 .ifPresent(token -> {
@@ -132,56 +123,49 @@ public class AuthService {
 
         forgotPasswordMessageProducer.sendForgotPasswordMessage(user.getEmail(), link, user.getUsername());
 
-        return ForgotPasswordResponse.builder()
-                .message("Password reset link sent to your email")
-                .build();
+        return new ForgotPasswordResponse("Password reset link sent to your email");
     }
 
     public ResetPasswordResponse resetPassword(ResetPasswordRequest resetPasswordRequest) {
-        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findById(resetPasswordRequest.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Password reset token", "id", resetPasswordRequest.getId() + ""));
-        if (!passwordEncoder.matches(resetPasswordRequest.getToken(), passwordResetToken.getTokenHash())) {
-            throw new ResourceNotFoundException("Password reset token", "id", resetPasswordRequest.getId() + "");
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findById(resetPasswordRequest.id())
+                .orElseThrow(() -> new ResourceNotFoundException("Password reset token", "id", resetPasswordRequest.id() + ""));
+        if (!passwordEncoder.matches(resetPasswordRequest.token(), passwordResetToken.getTokenHash())) {
+            throw new ResourceNotFoundException("Password reset token", "id", resetPasswordRequest.id() + "");
         }
         User user = userRepository.findById(passwordResetToken.getUser().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", passwordResetToken.getUser().getId() + ""));
-        isValidPassword(user.getUsername(), user.getEmail(), resetPasswordRequest.getNewPassword());
-        user.setPassword(passwordEncoder.encode(resetPasswordRequest.getNewPassword()));
+        isValidPassword(user.getUsername(), user.getEmail(), resetPasswordRequest.newPassword());
+        user.setPassword(passwordEncoder.encode(resetPasswordRequest.newPassword()));
         userRepository.save(user);
 
         String loginPath = frontendPath + "/login";
         resetSuccessMessageProducer.sendResetSuccessMessage(user.getEmail(), loginPath, user.getUsername());
 
         passwordResetTokenRepository.delete(passwordResetToken);
-        return ResetPasswordResponse.builder()
-                .message("Password reset successful")
-                .build();
+        return new ResetPasswordResponse("Password reset successful");
     }
 
     public ChangePasswordResponse changePassword(Long userId, ChangePasswordRequest changePasswordRequest) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId + ""));
 
-        isValidPassword(user.getUsername(), user.getEmail(), changePasswordRequest.getNewPassword());
+        isValidPassword(user.getUsername(), user.getEmail(), changePasswordRequest.newPassword());
 
-        if (!passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(changePasswordRequest.oldPassword(), user.getPassword())) {
             throw new PasswordNotMatchingException("Old password does not match");
         }
 
-        if (passwordEncoder.matches(changePasswordRequest.getNewPassword(), user.getPassword())) {
+        if (passwordEncoder.matches(changePasswordRequest.oldPassword(), user.getPassword())) {
             throw new PasswordNotMatchingException("New password cannot be same as old password");
         }
 
-        user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
+        user.setPassword(passwordEncoder.encode(changePasswordRequest.newPassword()));
         userRepository.save(user);
 
         String loginPath = frontendPath + "/login";
         changePasswordMessageProducer.sendChangePasswordMessage(user.getEmail(), loginPath);
 
-        return ChangePasswordResponse.builder()
-                .isPasswordChanged(true)
-                .message("Password changed successfully")
-                .build();
+        return new ChangePasswordResponse(true, "Password changed successfully");
     }
 
     public void isValidPassword(String username, String email, String newPassword) {

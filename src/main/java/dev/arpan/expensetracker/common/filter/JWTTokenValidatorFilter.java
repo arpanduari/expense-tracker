@@ -1,10 +1,10 @@
 package dev.arpan.expensetracker.common.filter;
 
+import dev.arpan.expensetracker.auth.util.JWTUtil;
 import dev.arpan.expensetracker.constants.application.ApplicationConstants;
 import dev.arpan.expensetracker.constants.security.JWTConstants;
-import dev.arpan.expensetracker.user.User;
 import dev.arpan.expensetracker.security.CustomUserDetails;
-import dev.arpan.expensetracker.auth.util.JWTUtil;
+import dev.arpan.expensetracker.user.User;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

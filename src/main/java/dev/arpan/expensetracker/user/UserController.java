@@ -1,6 +1,6 @@
 package dev.arpan.expensetracker.user;
 
-import dev.arpan.expensetracker.user.dto.UserDto;
+import dev.arpan.expensetracker.user.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +20,8 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<UserDto> getUserDetailsAfterLogin(Authentication authentication) {
-        UserDto userDto = userService.getUserByUsername(authentication.getName());
-        return ResponseEntity.status(HttpStatus.OK).body(userDto);
+    public ResponseEntity<UserResponse> getUserDetailsAfterLogin(Authentication authentication) {
+        UserResponse userResponse = userService.getUserByUsername(authentication.getName());
+        return ResponseEntity.status(HttpStatus.OK).body(userResponse);
     }
 }

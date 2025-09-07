@@ -12,16 +12,12 @@ public final class CategoryMapper {
     }
 
     public static CategoryResponse toCategoryResponse(Category category) {
-        return CategoryResponse.builder()
-                .id(category.getId())
-                .name(category.getName())
-                .icon(category.getIcon())
-                .build();
+        return new CategoryResponse(category.getId(), category.getName(), category.getIcon());
     }
 
     public static Category toCategory(CategoryRequest categoryRequest) {
         return Category.builder()
-                .name(categoryRequest.getName().toUpperCase())
+                .name(categoryRequest.name().toUpperCase())
                 .build();
     }
 }

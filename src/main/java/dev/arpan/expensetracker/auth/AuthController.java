@@ -50,9 +50,9 @@ public class AuthController {
     public ResponseEntity<RegisterResponse> register(
             @RequestBody
             @Valid
-            RegisterRequestDTO registerRequestDTO
+            RegisterRequest registerRequest
     ) {
-        RegisterResponse response = authService.createUser(registerRequestDTO);
+        RegisterResponse response = authService.createUser(registerRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -65,19 +65,19 @@ public class AuthController {
             responses = {
                     @ApiResponse(
                             responseCode = "200", description = "Token refreshed successfully",
-                            content = @Content(schema = @Schema(implementation = RefreshResponseDTO.class))
+                            content = @Content(schema = @Schema(implementation = RefreshResponse.class))
                     ),
                     @ApiResponse(responseCode = "400", description = "Invalid request payload"),
                     @ApiResponse(responseCode = "401", description = "Invalid or expired refresh token")
             }
     )
-    public ResponseEntity<RefreshResponseDTO> refreshToken(@RequestBody @Valid RefreshRequest refreshRequest) {
-        RefreshResponseDTO refreshResponseDTO = authService.refreshToken(refreshRequest);
-        if (refreshResponseDTO == null) {
+    public ResponseEntity<RefreshResponse> refreshToken(@RequestBody @Valid RefreshRequest refreshRequest) {
+        RefreshResponse refreshResponse = authService.refreshToken(refreshRequest);
+        if (refreshResponse == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new RefreshResponseDTO(null, null));
+                    .body(new RefreshResponse(null, null));
         }
-        return ResponseEntity.status(HttpStatus.OK).body(refreshResponseDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(refreshResponse);
     }
 
     @PostMapping("/login")
@@ -88,15 +88,15 @@ public class AuthController {
             responses = {
                     @ApiResponse(
                             responseCode = "200", description = "User logged in successfully",
-                            content = @Content(schema = @Schema(implementation = LoginResponseDTO.class))
+                            content = @Content(schema = @Schema(implementation = LoginResponse.class))
                     ),
                     @ApiResponse(responseCode = "400", description = "Invalid request payload"),
                     @ApiResponse(responseCode = "401", description = "Invalid username or password")
             }
     )
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid LoginRequestDTO loginRequestDTO) {
-        LoginResponseDTO loginResponseDTO = authService.login(loginRequestDTO);
-        return ResponseEntity.status(HttpStatus.OK).body(loginResponseDTO);
+    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest loginRequest) {
+        LoginResponse loginResponse = authService.login(loginRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(loginResponse);
     }
 
     @PostMapping("/verify")
@@ -116,7 +116,7 @@ public class AuthController {
             }
     )
     public ResponseEntity<VerifyResponse> verifyOtp(@RequestBody @Valid OtpVerifyRequest otpVerifyRequest) {
-        VerifyResponse verifyResponse = otpService.verifyOtp(otpVerifyRequest.getToken(), otpVerifyRequest.getOtp());
+        VerifyResponse verifyResponse = otpService.verifyOtp(otpVerifyRequest.token(), otpVerifyRequest.otp());
         return ResponseEntity.status(verifyResponse.status()).body(verifyResponse);
     }
 

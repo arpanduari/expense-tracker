@@ -1,7 +1,7 @@
 package dev.arpan.expensetracker.user.util;
 
-import dev.arpan.expensetracker.user.User;
 import dev.arpan.expensetracker.security.CustomUserDetails;
+import dev.arpan.expensetracker.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;

@@ -18,5 +18,5 @@ import java.util.List;
 public class TopExpenseResponse {
     private String month;
     private Integer year;
-    private List<CategoryWiseTopExpense> topExpenses;
+    private List<CategoryWiseTopExpenseResponse> topExpenses;
 }

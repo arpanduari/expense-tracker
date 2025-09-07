@@ -1,8 +1,8 @@
 package dev.arpan.expensetracker.config.security;
 
+import dev.arpan.expensetracker.security.CustomUserDetails;
 import dev.arpan.expensetracker.user.User;
 import dev.arpan.expensetracker.user.UserRepository;
-import dev.arpan.expensetracker.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.UserDetails;

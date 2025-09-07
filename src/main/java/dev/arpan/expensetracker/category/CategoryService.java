@@ -2,9 +2,9 @@ package dev.arpan.expensetracker.category;
 
 import dev.arpan.expensetracker.category.dto.CategoryRequest;
 import dev.arpan.expensetracker.category.dto.CategoryResponse;
-import dev.arpan.expensetracker.user.User;
 import dev.arpan.expensetracker.exception.AccessDeniedException;
 import dev.arpan.expensetracker.exception.ResourceNotFoundException;
+import dev.arpan.expensetracker.user.User;
 import dev.arpan.expensetracker.user.util.UserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,12 +26,7 @@ public class CategoryService {
     public Page<CategoryResponse> getCategories(Long userId, int page, int size) {
         Pageable pageable = Pageable.ofSize(size).withPage(page);
         Page<Category> categories = categoryRepository.findByUserId(userId, pageable);
-        return categories.map(category -> CategoryResponse.builder()
-                .id(category.getId())
-                .name(category.getName())
-                .icon(category.getIcon())
-                .build()
-        );
+        return categories.map(CategoryMapper::toCategoryResponse);
     }
 
 
@@ -52,8 +47,8 @@ public class CategoryService {
         User user = userUtil.createUserWithId(userId);
         Category category = getCategory(id);
         checkCategoryByUser(user, category);
-        category.setName(categoryRequest.getName());
-        category.setIcon(categoryRequest.getIcon());
+        category.setName(categoryRequest.name());
+        category.setIcon(categoryRequest.icon());
         Category savedCategory = categoryRepository.save(category);
         return CategoryMapper.toCategoryResponse(savedCategory);
     }
