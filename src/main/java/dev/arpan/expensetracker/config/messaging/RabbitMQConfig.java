@@ -33,7 +33,6 @@ public class RabbitMQConfig {
     @Value("${app.queue.profile-event}")
     private String profileEventQueue;
 
-
     @Bean
     public Queue otpQueue() {
         return new Queue(otpQueue, true, false, false);

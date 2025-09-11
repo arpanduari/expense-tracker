@@ -1,3 +1,6 @@
+@import java.util.Map
+@param Map<String, String> data
+
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
       xmlns:o="urn:schemas-microsoft-com:office:office">
@@ -262,7 +265,7 @@
                 <!-- Header Section with Logo -->
                 <tr>
                     <td class="header-section">
-                        <img src="${APP_LOGO}" alt="ExpenseWise Logo" class="logo-img">
+                        <img src="${data.get("appLogo")}" alt="ExpenseWise Logo" class="logo-img">
 
                         <!-- Success Icon -->
                         <img src="https://cdn-icons-png.flaticon.com/512/14090/14090371.png" alt="Success"
@@ -292,7 +295,7 @@
                         <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="button-table">
                             <tr>
                                 <td class="button-cell">
-                                    <a href="${LOGIN_URL}" class="button-link">Continue to Dashboard</a>
+                                    <a href="${data.get("loginUrl"}" class="button-link">Continue to Dashboard</a>
                                 </td>
                             </tr>
                         </table>
@@ -304,7 +307,7 @@
                     <td class="footer-section">
                         <p class="footer-text support-text">If you didn't make this change or have concerns about your
                             account security, please contact our support team.</p>
-                        <p class="footer-text">©${YEAR} <span class="company-highlight">ExpenseWise</span>. All rights
+                        <p class="footer-text">©${data.get("year")} <span class="company-highlight">ExpenseWise</span>. All rights
                             reserved.</p>
                     </td>
                 </tr>

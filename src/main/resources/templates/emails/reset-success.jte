@@ -1,3 +1,6 @@
+@import java.util.Map
+@param Map<String, String> data
+
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
       xmlns:o="urn:schemas-microsoft-com:office:office">
@@ -261,7 +264,7 @@
                 <!-- Header Section with Logo -->
                 <tr>
                     <td class="header-section">
-                        <img src="${APP_LOGO}" alt="ExpenseWise Logo" class="logo-img">
+                        <img src="${data.get("appLogo")}" alt="ExpenseWise Logo" class="logo-img">
 
                         <!-- Success Icon -->
                         <img src="https://cdn-icons-png.flaticon.com/512/14090/14090371.png" alt="Success"
@@ -283,7 +286,7 @@
                         </div>
 
                         <!-- Welcome Text -->
-                        <p class="welcome-heading">Welcome back! ${USER_NAME}</p>
+                        <p class="welcome-heading">Welcome back! ${data.get("username")}</p>
                         <p class="description-text">Your account is now secure with your new password. You can continue
                             managing your expenses and budgets.</p>
 
@@ -291,7 +294,7 @@
                         <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="button-table">
                             <tr>
                                 <td class="button-cell">
-                                    <a href="${LOGIN_URL}" class="button-link">Login to Your Account</a>
+                                    <a href="${data.get("loginUrl")}" class="button-link">Login to Your Account</a>
                                 </td>
                             </tr>
                         </table>
@@ -303,7 +306,8 @@
                     <td class="footer-section">
                         <p class="footer-text support-text">If you experience any issues logging in, please contact our
                             support team.</p>
-                        <p class="footer-text">©${YEAR} <span class="company-highlight">ExpenseWise</span>. All rights
+                        <p class="footer-text">©${data.get("year")} <span class="company-highlight">ExpenseWise</span>.
+                            All rights
                             reserved.</p>
                     </td>
                 </tr>

@@ -23,20 +23,6 @@ public class EmailTemplateService {
         this.templateEngine = templateEngine;
     }
 
-    /*
-    public String getEmailContent(String fileName, Map<String, String> data) throws IOException {
-        Path templatePath = new ClassPathResource("templates/" + fileName)
-                .getFile()
-                .toPath();
-        String htmlContent = Files.readString(templatePath);
-        for (Map.Entry<String, String> entry : data.entrySet()) {
-            htmlContent = htmlContent.replace("${" + entry.getKey() + "}", entry.getValue());
-        }
-        htmlContent = htmlContent.replace("${APP_LOGO}", logoUrl);
-        htmlContent = htmlContent.replace("${YEAR}", LocalDate.now().getYear() + "");
-        return htmlContent;
-    }
-    */
     public String getEmailContent(String fileName, Map<String, String> data) {
         StringOutput output = new StringOutput();
         Map<String, String> defaultData = new HashMap<>();

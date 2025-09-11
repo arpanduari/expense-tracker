@@ -1,3 +1,5 @@
+@import java.util.Map
+@param Map<String, String> data
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
       xmlns:o="urn:schemas-microsoft-com:office:office">
@@ -334,7 +336,7 @@
                 <!-- Header Section with Logo -->
                 <tr>
                     <td class="header-section">
-                        <img src="${APP_LOGO}" alt="ExpenseWise Logo" class="logo-img">
+                        <img src="${data.get("appLogo")}" alt="ExpenseWise Logo" class="logo-img">
 
                         <!-- Welcome Icon -->
                         <img src="https://cdn-icons-png.flaticon.com/512/14090/14090371.png" alt="Welcome"
@@ -355,12 +357,12 @@
                         <div class="welcome-box">
                             <h2 class="welcome-title">🎉 Your account has been created successfully!</h2>
                             <p class="welcome-text">Welcome to the <span
-                                    class="company-highlight">ExpenseWise</span> family. You're now ready to take
+                                        class="company-highlight">ExpenseWise</span> family. You're now ready to take
                                 control of your finances!</p>
                         </div>
 
                         <!-- Greeting -->
-                        <p class="greeting-text">Hello, ${USER_NAME},</p>
+                        <p class="greeting-text">Hello, ${data.get("username")},</p>
 
                         <!-- Description -->
                         <p class="description-text">
@@ -372,19 +374,19 @@
                         <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="button-table">
                             <tr>
                                 <td class="button-cell">
-                                    <a href="${LOGIN_URL}" class="button-link">Get Started Now</a>
+                                    <a href="${data.get("loginUrl")}" class="button-link">Get Started Now</a>
                                 </td>
                             </tr>
                         </table>
                     </td>
-                </tr>
+            </tr>
 
                 <!-- Footer Section -->
                 <tr>
                     <td class="footer-section">
                         <p class="footer-text support-text">Need help getting started? Check out our help center or
                             contact our support team.</p>
-                        <p class="footer-text">©${YEAR} <span class="company-highlight">ExpenseWise</span>. All
+                        <p class="footer-text">©${data.get("year")}<span class="company-highlight">ExpenseWise</span>. All
                             rights reserved.</p>
                     </td>
                 </tr>

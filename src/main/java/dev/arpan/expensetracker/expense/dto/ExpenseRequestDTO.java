@@ -4,6 +4,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 /**
  * @author arpan
  * @since 8/2/25
@@ -22,4 +25,7 @@ public class ExpenseRequestDTO {
     private Long categoryId;
     @Schema(description = "Expense description", example = "Food at D Bapi Biryani")
     private String description;
+
+    private LocalDate createdDate;
+    private LocalTime createdTime;
 }

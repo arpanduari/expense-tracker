@@ -6,5 +6,7 @@ package dev.arpan.expensetracker.report.dto;
  */
 public record FileReportResponse(
         String fileName,
-        byte[] fileData) {
+        byte[] fileData,
+        String mediaType
+) {
 }

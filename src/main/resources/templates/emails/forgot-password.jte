@@ -1,3 +1,5 @@
+@import java.util.Map
+@param Map<String, String> data
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
       xmlns:o="urn:schemas-microsoft-com:office:office">
@@ -251,7 +253,7 @@
                 <!-- Header Section with Logo -->
                 <tr>
                     <td class="header-section">
-                        <img src="${APP_LOGO}" alt="ExpenseWise Logo" class="logo-img">
+                        <img src="${data.get("appLogo")}" alt="ExpenseWise Logo" class="logo-img">
 
                         <!-- Main Title -->
                         <h1 class="main-title">Reset your password</h1>
@@ -262,7 +264,7 @@
                 <tr>
                     <td class="content-section">
                         <!-- Greeting -->
-                        <p class="greeting-text">Hey ${USER_NAME},</p>
+                        <p class="greeting-text">Hey ${data.get("username")},</p>
 
                         <!-- Description -->
                         <p class="description-text">
@@ -274,14 +276,14 @@
                         <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="button-table">
                             <tr>
                                 <td class="button-cell">
-                                    <a href="${RESET_LINK}" class="button-link">Reset Password</a>
+                                    <a href="${data.get("restLink")}" class="button-link">Reset Password</a>
                                 </td>
                             </tr>
                         </table>
 
                         <!-- Alternative link -->
                         <p class="alternative-text">If the link doesn't work, paste this link to your browser:</p>
-                        <a href="${RESET_LINK}" class="reset-link">${RESET_LINK}</a>
+                        <a href="${data.get("restLink")}" class="reset-link">${data.get("restLink")}</a>
 
                         <!-- Security notice -->
                         <p class="security-notice">

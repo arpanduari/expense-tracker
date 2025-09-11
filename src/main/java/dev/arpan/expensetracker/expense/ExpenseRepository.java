@@ -36,7 +36,8 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
                                                 AND (:startDate IS NULL OR e.createdDate >= :startDate)
                                                 AND (:endDate IS NULL OR e.createdDate <= :endDate)
                                                 AND (:categoryId IS NULL OR e.category.id = :categoryId)
-
+                                                order by e.createdDate
+                    
                     """
     )
     List<Expense> findByFilters(@Param("userId") Long userId,

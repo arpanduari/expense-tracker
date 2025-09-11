@@ -1,6 +1,5 @@
 package dev.arpan.expensetracker.report;
 
-import dev.arpan.expensetracker.constants.file.FileNameConstants;
 import dev.arpan.expensetracker.report.dto.*;
 import dev.arpan.expensetracker.user.util.UserUtil;
 import lombok.RequiredArgsConstructor;
@@ -79,13 +78,36 @@ public class ReportController {
         return ResponseEntity.ok(insightResponse);
     }
 
-    @GetMapping("/excel/monthly")
-    public ResponseEntity<byte[]> getExcelReport(@RequestParam(required = false) LocalDate month, Authentication authentication) {
+    @GetMapping("/monthly/export")
+    public ResponseEntity<byte[]> getMonthlyReport(@RequestParam(required = false) LocalDate month, @RequestParam ReportType type, Authentication authentication) {
         Long userId = userUtil.getUserId(authentication);
-        FileReportResponse fileReportResponse = fileReportService.generateMonthlyReport(userId, month);
+        FileReportResponse fileReportResponse = fileReportService.generateMonthlyReport(userId, month, type);
         return ResponseEntity.status(HttpStatus.OK)
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileReportResponse.fileName())
-                .contentType(MediaType.parseMediaType(FileNameConstants.EXCEL_MEDIA_TYPE))
+                .contentType(MediaType.parseMediaType(fileReportResponse.mediaType()))
                 .body(fileReportResponse.fileData());
     }
+
+    @GetMapping("/yearly/export")
+    public ResponseEntity<byte[]> getYearlyReport(@RequestParam(required = false) Integer year, @RequestParam ReportType type, Authentication authentication) {
+        Long userId = userUtil.getUserId(authentication);
+        FileReportResponse fileReportResponse = fileReportService.generateYearlyReport(userId, year, type);
+        return ResponseEntity.status(HttpStatus.OK)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileReportResponse.fileName())
+                .contentType(MediaType.parseMediaType(fileReportResponse.mediaType()))
+                .body(fileReportResponse.fileData());
+    }
+
+    @GetMapping("/custom/export")
+    public ResponseEntity<byte[]> getYearlyReport(@RequestParam LocalDate startDate,
+                                                  @RequestParam LocalDate endDate,
+                                                  @RequestParam ReportType type, Authentication authentication) {
+        Long userId = userUtil.getUserId(authentication);
+        FileReportResponse fileReportResponse = fileReportService.generateCustomReport(userId, startDate, endDate, type);
+        return ResponseEntity.status(HttpStatus.OK)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileReportResponse.fileName())
+                .contentType(MediaType.parseMediaType(fileReportResponse.mediaType()))
+                .body(fileReportResponse.fileData());
+    }
+
 }

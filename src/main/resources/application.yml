@@ -67,6 +67,6 @@ app:
     path: http://localhost:3001
 
   logo: https://i.imghippo.com/files/SuCD1097ccM.png
-
+  static-logo: expense-wise-logo.png
   cors:
     allowed-origins: "http://localhost:3000, http://localhost:3001, http://localhost:3002, http://localhost:3003, http://localhose:3004"
