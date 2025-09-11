@@ -28,11 +28,11 @@ public class ExpenseService {
     private final CategoryRepository categoryRepository;
     private final ExpenseRepository expenseRepository;
     private final UserUtil userUtil;
+    private final ExpenseMapper expenseMapper;
 
-    
     public ExpenseResponseDTO addExpense(Long userId, ExpenseRequestDTO expenseRequestDTO) {
         User user = userUtil.createUserWithId(userId);
-        Expense expense = ExpenseMapper.toExpense(expenseRequestDTO);
+        Expense expense = expenseMapper.toExpense(expenseRequestDTO);
         Category category = getCategory(expenseRequestDTO.getCategoryId());
         expense.setCategory(category);
         expense.setUser(user);
@@ -42,30 +42,30 @@ public class ExpenseService {
         if (savedExpense.getId() < 0L) {
             return null;
         }
-        return ExpenseMapper.toExpenseResponse(savedExpense);
+        return expenseMapper.toExpenseResponse(savedExpense);
     }
 
-    
+
     public ExpenseResponseDTO getExpenseById(Long userId, Long id) {
         User user = userUtil.createUserWithId(userId);
         Expense expense = getExpense(id);
         if (isUserUnAuthorized(user, expense)) {
             throw new AccessDeniedException("You are not authorized to view this expense");
         }
-        return ExpenseMapper.toExpenseResponse(expense);
+        return expenseMapper.toExpenseResponse(expense);
     }
 
-    
+
     public Page<ExpenseResponseDTO> getExpenses(Long userId, int page, int size, String sortBy, String direction,
                                                 LocalDate startDate, LocalDate endDate, Long categoryId) {
         User user = userUtil.createUserWithId(userId);
         Sort sort = "asc".equalsIgnoreCase(direction) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<Expense> expenses = expenseRepository.findExpenseByFilters(user.getId(), startDate, endDate, categoryId, pageable);
-        return expenses.map(ExpenseMapper::toExpenseResponse);
+        return expenses.map(expenseMapper::toExpenseResponse);
     }
 
-    
+
     public void deleteExpense(Long userId, Long id) {
         User user = userUtil.createUserWithId(userId);
         Expense expense = getExpense(id);
@@ -75,7 +75,7 @@ public class ExpenseService {
         expenseRepository.delete(expense);
     }
 
-    
+
     public ExpenseResponseDTO updateExpense(Long userId, Long id, ExpenseRequestDTO expenseRequestDTO) {
         User user = userUtil.createUserWithId(userId);
         Expense expense = getExpense(id);
@@ -91,7 +91,7 @@ public class ExpenseService {
             expense.setAmount(expenseRequestDTO.getAmount());
         }
         Expense updatedExpense = expenseRepository.save(expense);
-        return ExpenseMapper.toExpenseResponse(updatedExpense);
+        return expenseMapper.toExpenseResponse(updatedExpense);
     }
 
     public Category getCategory(Long id) {

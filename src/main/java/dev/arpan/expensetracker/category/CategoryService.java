@@ -21,25 +21,25 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final UserUtil userUtil;
     private final EmojiService emojiService;
-
+    private final CategoryMapper categoryMapper;
 
     public Page<CategoryResponse> getCategories(Long userId, int page, int size) {
         Pageable pageable = Pageable.ofSize(size).withPage(page);
         Page<Category> categories = categoryRepository.findByUserId(userId, pageable);
-        return categories.map(CategoryMapper::toCategoryResponse);
+        return categories.map(categoryMapper::toCategoryResponse);
     }
 
 
     public CategoryResponse createCategory(Long userId, CategoryRequest categoryRequest) {
         User user = userUtil.createUserWithId(userId);
-        Category newCategory = CategoryMapper.toCategory(categoryRequest);
+        Category newCategory = categoryMapper.toCategory(categoryRequest);
         newCategory.setUser(user);
         newCategory.setIcon(emojiService.getCategory(newCategory.getName()));
         Category savedCategory = categoryRepository.save(newCategory);
         if (savedCategory != null && savedCategory.getId() < 0L) {
             return null;
         }
-        return CategoryMapper.toCategoryResponse(savedCategory);
+        return categoryMapper.toCategoryResponse(savedCategory);
     }
 
 
@@ -50,7 +50,7 @@ public class CategoryService {
         category.setName(categoryRequest.name());
         category.setIcon(categoryRequest.icon());
         Category savedCategory = categoryRepository.save(category);
-        return CategoryMapper.toCategoryResponse(savedCategory);
+        return categoryMapper.toCategoryResponse(savedCategory);
     }
 
 

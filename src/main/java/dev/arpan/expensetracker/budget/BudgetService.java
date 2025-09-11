@@ -29,9 +29,9 @@ import java.util.stream.Collectors;
 public class BudgetService {
     private final BudgetRepository budgetRepository;
     private final UserUtil userUtil;
+    private final BudgetMapper budgetMapper;
 
     @Transactional
-
     public BudgetResponse setDefaultBudget(Long userId, BudgetRequest budgetRequest) {
         User user = userUtil.createUserWithId(userId);
         Budget defaultBudget = budgetRepository.findDefaultBudgetByUserId(userId)
@@ -58,7 +58,7 @@ public class BudgetService {
         defaultBudget.setMonth(null);
         defaultBudget.setUpdatedAt(LocalDate.now().withDayOfMonth(1));
         Budget updatedBudget = budgetRepository.save(defaultBudget);
-        return BudgetMapper.toBudgetResponse(updatedBudget);
+        return budgetMapper.toBudgetResponse(updatedBudget);
 
     }
 
@@ -87,7 +87,7 @@ public class BudgetService {
         if (month != null) {
             Budget budget = budgetRepository.findBudgetByUserIdAndMonth(userId, month)
                     .orElseThrow(() -> new ResourceNotFoundException("Budget", ApplicationConstants.USER_ID, userId + ""));
-            return BudgetMapper.toBudgetResponse(budget);
+            return budgetMapper.toBudgetResponse(budget);
         }
         return getDefaultBudget(userId);
     }
@@ -97,35 +97,35 @@ public class BudgetService {
         Budget budget = budgetRepository.findBudgetByUserIdAndMonth(userId, budgetRequest.month())
                 .orElseGet(
                         () -> {
-                            Budget newBudget = BudgetMapper.toBudget(budgetRequest);
+                            Budget newBudget = budgetMapper.toBudget(budgetRequest);
                             newBudget.setUser(userUtil.createUserWithId(userId));
                             return newBudget;
                         }
                 );
-        BudgetMapper.updateBudget(budget, budgetRequest);
+        budgetMapper.updateBudget(budget, budgetRequest);
         Budget savedBudget = budgetRepository.save(budget);
-        return BudgetMapper.toBudgetResponse(savedBudget);
+        return budgetMapper.toBudgetResponse(savedBudget);
     }
 
 
     public BudgetResponse getDefaultBudget(Long userId) {
         Budget budget = budgetRepository.findDefaultBudgetByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Default Budget", ApplicationConstants.USER_ID, userId + ""));
-        return BudgetMapper.toBudgetResponse(budget);
+        return budgetMapper.toBudgetResponse(budget);
     }
 
 
     public Page<BudgetResponse> getOverrideBudgets(Long userId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Budget> budgets = budgetRepository.findAllOverrideBudgets(userId, pageable);
-        return budgets.map(BudgetMapper::toBudgetResponse);
+        return budgets.map(budgetMapper::toBudgetResponse);
     }
 
 
     public Page<BudgetResponse> getAllHistoryBudgets(Long userId, int page, int size) {
         Pageable pageRequest = PageRequest.of(page, size);
         Page<Budget> budgetResponses = budgetRepository.findAllByUserId(userId, pageRequest);
-        return budgetResponses.map(BudgetMapper::toBudgetResponse);
+        return budgetResponses.map(budgetMapper::toBudgetResponse);
     }
 
 

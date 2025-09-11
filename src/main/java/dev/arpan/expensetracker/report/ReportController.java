@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author arpan
@@ -110,4 +112,13 @@ public class ReportController {
                 .body(fileReportResponse.fileData());
     }
 
+    @GetMapping("/daily-expenses")
+    public ResponseEntity<Map<LocalDate, List<DailyExpenseResponse>>> getDailyExpenseByDate(
+            @RequestParam LocalDate month,
+            Authentication authentication
+    ) {
+        Long userId = userUtil.getUserId(authentication);
+        Map<LocalDate, List<DailyExpenseResponse>> dailyExpenses = reportService.getExpensesGroupByDate(userId, month);
+        return ResponseEntity.ok(dailyExpenses);
+    }
 }

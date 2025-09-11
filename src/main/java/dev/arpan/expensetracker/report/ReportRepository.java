@@ -1,12 +1,10 @@
 package dev.arpan.expensetracker.report;
 
 import dev.arpan.expensetracker.expense.Expense;
-import dev.arpan.expensetracker.projection.ICategoryExpenseResponse;
-import dev.arpan.expensetracker.projection.ICategoryWiseTopExpense;
-import dev.arpan.expensetracker.projection.IInsightResponse;
-import dev.arpan.expensetracker.projection.IMonthlyReportResponse;
+import dev.arpan.expensetracker.projection.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -163,4 +161,19 @@ public interface ReportRepository extends JpaRepository<Expense, Long> {
             , nativeQuery = true
     )
     Optional<IInsightResponse> findInsight(Long userId, LocalDate startDate, LocalDate endDate);
+    @Query(
+            """
+                        select e.amount as amount, e.category.name as category,
+                        e.description as description, e.createdDate as createdDate,
+                        e.createdTime as createdTime
+                        from Expense e
+                        where e.user.id = :userId
+                        AND e.createdDate between :startDate AND :endDate
+                    """
+    )
+    List<IDailyExpense> findExpenseInRange(
+            @Param("userId") Long userId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
+    );
 }
