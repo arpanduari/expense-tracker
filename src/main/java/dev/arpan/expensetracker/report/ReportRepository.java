@@ -105,7 +105,7 @@ public interface ReportRepository extends JpaRepository<Expense, Long> {
                     JOIN category c ON c.id = e.category_id
                     WHERE c.user_id = :userId
                     GROUP BY c.name,
-                            bc.budget
+                            bc.budget, c.icon
                     ORDER BY amount DESC
                     LIMIT :limit
                     """, nativeQuery = true
