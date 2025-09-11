@@ -201,3 +201,4 @@ README.html
 .exercism
 .env
 *.env
+/jte-classes/
