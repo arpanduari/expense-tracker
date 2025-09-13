@@ -25,7 +25,8 @@ public class ExpenseRequestDTO {
     private Long categoryId;
     @Schema(description = "Expense description", example = "Food at D Bapi Biryani")
     private String description;
-
+    @Schema(description = "Expense created date", example = "2025-08-03")
     private LocalDate createdDate;
+    @Schema(description = "Expense created time", example = "12:00:00")
     private LocalTime createdTime;
 }

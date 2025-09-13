@@ -24,10 +24,7 @@ public class ReportService {
     private final ReportMapper reportMapper;
 
     public MonthlyReportResponse getMonthlyReport(Long userId, LocalDate month) {
-        if (month == null) {
-            month = LocalDate.now();
-        }
-
+        month = getBaseMonth(month);
         LocalDate startDate = month.withDayOfMonth(1);
         LocalDate endDate = month.withDayOfMonth(month.lengthOfMonth());
         String monthYear = getMonthYear(startDate);
@@ -42,9 +39,7 @@ public class ReportService {
 
 
     public CategoryWiseMonthlyExpenseResponse getCategoryWiseMonthlyExpense(Long userId, LocalDate month) {
-        if (month == null) {
-            month = LocalDate.now();
-        }
+        month = getBaseMonth(month);
         LocalDate startDate = month.withDayOfMonth(1);
         LocalDate endDate = month.withDayOfMonth(month.lengthOfMonth());
         String monthYear = getMonthYear(startDate);
@@ -79,10 +74,7 @@ public class ReportService {
 
 
     public TopExpenseResponse getTopExpense(Long userId, LocalDate month, int limit) {
-        if (month == null) {
-            month = LocalDate.now();
-        }
-
+        month = getBaseMonth(month);
         LocalDate startDate = month.withDayOfMonth(1);
         LocalDate endDate = month.withDayOfMonth(month.lengthOfMonth());
 
@@ -101,9 +93,7 @@ public class ReportService {
 
 
     public InsightResponse getInsight(Long userId, LocalDate month) {
-        if (month == null) {
-            month = LocalDate.now();
-        }
+        month = getBaseMonth(month);
         LocalDate startDate = month.withDayOfMonth(1);
         LocalDate endDate = month.withDayOfMonth(month.lengthOfMonth());
 

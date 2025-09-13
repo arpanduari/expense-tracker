@@ -8,6 +8,8 @@ import java.time.LocalTime;
  * @since 9/11/25
  */
 public interface IDailyExpense {
+    Long getId();
+
     Double getAmount();
 
     String getCategory();

@@ -48,7 +48,7 @@ public class ReportMapper {
     }
 
     public DailyExpenseResponse toDailyExpenseResponse(IDailyExpense dailyExpense) {
-        return new DailyExpenseResponse(dailyExpense.getAmount(), dailyExpense.getCategory(),
+        return new DailyExpenseResponse(dailyExpense.getId(), dailyExpense.getAmount(), dailyExpense.getCategory(),
                 dailyExpense.getDescription(), dailyExpense.getCreatedDate(), dailyExpense.getCreatedTime());
     }
 

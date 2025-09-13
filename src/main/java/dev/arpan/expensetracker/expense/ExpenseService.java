@@ -16,7 +16,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 /**
  * @author arpan
@@ -36,8 +35,6 @@ public class ExpenseService {
         Category category = getCategory(expenseRequestDTO.getCategoryId());
         expense.setCategory(category);
         expense.setUser(user);
-        expense.setCreatedDate(LocalDate.now());
-        expense.setCreatedTime(LocalTime.now());
         Expense savedExpense = expenseRepository.save(expense);
         if (savedExpense.getId() < 0L) {
             return null;
@@ -89,6 +86,12 @@ public class ExpenseService {
         }
         if (expenseRequestDTO.getAmount() != null) {
             expense.setAmount(expenseRequestDTO.getAmount());
+        }
+        if (expenseRequestDTO.getCreatedDate() != null) {
+            expense.setCreatedDate(expenseRequestDTO.getCreatedDate());
+        }
+        if (expenseRequestDTO.getCreatedTime() != null) {
+            expense.setCreatedTime(expenseRequestDTO.getCreatedTime());
         }
         Expense updatedExpense = expenseRepository.save(expense);
         return expenseMapper.toExpenseResponse(updatedExpense);

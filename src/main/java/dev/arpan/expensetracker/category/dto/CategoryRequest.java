@@ -10,5 +10,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public record CategoryRequest(
         @Schema(description = "Category name", example = "FOOD")
         String name,
+        @Schema(description = "Category icon", example = "\uD83C\uDF72")
         String icon) {
 }

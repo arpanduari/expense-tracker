@@ -7,6 +7,6 @@ import java.time.LocalTime;
  * @author arpan
  * @since 9/11/25
  */
-public record DailyExpenseResponse(Double amount, String category, String description, LocalDate createdDate,
+public record DailyExpenseResponse(Long id, Double amount, String category, String description, LocalDate createdDate,
                                    LocalTime createdAtTime) {
 }
