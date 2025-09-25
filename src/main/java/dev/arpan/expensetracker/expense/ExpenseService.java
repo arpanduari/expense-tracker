@@ -16,6 +16,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * @author arpan
@@ -80,18 +82,11 @@ public class ExpenseService {
         }
         Category category = getCategory(expenseRequestDTO.getCategoryId());
         expense.setCategory(category);
-        if (expenseRequestDTO.getDescription() != null) {
-            expense.setDescription(expenseRequestDTO.getDescription());
-        }
-        if (expenseRequestDTO.getAmount() != null) {
-            expense.setAmount(expenseRequestDTO.getAmount());
-        }
-        if (expenseRequestDTO.getCreatedDate() != null) {
-            expense.setCreatedDate(expenseRequestDTO.getCreatedDate());
-        }
-        if (expenseRequestDTO.getCreatedTime() != null) {
-            expense.setCreatedTime(expenseRequestDTO.getCreatedTime());
-        }
+        setIfNotNull(expense::setDescription, expenseRequestDTO.getDescription());
+        setIfNotNull(expense::setAmount, expenseRequestDTO.getAmount());
+        setIfNotNull(expense::setCreatedDate, expenseRequestDTO.getCreatedDate());
+        setIfNotNull(expense::setCreatedTime, expenseRequestDTO.getCreatedTime());
+        setIfNotNull(expense::setPaymentMethod, expenseRequestDTO.getPaymentMethod());
         Expense updatedExpense = expenseRepository.save(expense);
         return expenseMapper.toExpenseResponse(updatedExpense);
     }
@@ -108,5 +103,9 @@ public class ExpenseService {
 
     public boolean isUserUnAuthorized(User user, Expense expense) {
         return !expense.getUser().getId().equals(user.getId());
+    }
+
+    private <T> void setIfNotNull(Consumer<T> setter, T data) {
+        Optional.ofNullable(data).ifPresent(setter);
     }
 }

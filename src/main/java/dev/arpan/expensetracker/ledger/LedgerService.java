@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
@@ -113,15 +114,13 @@ public class LedgerService {
     }
 
     private <T> void setIfNotNull(Consumer<T> setter, T value) {
-        if (value != null) {
-            setter.accept(value);
-        }
+        Optional.ofNullable(value).ifPresent(setter);
     }
 
     private void setIfNotNullAndNotBlank(Consumer<String> setter, String value) {
-        if (value != null && !value.isBlank()) {
-            setter.accept(value);
-        }
+        Optional.ofNullable(value)
+                .filter(v -> !v.isBlank())
+                .ifPresent(setter);
     }
 
     private boolean notAuthorizedUser(Long ledgerUserId, Long userId) {

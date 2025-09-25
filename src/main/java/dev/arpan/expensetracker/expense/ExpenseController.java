@@ -33,7 +33,7 @@ import java.time.LocalDate;
 public class ExpenseController {
     private final ExpenseService expenseService;
     private final UserUtil userUtil;
-    
+
     @PostMapping
     @Operation(
             summary = "Create a new expense",
@@ -105,7 +105,7 @@ public class ExpenseController {
         return ResponseEntity.ok(expenseResponseDTO);
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     @Operation(
             summary = "Update an existing expense",
             description = "Updates an existing expense belonging to the authenticated user.",
