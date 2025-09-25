@@ -31,7 +31,7 @@ public class ExpenseMapper {
                 .amount(expense.getAmount())
                 .description(expense.getDescription())
                 .categoryName(expense.getCategory().getName())
-
+                .paymentMethod(expense.getPaymentMethod())
                 .createdDate(expense.getCreatedDate())
                 .createdTime(expense.getCreatedTime())
                 .build();
