@@ -19,6 +19,7 @@ public class ExpenseMapper {
         return Expense.builder()
                 .amount(expenseRequestDTO.getAmount())
                 .description(expenseRequestDTO.getDescription())
+                .paymentMethod(expenseRequestDTO.getPaymentMethod())
                 .createdDate(Optional.ofNullable(expenseRequestDTO.getCreatedDate()).orElseGet(LocalDate::now))
                 .createdTime(Optional.ofNullable(expenseRequestDTO.getCreatedTime()).orElseGet(LocalTime::now))
                 .build();
@@ -30,6 +31,7 @@ public class ExpenseMapper {
                 .amount(expense.getAmount())
                 .description(expense.getDescription())
                 .categoryName(expense.getCategory().getName())
+
                 .createdDate(expense.getCreatedDate())
                 .createdTime(expense.getCreatedTime())
                 .build();

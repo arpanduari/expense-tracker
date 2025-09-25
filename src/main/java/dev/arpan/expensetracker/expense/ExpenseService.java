@@ -55,10 +55,9 @@ public class ExpenseService {
 
     public Page<ExpenseResponseDTO> getExpenses(Long userId, int page, int size, String sortBy, String direction,
                                                 LocalDate startDate, LocalDate endDate, Long categoryId) {
-        User user = userUtil.createUserWithId(userId);
         Sort sort = "asc".equalsIgnoreCase(direction) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        Page<Expense> expenses = expenseRepository.findExpenseByFilters(user.getId(), startDate, endDate, categoryId, pageable);
+        Page<Expense> expenses = expenseRepository.findExpenseByFilters(userId, startDate, endDate, categoryId, pageable);
         return expenses.map(expenseMapper::toExpenseResponse);
     }
 

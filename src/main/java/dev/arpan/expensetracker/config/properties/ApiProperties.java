@@ -16,7 +16,8 @@ import org.springframework.context.annotation.Configuration;
 public class ApiProperties {
     private String base;
     private String version;
-    public String getFullPath(){
+
+    public String getFullPath() {
         return base + version;
     }
 }

@@ -22,13 +22,22 @@ public class Expense {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Category category;
+
     private double amount;
+
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod;
+
     @Column(updatable = false)
     private LocalDate createdDate;
+
     private LocalTime createdTime;
+
     private String description;
 }
