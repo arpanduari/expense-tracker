@@ -6,6 +6,7 @@ import dev.arpan.expensetracker.exception.AccessDeniedException;
 import dev.arpan.expensetracker.exception.ResourceNotFoundException;
 import dev.arpan.expensetracker.expense.dto.ExpenseRequestDTO;
 import dev.arpan.expensetracker.expense.dto.ExpenseResponseDTO;
+import dev.arpan.expensetracker.expense.dto.ExpenseUpdateRequest;
 import dev.arpan.expensetracker.user.User;
 import dev.arpan.expensetracker.user.util.UserUtil;
 import lombok.RequiredArgsConstructor;
@@ -71,20 +72,22 @@ public class ExpenseService {
     }
 
 
-    public ExpenseResponseDTO updateExpense(Long userId, Long id, ExpenseRequestDTO expenseRequestDTO) {
+    public ExpenseResponseDTO updateExpense(Long userId, Long id, ExpenseUpdateRequest expenseUpdateRequest) {
         User user = userUtil.createUserWithId(userId);
         Expense expense = getExpense(id);
         if (isUserUnAuthorized(user, expense)) {
             throw new AccessDeniedException("You are not authorized to update this expense");
         }
-        Category category = getCategory(expenseRequestDTO.getCategoryId());
-        expense.setCategory(category);
-        setIfNotNull(expense::setName, expenseRequestDTO.getExpenseName());
-        setIfNotNull(expense::setDescription, expenseRequestDTO.getDescription());
-        setIfNotNull(expense::setAmount, expenseRequestDTO.getAmount());
-        setIfNotNull(expense::setCreatedDate, expenseRequestDTO.getCreatedDate());
-        setIfNotNull(expense::setCreatedTime, expenseRequestDTO.getCreatedTime());
-        setIfNotNull(expense::setPaymentMethod, expenseRequestDTO.getPaymentMethod());
+        if (expenseUpdateRequest.getCategoryId() != null) {
+            Category category = getCategory(expenseUpdateRequest.getCategoryId());
+            expense.setCategory(category);
+        }
+        setIfNotNull(expense::setName, expenseUpdateRequest.getExpenseName());
+        setIfNotNull(expense::setDescription, expenseUpdateRequest.getDescription());
+        setIfNotNull(expense::setAmount, expenseUpdateRequest.getAmount());
+        setIfNotNull(expense::setCreatedDate, expenseUpdateRequest.getCreatedDate());
+        setIfNotNull(expense::setCreatedTime, expenseUpdateRequest.getCreatedTime());
+        setIfNotNull(expense::setPaymentMethod, expenseUpdateRequest.getPaymentMethod());
         Expense updatedExpense = expenseRepository.save(expense);
         return expenseMapper.toExpenseResponse(updatedExpense);
     }

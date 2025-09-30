@@ -3,6 +3,7 @@ package dev.arpan.expensetracker.expense;
 import dev.arpan.expensetracker.constants.application.PageConstants;
 import dev.arpan.expensetracker.expense.dto.ExpenseRequestDTO;
 import dev.arpan.expensetracker.expense.dto.ExpenseResponseDTO;
+import dev.arpan.expensetracker.expense.dto.ExpenseUpdateRequest;
 import dev.arpan.expensetracker.user.util.UserUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -143,10 +144,10 @@ public class ExpenseController {
             }
     )
     public ResponseEntity<ExpenseResponseDTO> updateExpense(@PathVariable @Positive Long id,
-                                                            @RequestBody @Valid ExpenseRequestDTO expenseRequestDTO,
+                                                            @RequestBody @Valid ExpenseUpdateRequest expenseRequest,
                                                             Authentication authentication) {
         Long userId = userUtil.getUserId(authentication);
-        ExpenseResponseDTO expenseResponseDTO = expenseService.updateExpense(userId, id, expenseRequestDTO);
+        ExpenseResponseDTO expenseResponseDTO = expenseService.updateExpense(userId, id, expenseRequest);
         return ResponseEntity.ok(expenseResponseDTO);
     }
 
