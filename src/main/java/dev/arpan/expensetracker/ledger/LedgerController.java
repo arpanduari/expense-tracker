@@ -2,6 +2,11 @@ package dev.arpan.expensetracker.ledger;
 
 import dev.arpan.expensetracker.ledger.dto.*;
 import dev.arpan.expensetracker.security.CustomUserDetails;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
@@ -18,6 +23,7 @@ import java.util.concurrent.TimeUnit;
  */
 @RestController
 @RequestMapping("${api.base}${api.version}/ledger")
+@Tag(name = "Ledger Management", description = "Operations related to Ledger")
 public class LedgerController {
     private final LedgerService ledgerService;
 
@@ -25,6 +31,22 @@ public class LedgerController {
         this.ledgerService = ledgerService;
     }
 
+    @Operation(
+            summary = "Create a new Ledger user",
+            description = "Creates a new Ledger user and return the created user",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201", description = "Ledger User created successfully",
+                            content = @Content(
+                                    schema = @Schema(
+                                            implementation = LedgerUserResponse.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(responseCode = "400", description = "Invalid request payload"),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized access"),
+            }
+    )
     @PostMapping("/contact")
     public ResponseEntity<LedgerUserResponse> createLedgerUser(@RequestBody LedgerUserRequest ledgerUserRequest,
                                                                @AuthenticationPrincipal CustomUserDetails userDetails) {
@@ -32,6 +54,20 @@ public class LedgerController {
         return ResponseEntity.ok(ledgerUserResponse);
     }
 
+    @Operation(
+            summary = "Update existing Ledger user",
+            description = "Updates a existing ledger user and return the updated user",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200", description = "Ledger user updated successfully",
+                            content = @Content(
+                                    schema = @Schema(
+                                            implementation = LedgerUserResponse.class
+                                    )
+                            )
+                    )
+            }
+    )
     @PatchMapping("/contact/{id:\\d+}")
     public ResponseEntity<LedgerUserResponse> updateLedgerUser(@PathVariable Long id,
                                                                @RequestBody LedgerUserRequest ledgerUserRequest,
@@ -42,13 +78,17 @@ public class LedgerController {
     }
 
     @DeleteMapping("/contact/{id:\\d+}")
-    public ResponseEntity<Void> deleteLedgerUser(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<Void> deleteLedgerUser(@PathVariable Long id,
+                                                 @AuthenticationPrincipal CustomUserDetails userDetails) {
         ledgerService.deleteLedgerUser(userDetails.getUser(), id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/entry")
-    public ResponseEntity<LedgerEntryResponse> createLedgerEntry(@RequestBody @Valid LedgerEntryRequest ledgerEntryRequest) {
+    public ResponseEntity<LedgerEntryResponse> createLedgerEntry(
+            @RequestBody
+            @Valid
+            LedgerEntryRequest ledgerEntryRequest) {
         LedgerEntryResponse ledgerEntryResponse = ledgerService.createLedgerEntry(ledgerEntryRequest);
         return ResponseEntity.ok(ledgerEntryResponse);
     }

@@ -2,6 +2,7 @@ package dev.arpan.expensetracker.expense.dto;
 
 import dev.arpan.expensetracker.expense.PaymentMethod;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
@@ -24,7 +25,12 @@ public class ExpenseRequestDTO {
     @Positive(message = "Amount must be positive")
     private Double amount;
 
+    @Schema(description = "Expense name", example = "Biryani")
+    @NotBlank(message = "Name cannot be blank")
+    private String expenseName;
+
     @Schema(description = "Expense category id", example = "1")
+    @NotNull(message = "Category cannot be null")
     private Long categoryId;
 
     @Schema(description = "Expense description", example = "Food at D Bapi Biryani")

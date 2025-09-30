@@ -98,13 +98,13 @@ public class ReportService {
         LocalDate endDate = month.withDayOfMonth(month.lengthOfMonth());
 
         Optional<IInsightResponse> insightResponse = reportRepository.findInsight(userId, startDate, endDate);
+
         InsightResponse response = insightResponse.map(reportMapper::toInsightResponse)
-                .orElse(
-                        InsightResponse.builder()
-                                .build()
-                );
+                .orElse(InsightResponse.builder().build());
+
         response.setMonth(getMonthName(startDate));
         response.setYear(getYear(startDate));
+
         return response;
     }
 

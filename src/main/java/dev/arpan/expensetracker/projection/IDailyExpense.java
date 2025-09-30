@@ -10,6 +10,8 @@ import java.time.LocalTime;
 public interface IDailyExpense {
     Long getId();
 
+    String getExpenseName();
+
     Double getAmount();
 
     String getCategory();

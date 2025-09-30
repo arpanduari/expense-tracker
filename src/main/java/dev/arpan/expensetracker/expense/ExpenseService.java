@@ -38,9 +38,6 @@ public class ExpenseService {
         expense.setCategory(category);
         expense.setUser(user);
         Expense savedExpense = expenseRepository.save(expense);
-        if (savedExpense.getId() < 0L) {
-            return null;
-        }
         return expenseMapper.toExpenseResponse(savedExpense);
     }
 
@@ -82,6 +79,7 @@ public class ExpenseService {
         }
         Category category = getCategory(expenseRequestDTO.getCategoryId());
         expense.setCategory(category);
+        setIfNotNull(expense::setName, expenseRequestDTO.getExpenseName());
         setIfNotNull(expense::setDescription, expenseRequestDTO.getDescription());
         setIfNotNull(expense::setAmount, expenseRequestDTO.getAmount());
         setIfNotNull(expense::setCreatedDate, expenseRequestDTO.getCreatedDate());

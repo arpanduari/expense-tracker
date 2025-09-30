@@ -17,6 +17,7 @@ public class ExpenseMapper {
 
     public Expense toExpense(ExpenseRequestDTO expenseRequestDTO) {
         return Expense.builder()
+                .name(expenseRequestDTO.getExpenseName())
                 .amount(expenseRequestDTO.getAmount())
                 .description(expenseRequestDTO.getDescription())
                 .paymentMethod(expenseRequestDTO.getPaymentMethod())
@@ -28,6 +29,7 @@ public class ExpenseMapper {
     public ExpenseResponseDTO toExpenseResponse(Expense expense) {
         return ExpenseResponseDTO.builder()
                 .id(expense.getId())
+                .expenseName(expense.getName())
                 .amount(expense.getAmount())
                 .description(expense.getDescription())
                 .categoryName(expense.getCategory().getName())

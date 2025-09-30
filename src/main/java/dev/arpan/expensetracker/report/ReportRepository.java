@@ -163,7 +163,7 @@ public interface ReportRepository extends JpaRepository<Expense, Long> {
     Optional<IInsightResponse> findInsight(Long userId, LocalDate startDate, LocalDate endDate);
     @Query(
             """
-                        select e.id as id, e.amount as amount, e.category.name as category,
+                        select e.id as id, e.name as expenseName, e.amount as amount, e.category.name as category,
                         e.description as description, e.createdDate as createdDate,
                         e.createdTime as createdTime
                         from Expense e

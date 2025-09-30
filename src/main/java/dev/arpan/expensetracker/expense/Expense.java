@@ -3,6 +3,7 @@ package dev.arpan.expensetracker.expense;
 import dev.arpan.expensetracker.category.Category;
 import dev.arpan.expensetracker.user.User;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -26,6 +27,9 @@ public class Expense {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
+    @NotNull
+    private String name;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Category category;
 
@@ -34,7 +38,6 @@ public class Expense {
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
 
-    @Column(updatable = false)
     private LocalDate createdDate;
 
     private LocalTime createdTime;

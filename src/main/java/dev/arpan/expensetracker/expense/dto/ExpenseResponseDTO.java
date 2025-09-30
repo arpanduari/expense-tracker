@@ -21,6 +21,9 @@ public class ExpenseResponseDTO {
     @Schema(description = "Expense id", example = "1")
     private Long id;
 
+    @Schema(description = "Expense name", example = "Biryani")
+    private String expenseName;
+
     @Schema(description = "Expense amount", example = "100.00")
     private Double amount;
 
