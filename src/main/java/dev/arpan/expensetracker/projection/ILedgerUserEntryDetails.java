@@ -12,6 +12,8 @@ public interface ILedgerUserEntryDetails {
 
     String getName();
 
+    String getEmail();
+
     BigDecimal getTotalAmount();
 
     LocalDateTime getLastUpdated();

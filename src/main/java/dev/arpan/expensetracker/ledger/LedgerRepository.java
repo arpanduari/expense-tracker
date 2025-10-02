@@ -14,6 +14,7 @@ public interface LedgerRepository extends JpaRepository<LedgerEntry, Long> {
             value = """ 
                     SELECT lu.id   AS id,
                            lu.name AS name,
+                           lu.email AS email,
                            COALESCE(SUM(
                                    IF(le.type = 'credit', le.amount, -le.amount)
                            )       , 0 )AS totalAmount,
