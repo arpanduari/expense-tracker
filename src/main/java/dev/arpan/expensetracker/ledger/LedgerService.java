@@ -6,10 +6,12 @@ import dev.arpan.expensetracker.ledger.dto.*;
 import dev.arpan.expensetracker.projection.ILedgerUserEntryDetails;
 import dev.arpan.expensetracker.user.User;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 /**
@@ -22,15 +24,21 @@ public class LedgerService {
     private final LedgerMapper ledgerMapper;
     private final LedgerEntryRepository ledgerEntryRepository;
     private final LedgerRepository ledgerRepository;
+    private final LedgerShareRepository ledgerShareRepository;
+
+    @Value("${app.frontend.path}")
+    private String frontendPath;
 
     public LedgerService(LedgerUserRepository ledgerUserRepository,
                          LedgerMapper ledgerMapper,
                          LedgerEntryRepository ledgerEntryRepository,
-                         LedgerRepository ledgerRepository) {
+                         LedgerRepository ledgerRepository,
+                         LedgerShareRepository ledgerShareRepository) {
         this.ledgerUserRepository = ledgerUserRepository;
         this.ledgerMapper = ledgerMapper;
         this.ledgerEntryRepository = ledgerEntryRepository;
         this.ledgerRepository = ledgerRepository;
+        this.ledgerShareRepository = ledgerShareRepository;
     }
 
     public LedgerUserResponse createLedgerUser(User user, LedgerUserRequest ledgerUserRequest) {
@@ -112,6 +120,35 @@ public class LedgerService {
         ledgerEntry = ledgerEntryRepository.save(ledgerEntry);
         return ledgerMapper.toLedgerEntryResponse(ledgerEntry);
     }
+
+    public LedgerShareResponse shareLedger(LedgerShareRequest ledgerShareRequest, User user) {
+        LedgerUser ledgerUser = ledgerUserRepository.findById(ledgerShareRequest.ledgerUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("Ledger User", "ID", ledgerShareRequest.ledgerUserId() + " "));
+
+        if (notAuthorizedUser(ledgerUser.getId(), user.getId())) {
+            throw new ForbiddenException("You are not authorized to share this.");
+        }
+
+        Optional<LedgerShare> ledgerShares = ledgerShareRepository.findBySharedByIdAndLedgerUserId(user.getId(), ledgerUser.getId());
+
+        if (ledgerShares.isPresent()) {
+            return new LedgerShareResponse(frontendPath + "/ledger/share/" + ledgerShares.get().getToken());
+        }
+        LedgerShare ledgerShare = LedgerShare.builder()
+                .sharedBy(user)
+                .ledgerUser(ledgerUser)
+                .token(UUID.randomUUID().toString())
+                .build();
+        ledgerShare = ledgerShareRepository.save(ledgerShare);
+        return new LedgerShareResponse(frontendPath + "/ledger/share/" + ledgerShare.getToken());
+    }
+
+    public List<LedgerEntryResponse> getSharedLedger(UUID token) {
+        LedgerShare ledgerShare = ledgerShareRepository.findByToken(token.toString())
+                .orElseThrow(() -> new ResourceNotFoundException("Shared Entries", "token", token.toString()));
+        return getAllLedgerEntries(ledgerShare.getSharedBy(), ledgerShare.getLedgerUser().getId());
+    }
+
 
     private <T> void setIfNotNull(Consumer<T> setter, T value) {
         Optional.ofNullable(value).ifPresent(setter);

@@ -44,6 +44,8 @@ public class ProjectSecurityConfig {
                 .permitAll()
                 .requestMatchers(apiProperties.getFullPath() + "/auth/change-password")
                 .authenticated()
+                .requestMatchers(apiProperties.getFullPath() + "/ledger/shared-entries")
+                .permitAll()
                 .requestMatchers("/api-docs/**", "/swagger-ui/**", "/swagger-ui.html/**")
                 .permitAll()
                 .anyRequest()

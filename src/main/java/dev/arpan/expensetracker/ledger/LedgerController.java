@@ -8,14 +8,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.http.CacheControl;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.UUID;
 
 /**
  * @author arpan
@@ -123,9 +121,7 @@ public class LedgerController {
     @GetMapping("/contacts")
     public ResponseEntity<List<LedgerUserEntryResponse>> getAllContacts(@AuthenticationPrincipal CustomUserDetails userDetails) {
         List<LedgerUserEntryResponse> contacts = ledgerService.getAllContacts(userDetails.getUser());
-        return ResponseEntity.status(HttpStatus.OK)
-                .cacheControl(CacheControl.maxAge(30L, TimeUnit.SECONDS))
-                .body(contacts);
+        return ResponseEntity.ok(contacts);
     }
 
     @GetMapping("/contacts/{ledgerUser:\\d+}/entries")
@@ -133,8 +129,20 @@ public class LedgerController {
             @PathVariable Long ledgerUser,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         List<LedgerEntryResponse> ledgerEntries = ledgerService.getAllLedgerEntries(userDetails.getUser(), ledgerUser);
-        return ResponseEntity.status(HttpStatus.OK)
-                .cacheControl(CacheControl.maxAge(30L, TimeUnit.SECONDS))
-                .body(ledgerEntries);
+        return ResponseEntity.ok(ledgerEntries);
+    }
+
+    @PostMapping("/share")
+    public ResponseEntity<LedgerShareResponse> shareLedger(
+            @RequestBody @Valid LedgerShareRequest ledgerShareRequest,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        LedgerShareResponse ledgerShareResponse = ledgerService.shareLedger(ledgerShareRequest, userDetails.getUser());
+        return ResponseEntity.ok(ledgerShareResponse);
+    }
+
+    @GetMapping("/shared-entries")
+    public ResponseEntity<List<LedgerEntryResponse>> getSharedLedgerEntries(@RequestParam UUID token) {
+        List<LedgerEntryResponse> ledgerEntries = ledgerService.getSharedLedger(token);
+        return ResponseEntity.ok(ledgerEntries);
     }
 }
