@@ -10,6 +10,8 @@ import dev.arpan.expensetracker.expense.dto.ExpenseUpdateRequest;
 import dev.arpan.expensetracker.user.User;
 import dev.arpan.expensetracker.user.util.UserUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -31,6 +34,7 @@ public class ExpenseService {
     private final ExpenseRepository expenseRepository;
     private final UserUtil userUtil;
     private final ExpenseMapper expenseMapper;
+    private final MessageSource messageSource;
 
     public ExpenseResponseDTO addExpense(Long userId, ExpenseRequestDTO expenseRequestDTO) {
         User user = userUtil.createUserWithId(userId);
@@ -47,7 +51,7 @@ public class ExpenseService {
         User user = userUtil.createUserWithId(userId);
         Expense expense = getExpense(id);
         if (isUserUnAuthorized(user, expense)) {
-            throw new AccessDeniedException("You are not authorized to view this expense");
+            throw new AccessDeniedException(messageSource.getMessage("expense.unauthorized.view", null, getLocale()));
         }
         return expenseMapper.toExpenseResponse(expense);
     }
@@ -66,7 +70,7 @@ public class ExpenseService {
         User user = userUtil.createUserWithId(userId);
         Expense expense = getExpense(id);
         if (isUserUnAuthorized(user, expense)) {
-            throw new AccessDeniedException("You are not authorized to delete this expense");
+            throw new AccessDeniedException(messageSource.getMessage("expense.unauthorized.delete", null, getLocale()));
         }
         expenseRepository.delete(expense);
     }
@@ -76,7 +80,7 @@ public class ExpenseService {
         User user = userUtil.createUserWithId(userId);
         Expense expense = getExpense(id);
         if (isUserUnAuthorized(user, expense)) {
-            throw new AccessDeniedException("You are not authorized to update this expense");
+            throw new AccessDeniedException(messageSource.getMessage("expense.unauthorized.update", null, getLocale()));
         }
         if (expenseUpdateRequest.getCategoryId() != null) {
             Category category = getCategory(expenseUpdateRequest.getCategoryId());
@@ -108,5 +112,9 @@ public class ExpenseService {
 
     private <T> void setIfNotNull(Consumer<T> setter, T data) {
         Optional.ofNullable(data).ifPresent(setter);
+    }
+
+    private Locale getLocale() {
+        return LocaleContextHolder.getLocale();
     }
 }

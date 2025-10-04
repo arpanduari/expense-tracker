@@ -19,6 +19,8 @@ import dev.arpan.expensetracker.user.UserRepository;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,6 +29,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Locale;
 import java.util.UUID;
 
 /**
@@ -47,6 +50,7 @@ public class AuthService {
     private final ForgotPasswordMessageProducer forgotPasswordMessageProducer;
     private final ResetSuccessMessageProducer resetSuccessMessageProducer;
     private final ChangePasswordMessageProducer changePasswordMessageProducer;
+    private final MessageSource messageSource;
 
     @Value("${app.frontend.path}")
     private String frontendPath;
@@ -61,7 +65,7 @@ public class AuthService {
         OtpVerification otpVerification = OtpUtil.createOtpVerification(savedUser.getEmail());
         otpVerificationRepository.save(otpVerification);
         otpService.sendOtp(registerRequest.email(), otpVerification.getOtp(), savedUser.getUsername());
-        return new RegisterResponse("User registered successfully. Please check your email for verification.",
+        return new RegisterResponse(messageSource.getMessage("user.register.success", null, getLocale()),
                 otpVerification.getToken());
     }
 
@@ -100,11 +104,12 @@ public class AuthService {
 
         passwordResetTokenRepository.findByUserIdAndExpiryTimeAfter(user.getId(), LocalDateTime.now())
                 .ifPresent(token -> {
-                    Duration duration = Duration.between(LocalDateTime.now(), token.getExpiryTime());
-                    throw new PasswordResetTokenAlreadySentException("Password reset request already sent." +
-                            " Retry After %d minutes."
-                                    .formatted(duration.toMinutes()));
-                });
+                            Duration duration = Duration.between(LocalDateTime.now(), token.getExpiryTime());
+                            throw new PasswordResetTokenAlreadySentException(
+                                    messageSource.getMessage("forgot.password.already.sent", new Object[]{duration.toMinutes()}, getLocale()
+                                    ));
+                        }
+                );
 
         String uuid = UUID.randomUUID().toString();
 
@@ -123,7 +128,7 @@ public class AuthService {
 
         forgotPasswordMessageProducer.sendForgotPasswordMessage(user.getEmail(), link, user.getUsername());
 
-        return new ForgotPasswordResponse("Password reset link sent to your email");
+        return new ForgotPasswordResponse(messageSource.getMessage("forgot.password.link.sent", null, getLocale()));
     }
 
     public ResetPasswordResponse resetPassword(ResetPasswordRequest resetPasswordRequest) {
@@ -142,7 +147,7 @@ public class AuthService {
         resetSuccessMessageProducer.sendResetSuccessMessage(user.getEmail(), loginPath, user.getUsername());
 
         passwordResetTokenRepository.delete(passwordResetToken);
-        return new ResetPasswordResponse("Password reset successful");
+        return new ResetPasswordResponse(messageSource.getMessage("reset.password.success", null, getLocale()));
     }
 
     public ChangePasswordResponse changePassword(Long userId, ChangePasswordRequest changePasswordRequest) {
@@ -152,11 +157,11 @@ public class AuthService {
         isValidPassword(user.getUsername(), user.getEmail(), changePasswordRequest.newPassword());
 
         if (!passwordEncoder.matches(changePasswordRequest.oldPassword(), user.getPassword())) {
-            throw new PasswordNotMatchingException("Old password does not match");
+            throw new PasswordNotMatchingException(messageSource.getMessage("change.password.old.mismatch", null, getLocale()));
         }
 
         if (passwordEncoder.matches(changePasswordRequest.oldPassword(), user.getPassword())) {
-            throw new PasswordNotMatchingException("New password cannot be same as old password");
+            throw new PasswordNotMatchingException(messageSource.getMessage("change.password.same.as.old", null, getLocale()));
         }
 
         user.setPassword(passwordEncoder.encode(changePasswordRequest.newPassword()));
@@ -165,30 +170,34 @@ public class AuthService {
         String loginPath = frontendPath + "/login";
         changePasswordMessageProducer.sendChangePasswordMessage(user.getEmail(), loginPath);
 
-        return new ChangePasswordResponse(true, "Password changed successfully");
+        return new ChangePasswordResponse(true, messageSource.getMessage("change.password.success", null, getLocale()));
     }
 
     public void isValidPassword(String username, String email, String newPassword) {
         if (newPassword.length() < 8) {
-            throw new PasswordPolicyViolationException("Password must be at least 8 characters long");
+            throw new PasswordPolicyViolationException(messageSource.getMessage("password.min.length", null, getLocale()));
         }
         if (!newPassword.matches(".*[A-Z].*")) {
-            throw new PasswordPolicyViolationException("Password must contain at least one uppercase letter");
+            throw new PasswordPolicyViolationException(messageSource.getMessage("password.uppercase", null, getLocale()));
         }
         if (!newPassword.matches(".*[a-z].*")) {
-            throw new PasswordPolicyViolationException("Password must contain at least one lowercase letter");
+            throw new PasswordPolicyViolationException(messageSource.getMessage("password.lowercase", null, getLocale()));
         }
         if (!newPassword.matches(".*\\d.*")) {
-            throw new PasswordPolicyViolationException("Password must contain at least one digit");
+            throw new PasswordPolicyViolationException(messageSource.getMessage("password.digit", null, getLocale()));
         }
         if (!newPassword.matches(".*[^a-zA-Z0-9].*")) {
-            throw new PasswordPolicyViolationException("Password must contain at least one special character");
+            throw new PasswordPolicyViolationException(messageSource.getMessage("password.special", null, getLocale()));
         }
         if (newPassword.toLowerCase().contains(username.toLowerCase())) {
-            throw new PasswordPolicyViolationException("Password cannot contain your username");
+            throw new PasswordPolicyViolationException(messageSource.getMessage("password.contains.username", null, getLocale()));
         }
         if (newPassword.toLowerCase().contains(email.toLowerCase())) {
-            throw new PasswordPolicyViolationException("Password cannot contain your email");
+            throw new PasswordPolicyViolationException(messageSource.getMessage("password.contains.email", null, getLocale()));
         }
+    }
+
+    private Locale getLocale() {
+        return LocaleContextHolder.getLocale();
     }
 }

@@ -9,6 +9,8 @@ import dev.arpan.expensetracker.user.User;
 import dev.arpan.expensetracker.user.util.UserUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -30,6 +33,7 @@ public class BudgetService {
     private final BudgetRepository budgetRepository;
     private final UserUtil userUtil;
     private final BudgetMapper budgetMapper;
+    private final MessageSource messageSource;
 
     @Transactional
     public BudgetResponse setDefaultBudget(Long userId, BudgetRequest budgetRequest) {
@@ -128,12 +132,12 @@ public class BudgetService {
         return budgetResponses.map(budgetMapper::toBudgetResponse);
     }
 
-
+    @Transactional
     public void deleteBudget(Long userId, LocalDate month) {
         Budget budget = budgetRepository.findBudgetByUserIdAndMonth(userId, month)
                 .orElseThrow(() -> new ResourceNotFoundException("Budget", "userId", userId + ""));
         if (isUserUnAuthorized(userId, budget)) {
-            throw new AccessDeniedException("You are not authorized to delete this budget");
+            throw new AccessDeniedException(messageSource.getMessage("budget.unauthorized.delete", null, getLocale()));
         }
         budgetRepository.delete(budget);
     }
@@ -141,5 +145,9 @@ public class BudgetService {
 
     private boolean isUserUnAuthorized(Long userId, Budget budget) {
         return !budget.getUser().getId().equals(userId);
+    }
+
+    private Locale getLocale() {
+        return LocaleContextHolder.getLocale();
     }
 }

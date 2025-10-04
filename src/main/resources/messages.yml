@@ -1,0 +1,80 @@
+user:
+  register:
+    success: User registered successfully. Please check your email for verification.
+login:
+  success: Login successful
+token:
+  expired: Refresh token has expired
+forgot:
+  password:
+    email:
+      notfound: User not found with email {0}
+    already:
+      sent: Password reset request already sent. Retry after {0} minutes.
+    link:
+      sent: Password reset link sent to your email
+reset:
+  password:
+    invalid:
+      token: Invalid password reset token
+    success: Password reset successful
+change:
+  password:
+    old:
+      mismatch: Old password does not match
+    same:
+      as:
+        old: New password cannot be same as old password
+    success: Password changed successfully
+password:
+  password:
+    email:
+      notfound: User not found with email {0}
+    already:
+      sent: Password reset request already sent. Retry after {0} minutes.
+    link:
+      sent: Password reset link sent to your email
+    invalid:
+      token: Invalid password reset token
+    success: Password changed successfully
+    old:
+      mismatch: Old password does not match
+    same:
+      as:
+        old: New password cannot be same as old password
+  min:
+    length: Password must be at least 8 characters long
+  uppercase: Password must contain at least one uppercase letter
+  lowercase: Password must contain at least one lowercase letter
+  digit: Password must contain at least one digit
+  special: Password must contain at least one special character
+  contains:
+    username: Password cannot contain your username
+    email: Password cannot contain your email
+
+budget:
+  notfound:
+    default: "Default budget not found for user ID {0}"
+    specific: "Budget not found for user ID {0}"
+  unauthorized:
+    delete: "You are not authorized to delete this budget"
+  created:
+    success: "Budget created successfully"
+  updated:
+    success: "Budget updated successfully"
+  deleted:
+    success: "Budget deleted successfully"
+  setDefault:
+    success: "Default budget set successfully"
+  override:
+    generated: "Override budgets generated for missing months"
+
+expense:
+  unauthorized:
+    view: "You are not authorized to view this expense"
+    delete: "You are not authorized to delete this expense"
+    update: "You are not authorized to update this expense"
+category:
+  notfound: "Category not found with id {0}"
+expenseEntity:
+  notfound: "Expense not found with id {0}"
