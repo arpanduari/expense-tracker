@@ -17,6 +17,9 @@ public record LedgerUserEntryResponse(
         @Schema(description = "Ledger user name", example = "John Doe")
         String name,
 
+        @Schema(description = "Profile image link if exists", example = "")
+        String avatarUrl,
+
         @Schema(description = "Ledger user email", example = "johondoe@example.com")
         String email,
 

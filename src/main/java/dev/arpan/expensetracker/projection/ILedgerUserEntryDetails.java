@@ -12,6 +12,8 @@ public interface ILedgerUserEntryDetails {
 
     String getName();
 
+    String getAvatarUrl();
+
     String getEmail();
 
     BigDecimal getTotalAmount();

@@ -44,6 +44,7 @@ public class LedgerMapper {
         return new LedgerUserEntryResponse(
                 userEntryDetails.getId(),
                 userEntryDetails.getName(),
+                userEntryDetails.getAvatarUrl(),
                 userEntryDetails.getEmail(),
                 userEntryDetails.getTotalAmount(),
                 userEntryDetails.getLastUpdated()
