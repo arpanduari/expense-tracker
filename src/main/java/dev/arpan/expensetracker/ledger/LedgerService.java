@@ -78,7 +78,7 @@ public class LedgerService {
     public void deleteLedgerEntry(User user, Long ledgerEntryId) {
         LedgerEntry ledgerEntry = ledgerEntryRepository.findById(ledgerEntryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Ledger Entry", "ID", ledgerEntryId + " "));
-        if (notAuthorizedLedgerByUser(ledgerEntry.getLedgerUser().getId(), user.getId())) {
+        if (notAuthorizedUser(ledgerEntry.getLedgerUser().getId(), user.getId())) {
             throw new ForbiddenException("You are not authorized to delete this.");
         }
         ledgerEntryRepository.deleteById(ledgerEntryId);
@@ -163,7 +163,7 @@ public class LedgerService {
     }
 
     private boolean notAuthorizedUser(Long ledgerUserId, Long userId) {
-        return !ledgerUserRepository.existsByIdAndCreatedBy_Id(ledgerUserId, userId);
+        return !ledgerUserRepository.existsByIdAndCreatedById(ledgerUserId, userId);
     }
 
     private boolean notAuthorizedLedgerByUser(Long ledgerUserId, Long userId) {

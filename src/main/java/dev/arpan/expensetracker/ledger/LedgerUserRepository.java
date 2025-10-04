@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface LedgerUserRepository extends JpaRepository<LedgerUser, Long> {
-    boolean existsByIdAndCreatedBy_Id(@Param("id") Long id, Long createdBy);
+    boolean existsByIdAndCreatedById(@Param("id") Long id, Long createdBy);
 }
