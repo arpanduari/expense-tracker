@@ -14,7 +14,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "ledger_shares", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "ledger_user_id"}))
+@Table(name = "ledger_shares", uniqueConstraints = @UniqueConstraint(columnNames = {"shared_by_user_id", "ledger_user_id"}))
 public class LedgerShare {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

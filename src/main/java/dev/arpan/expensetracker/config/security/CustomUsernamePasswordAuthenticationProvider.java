@@ -1,5 +1,7 @@
 package dev.arpan.expensetracker.config.security;
 
+import dev.arpan.expensetracker.exception.OTPNotVerifiedException;
+import dev.arpan.expensetracker.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -7,7 +9,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -25,7 +26,13 @@ public class CustomUsernamePasswordAuthenticationProvider implements Authenticat
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
-        UserDetails user = userDetailsService.loadUserByUsername(username);
+        CustomUserDetails user = (CustomUserDetails) userDetailsService.loadUserByUsername(username);
+
+        if (!user.getUser().isVerified()) {
+            throw new OTPNotVerifiedException("Login blocked: User has not completed OTP verification");
+        }
+
+
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new BadCredentialsException("Invalid credentials");
         }

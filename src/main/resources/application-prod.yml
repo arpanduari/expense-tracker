@@ -1,0 +1,12 @@
+gg:
+  jte:
+    usePrecompiledTemplates: true
+    developmentMode: false
+
+
+app:
+  config:
+    mail:
+      fromEmail: ${SEND_GRID_MAIL}
+      fromName: ${SEND_GRID_NAME}
+      apiKey: ${SEND_GRID_API_KEY}

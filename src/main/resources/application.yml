@@ -17,16 +17,22 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
 
   mail:
-    host: smtp.gmail.com
+    host: ${MAIL_HOST}
     port: 587
     username: ${MAIL_USERNAME}
     password: ${MAIL_PASSWORD}
+    protocol: smtp
     properties:
       mail:
         smtp:
           auth: true
           starttls:
             enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+    default-encoding: UTF-8
 
   rabbitmq:
     host: ${RABBITMQ_HOST}
@@ -52,8 +58,11 @@ cloudinary:
     api-key: ${CLOUDINARY_API_KEY}
     api-secret: ${CLOUDINARY_API_SECRET}
 
-
-
+gg:
+  jte:
+    templateLocation: src/main/resources/templates
+    templateSuffix: .jte
+    developmentMode: true
 
 app:
   queue:
@@ -63,10 +72,11 @@ app:
     change-password: changePasswordQueue
     account-created: accountCreatedQueue
     profile-event: profileEventQueue
+
   frontend:
-    path: http://localhost:3001
+    path: https://expensewise2025.netlify.app
 
   logo: https://i.imghippo.com/files/SuCD1097ccM.png
   static-logo: expense-wise-logo.png
   cors:
-    allowed-origins: "http://localhost:3000, http://localhost:3001, http://localhost:3002, http://localhost:3003, http://localhose:3004"
+    allowed-origins: "https://expensewise2025.netlify.app, http://localhost:3000, http://localhost:3001, http://localhost:3002, http://localhost:3003, http://localhose:3004"

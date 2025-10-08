@@ -6,10 +6,7 @@ import dev.arpan.expensetracker.auth.util.JWTUtil;
 import dev.arpan.expensetracker.auth.util.OtpUtil;
 import dev.arpan.expensetracker.common.mapper.UserMapper;
 import dev.arpan.expensetracker.constants.application.ApplicationConstants;
-import dev.arpan.expensetracker.exception.PasswordNotMatchingException;
-import dev.arpan.expensetracker.exception.PasswordPolicyViolationException;
-import dev.arpan.expensetracker.exception.PasswordResetTokenAlreadySentException;
-import dev.arpan.expensetracker.exception.ResourceNotFoundException;
+import dev.arpan.expensetracker.exception.*;
 import dev.arpan.expensetracker.messaging.account.ChangePasswordMessageProducer;
 import dev.arpan.expensetracker.messaging.account.ResetSuccessMessageProducer;
 import dev.arpan.expensetracker.messaging.auth.ForgotPasswordMessageProducer;
@@ -56,8 +53,15 @@ public class AuthService {
     private String frontendPath;
 
     public RegisterResponse createUser(RegisterRequest registerRequest) {
-        User user = UserMapper.toUser(registerRequest);
 
+        if (userRepository.existsUserByEmail(registerRequest.email())) {
+            throw new EmailAlreadyExistsException("User already exists with email: " + registerRequest.email());
+        }
+        if (userRepository.existsUserByUsername(registerRequest.username())) {
+            throw new UsernameAlreadyExistsException("Username already exists with username: " + registerRequest.username());
+        }
+
+        User user = UserMapper.toUser(registerRequest);
         isValidPassword(user.getUsername(), user.getEmail(), registerRequest.password());
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -157,11 +161,13 @@ public class AuthService {
         isValidPassword(user.getUsername(), user.getEmail(), changePasswordRequest.newPassword());
 
         if (!passwordEncoder.matches(changePasswordRequest.oldPassword(), user.getPassword())) {
-            throw new PasswordNotMatchingException(messageSource.getMessage("change.password.old.mismatch", null, getLocale()));
+            throw new PasswordNotMatchingException(messageSource.getMessage("change.password.old.mismatch",
+                    null, getLocale()));
         }
 
-        if (passwordEncoder.matches(changePasswordRequest.oldPassword(), user.getPassword())) {
-            throw new PasswordNotMatchingException(messageSource.getMessage("change.password.same.as.old", null, getLocale()));
+        if (passwordEncoder.matches(changePasswordRequest.newPassword(), user.getPassword())) {
+            throw new PasswordNotMatchingException(messageSource.getMessage("change.password.same.as.old",
+                    null, getLocale()));
         }
 
         user.setPassword(passwordEncoder.encode(changePasswordRequest.newPassword()));

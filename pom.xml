@@ -155,6 +155,11 @@
             <artifactId>html2pdf</artifactId>
             <version>6.2.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.sendgrid</groupId>
+            <artifactId>sendgrid-java</artifactId>
+            <version>4.10.3</version>
+        </dependency>
     </dependencies>
 
     <repositories>
@@ -177,6 +182,7 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
+                            <version>1.18.42</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
@@ -193,6 +199,36 @@
                     </excludes>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>gg.jte</groupId>
+                <artifactId>jte-maven-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <id>generate-jte</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>precompile-jte</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>precompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <sourceDirectory>${project.basedir}/src/main/resources/templates</sourceDirectory>
+
+                    <targetDirectory>${project.build.directory}</targetDirectory>
+
+                    <contentType>Html</contentType>
+                    <packageName>gg.jte.generated.precompiled</packageName>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 

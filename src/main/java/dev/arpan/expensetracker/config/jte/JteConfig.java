@@ -1,13 +1,10 @@
 package dev.arpan.expensetracker.config.jte;
 
-import gg.jte.CodeResolver;
 import gg.jte.ContentType;
 import gg.jte.TemplateEngine;
 import gg.jte.resolve.ResourceCodeResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.nio.file.Path;
 
 /**
  * @author arpan
@@ -17,7 +14,18 @@ import java.nio.file.Path;
 public class JteConfig {
     @Bean
     public TemplateEngine templateEngine() {
-        CodeResolver codeResolver = new ResourceCodeResolver("templates", getClass().getClassLoader());
-        return TemplateEngine.create(codeResolver, Path.of("jte-classes"), ContentType.Html, getClass().getClassLoader());
+        boolean isDev = isDevelopmentEnvironment();
+
+        if (isDev) {
+            ResourceCodeResolver codeResolver = new ResourceCodeResolver("templates", getClass().getClassLoader());
+            return TemplateEngine.create(codeResolver, ContentType.Html);
+        } else {
+            return TemplateEngine.createPrecompiled(ContentType.Html);
+        }
+    }
+
+    private boolean isDevelopmentEnvironment() {
+        String env = System.getenv("SPRING_PROFILES_ACTIVE");
+        return env == null || env.equalsIgnoreCase("dev");
     }
 }

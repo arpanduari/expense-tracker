@@ -21,6 +21,18 @@ import java.util.Map;
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private ResponseEntity<ErrorResponse> buildErrorResponse(Exception ex, WebRequest webRequest, HttpStatus status) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .apiPath(webRequest.getDescription(false))
+                .statusCode(status.value())
+                .status(status.getReasonPhrase())
+                .errorMessage(ex.getMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
+        return ResponseEntity.status(status).body(errorResponse);
+    }
+
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<Map<String, String>> handleMethodNotAllowed(HttpRequestMethodNotSupportedException ex) {
         Map<String, String> response = new HashMap<>();
@@ -51,12 +63,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
         String message = "Duplicate entry";
 
-        if (ex.getMessage().toLowerCase().contains("username")) {
-            message = "Username is already taken";
-        } else if (ex.getMessage().toLowerCase().contains("email")) {
-            message = "Email is already registered";
-        }
-
         Map<String, String> response = new HashMap<>();
         response.put("error", message);
 
@@ -65,82 +71,46 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException exception, WebRequest request) {
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .apiPath(request.getDescription(false))
-                .statusCode(HttpStatus.NOT_FOUND.value())
-                .status(HttpStatus.NOT_FOUND.getReasonPhrase())
-                .errorMessage(exception.getMessage())
-                .timestamp(LocalDateTime.now())
-                .build();
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(errorResponse);
+        return buildErrorResponse(exception, request, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException exception, WebRequest request) {
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .apiPath(request.getDescription(false))
-                .statusCode(HttpStatus.FORBIDDEN.value())
-                .status(HttpStatus.FORBIDDEN.getReasonPhrase())
-                .errorMessage(exception.getMessage())
-                .timestamp(LocalDateTime.now())
-                .build();
-        return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
-                .body(errorResponse);
+        return buildErrorResponse(exception, request, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(PasswordResetTokenAlreadySentException.class)
     public ResponseEntity<ErrorResponse> handlePasswordResetTokenAlreadySentException(PasswordResetTokenAlreadySentException exception, WebRequest webRequest) {
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .apiPath(webRequest.getDescription(false))
-                .status(HttpStatus.TOO_MANY_REQUESTS.getReasonPhrase())
-                .errorMessage(exception.getMessage())
-                .statusCode(HttpStatus.TOO_MANY_REQUESTS.value())
-                .timestamp(LocalDateTime.now())
-                .build();
-        return ResponseEntity
-                .status(HttpStatus.TOO_MANY_REQUESTS)
-                .body(errorResponse);
+        return buildErrorResponse(exception, webRequest, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(PasswordNotMatchingException.class)
     public ResponseEntity<ErrorResponse> handlerPasswordNotMatchingException(PasswordNotMatchingException exception, WebRequest webRequest) {
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .apiPath(webRequest.getDescription(false))
-                .status(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                .errorMessage(exception.getMessage())
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .timestamp(LocalDateTime.now())
-                .build();
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(errorResponse);
+        return buildErrorResponse(exception, webRequest, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(PasswordPolicyViolationException.class)
     public ResponseEntity<ErrorResponse> handlerPasswordPolicyViolation(PasswordPolicyViolationException exception, WebRequest webRequest) {
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .apiPath(webRequest.getDescription(false))
-                .status(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                .errorMessage(exception.getMessage())
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .timestamp(LocalDateTime.now())
-                .build();
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(errorResponse);
+        return buildErrorResponse(exception, webRequest, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ForbiddenException.class)
     public ResponseEntity<ErrorResponse> handleForbiddenException(ForbiddenException exception, WebRequest request) {
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .apiPath(request.getDescription(false))
-                .statusCode(HttpStatus.FORBIDDEN.value())
-                .status(HttpStatus.FORBIDDEN.getReasonPhrase())
-                .errorMessage(exception.getMessage())
-                .timestamp(LocalDateTime.now())
-                .build();
-        return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body(errorResponse);
+        return buildErrorResponse(exception, request, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(OTPNotVerifiedException.class)
+    public ResponseEntity<ErrorResponse> handleOtpNotVerifiedException(OTPNotVerifiedException exception, WebRequest webRequest) {
+        return buildErrorResponse(exception, webRequest, HttpStatus.LOCKED);
+    }
+
+    @ExceptionHandler(UsernameAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleUsernameAlreadyExistsException(UsernameAlreadyExistsException exception, WebRequest webRequest) {
+        return buildErrorResponse(exception, webRequest, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleEmailAlreadyExistsException(EmailAlreadyExistsException exception, WebRequest webRequest) {
+        return buildErrorResponse(exception, webRequest, HttpStatus.CONFLICT);
     }
 }

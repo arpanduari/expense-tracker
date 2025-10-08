@@ -295,7 +295,7 @@
                         <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="button-table">
                             <tr>
                                 <td class="button-cell">
-                                    <a href="${data.get("loginUrl"}" class="button-link">Continue to Dashboard</a>
+                                    <a href="${data.get("loginUrl")}" class="button-link">Continue to Dashboard</a>
                                 </td>
                             </tr>
                         </table>

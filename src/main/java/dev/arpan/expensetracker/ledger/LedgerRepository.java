@@ -20,10 +20,9 @@ public interface LedgerRepository extends JpaRepository<LedgerEntry, Long> {
                            COALESCE(SUM(IF(le.type = 'credit', le.amount, -le.amount)), 0) AS totalAmount,
                            MAX(COALESCE(le.updated_at, lu.created_at))                   AS last_updated
                     FROM ledger_user lu
-                             LEFT JOIN
-                         user u ON lu.email = u.email
-                             LEFT JOIN
-                         ledger_entry le ON lu.id = le.ledger_user_id
+                             LEFT JOIN user u ON lu.email = u.email 
+                             LEFT JOIN ledger_entry le ON lu.id = le.ledger_user_id
+                        where lu.created_by = :userId
                     GROUP BY lu.id, lu.name, lu.email, u.secure_url;
                     """, nativeQuery = true
     )

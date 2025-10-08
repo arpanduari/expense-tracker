@@ -27,7 +27,7 @@ import java.util.Map;
 public class PdfReportGenerator implements ReportGenerator {
     private final TemplateEngine templateEngine;
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    private static final String TRANSACTION_FOLDER = "transactions/";
+//    private static final String TRANSACTION_FOLDER = "transactions/"
     @Value("${app.static-logo}")
     private String appLogo;
 
@@ -57,7 +57,7 @@ public class PdfReportGenerator implements ReportGenerator {
                 "expenses", expenses,
                 "year", startDate.getYear() + ""
         );
-        templateEngine.render(TRANSACTION_FOLDER + "transactions-template.jte", data, output);
+        templateEngine.render("transactions-template.jte", data, output);
         String htmlContent = output.toString();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         HtmlConverter.convertToPdf(htmlContent, outputStream);
