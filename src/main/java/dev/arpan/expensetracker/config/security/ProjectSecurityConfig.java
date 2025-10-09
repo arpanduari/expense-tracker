@@ -1,5 +1,6 @@
 package dev.arpan.expensetracker.config.security;
 
+import dev.arpan.expensetracker.auth.AuthService;
 import dev.arpan.expensetracker.common.filter.JWTTokenValidatorFilter;
 import dev.arpan.expensetracker.common.filter.RateLimiterFilter;
 import dev.arpan.expensetracker.config.properties.ApiProperties;
@@ -13,7 +14,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
@@ -33,12 +33,14 @@ public class ProjectSecurityConfig {
     private final ApiProperties apiProperties;
     private final JWTTokenValidatorFilter jwtTokenValidatorFilter;
     private final RateLimiterFilter rateLimiterFilter;
+    private final GoogleOauth2Service googleOAuth2Service;
+    private final Oauth2LoginSuccessHandler oauth2LoginSuccessHandler;
 
     @Value("${app.cors.allowed-origins}")
     private List<String> allowedOrigins;
 
     @Bean
-    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity httpSecurity, AuthService authService) throws Exception {
         httpSecurity.authorizeHttpRequests(request -> request
                 .requestMatchers(apiProperties.getFullPath() + "/auth/**")
                 .permitAll()
@@ -60,12 +62,12 @@ public class ProjectSecurityConfig {
         httpSecurity.httpBasic(AbstractHttpConfigurer::disable);
         httpSecurity.addFilterBefore(jwtTokenValidatorFilter, BasicAuthenticationFilter.class);
         httpSecurity.addFilterBefore(rateLimiterFilter, BasicAuthenticationFilter.class);
+        httpSecurity.oauth2Login(
+                oauth -> oauth
+                        .userInfoEndpoint(userInfo -> userInfo.userService(googleOAuth2Service))
+                        .successHandler(oauth2LoginSuccessHandler)
+        );
         return httpSecurity.build();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
     @Bean

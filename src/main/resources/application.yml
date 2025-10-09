@@ -16,6 +16,17 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
 
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope:
+              - email
+              - profile
+
   mail:
     host: ${MAIL_HOST}
     port: 587
@@ -80,3 +91,7 @@ app:
   static-logo: expense-wise-logo.png
   cors:
     allowed-origins: "https://expensewise2025.netlify.app, http://localhost:3000, http://localhost:3001, http://localhost:3002, http://localhost:3003, http://localhose:3004"
+
+  google:
+    android:
+      client-id: ${GOOGLE_ANDROID_CLIENT_ID}

@@ -1,10 +1,12 @@
 package dev.arpan.expensetracker.auth;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import dev.arpan.expensetracker.auth.dto.*;
 import dev.arpan.expensetracker.auth.util.ForgotPasswordUtil;
 import dev.arpan.expensetracker.auth.util.JWTUtil;
 import dev.arpan.expensetracker.auth.util.OtpUtil;
 import dev.arpan.expensetracker.common.mapper.UserMapper;
+import dev.arpan.expensetracker.config.security.GoogleVerifierService;
 import dev.arpan.expensetracker.constants.application.ApplicationConstants;
 import dev.arpan.expensetracker.exception.*;
 import dev.arpan.expensetracker.messaging.account.ChangePasswordMessageProducer;
@@ -25,6 +27,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.UUID;
@@ -48,6 +51,7 @@ public class AuthService {
     private final ResetSuccessMessageProducer resetSuccessMessageProducer;
     private final ChangePasswordMessageProducer changePasswordMessageProducer;
     private final MessageSource messageSource;
+    private final GoogleVerifierService googleVerifier;
 
     @Value("${app.frontend.path}")
     private String frontendPath;
@@ -205,5 +209,59 @@ public class AuthService {
 
     private Locale getLocale() {
         return LocaleContextHolder.getLocale();
+    }
+
+    public LoginResponse googleLogin(String token) {
+        GoogleIdToken.Payload payload = googleVerifier.verifyGoogleIdToken(token);
+
+        String email = payload.getEmail();
+        String name = (String) payload.get("name");
+        String picture = (String) payload.get("picture");
+        String sub = payload.getSubject();
+
+        User user = createUserFromGoogle(email, name, picture, sub);
+
+        String accessToken = jwtUtil.generateAccessToken(user.getEmail(), user.getId());
+        String refreshToken = jwtUtil.generateRefreshToken(user.getEmail(), user.getId());
+
+        return new LoginResponse(accessToken, refreshToken, user.getUsername());
+    }
+
+    private User createUserFromGoogle(String email, String name, String pictureUrl, String providerId) {
+        User user = userRepository.findByEmail(email)
+                .orElse(null);
+        if (user == null) {
+            user = User.builder()
+                    .email(email)
+                    .username(name != null ? name : email.split("@")[0])
+                    .password(passwordEncoder.encode(UUID.randomUUID().toString()))
+                    .publicId(null)
+                    .secureUrl(pictureUrl)
+                    .isVerified(true)
+                    .verifiedDate(LocalDate.now())
+                    .oauthProvider("GOOGLE")
+                    .oauthProviderId(providerId)
+                    .build();
+        } else {
+            boolean updated = false;
+            if (pictureUrl != null && !pictureUrl.equals(user.getSecureUrl())) {
+                user.setSecureUrl(pictureUrl);
+                updated = true;
+            }
+            if (user.getOauthProviderId() == null || !providerId.equals(user.getOauthProviderId())) {
+                user.setOauthProvider("GOOGLE");
+                user.setOauthProviderId(providerId);
+                updated = true;
+            }
+            if (!user.isVerified()) {
+                user.setVerified(true);
+                user.setVerifiedDate(LocalDate.now());
+                updated = true;
+            }
+            if (updated) {
+                userRepository.save(user);
+            }
+        }
+        return user;
     }
 }

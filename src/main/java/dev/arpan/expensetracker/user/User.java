@@ -30,8 +30,8 @@ public class User {
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(nullable = false, length = 3)
-    private String currency = "INR";
+    @Column(length = 3)
+    private String currency;
 
     private String publicId;
     private String secureUrl;
@@ -39,4 +39,7 @@ public class User {
     private boolean isVerified;
 
     private LocalDate verifiedDate;
+
+    private String oauthProvider;
+    private String oauthProviderId;
 }

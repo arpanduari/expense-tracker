@@ -163,4 +163,10 @@ public class AuthController {
         ChangePasswordResponse changePasswordResponse = authService.changePassword(userId, changePasswordRequest);
         return ResponseEntity.ok(changePasswordResponse);
     }
+
+    @PostMapping("/google")
+    public ResponseEntity<LoginResponse> loginWithGoogle(@RequestBody GoogleLoginRequest googleLoginRequest) {
+        LoginResponse loginResponse = authService.googleLogin(googleLoginRequest.idToken());
+        return ResponseEntity.ok(loginResponse);
+    }
 }
