@@ -78,9 +78,9 @@ public class AuthService {
     }
 
 
-    public RefreshResponse refreshToken(RefreshRequest refreshRequest) {
+    public RefreshResponse refreshToken(String refreshToken) {
         try {
-            Claims claims = jwtUtil.parseToken(refreshRequest.refreshToken());
+            Claims claims = jwtUtil.parseToken(refreshToken);
             if (jwtUtil.isTokenExpired(claims.getExpiration())) {
                 return null;
             }
@@ -132,7 +132,7 @@ public class AuthService {
 
         passwordResetToken = passwordResetTokenRepository.save(passwordResetToken);
 
-        String link = frontendPath + "/reset-password?token=" + uuid + "&id=" + passwordResetToken.getId();
+        String link = frontendPath + "/reset-password?accessToken=" + uuid + "&id=" + passwordResetToken.getId();
 
         forgotPasswordMessageProducer.sendForgotPasswordMessage(user.getEmail(), link, user.getUsername());
 
@@ -141,9 +141,9 @@ public class AuthService {
 
     public ResetPasswordResponse resetPassword(ResetPasswordRequest resetPasswordRequest) {
         PasswordResetToken passwordResetToken = passwordResetTokenRepository.findById(resetPasswordRequest.id())
-                .orElseThrow(() -> new ResourceNotFoundException("Password reset token", "id", resetPasswordRequest.id() + ""));
+                .orElseThrow(() -> new ResourceNotFoundException("Password reset accessToken", "id", resetPasswordRequest.id() + ""));
         if (!passwordEncoder.matches(resetPasswordRequest.token(), passwordResetToken.getTokenHash())) {
-            throw new ResourceNotFoundException("Password reset token", "id", resetPasswordRequest.id() + "");
+            throw new ResourceNotFoundException("Password reset accessToken", "id", resetPasswordRequest.id() + "");
         }
         User user = userRepository.findById(passwordResetToken.getUser().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", passwordResetToken.getUser().getId() + ""));

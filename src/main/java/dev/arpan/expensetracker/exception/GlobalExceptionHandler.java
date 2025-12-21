@@ -5,6 +5,7 @@ import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -54,8 +55,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleConstraintViolation(ConstraintViolationException ex) {
         Map<String, String> response = new HashMap<>();
         ex.getConstraintViolations()
-                .forEach(constraintViolation -> response.put(constraintViolation.getPropertyPath()
-                        .toString(), constraintViolation.getMessage()));
+                .forEach(constraintViolation -> response.put(
+                        constraintViolation.getPropertyPath().toString(), constraintViolation.getMessage()));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
@@ -70,27 +71,32 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException exception, WebRequest request) {
+    public ResponseEntity<ErrorResponse> handleResourceNotFoundException(
+            ResourceNotFoundException exception, WebRequest request) {
         return buildErrorResponse(exception, request, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException exception, WebRequest request) {
+    public ResponseEntity<ErrorResponse> handleAccessDeniedException(
+            AccessDeniedException exception, WebRequest request) {
         return buildErrorResponse(exception, request, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(PasswordResetTokenAlreadySentException.class)
-    public ResponseEntity<ErrorResponse> handlePasswordResetTokenAlreadySentException(PasswordResetTokenAlreadySentException exception, WebRequest webRequest) {
+    public ResponseEntity<ErrorResponse> handlePasswordResetTokenAlreadySentException(
+            PasswordResetTokenAlreadySentException exception, WebRequest webRequest) {
         return buildErrorResponse(exception, webRequest, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(PasswordNotMatchingException.class)
-    public ResponseEntity<ErrorResponse> handlerPasswordNotMatchingException(PasswordNotMatchingException exception, WebRequest webRequest) {
+    public ResponseEntity<ErrorResponse> handlerPasswordNotMatchingException(
+            PasswordNotMatchingException exception, WebRequest webRequest) {
         return buildErrorResponse(exception, webRequest, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(PasswordPolicyViolationException.class)
-    public ResponseEntity<ErrorResponse> handlerPasswordPolicyViolation(PasswordPolicyViolationException exception, WebRequest webRequest) {
+    public ResponseEntity<ErrorResponse> handlerPasswordPolicyViolation(
+            PasswordPolicyViolationException exception, WebRequest webRequest) {
         return buildErrorResponse(exception, webRequest, HttpStatus.BAD_REQUEST);
     }
 
@@ -100,17 +106,32 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(OTPNotVerifiedException.class)
-    public ResponseEntity<ErrorResponse> handleOtpNotVerifiedException(OTPNotVerifiedException exception, WebRequest webRequest) {
+    public ResponseEntity<ErrorResponse> handleOtpNotVerifiedException(
+            OTPNotVerifiedException exception, WebRequest webRequest) {
         return buildErrorResponse(exception, webRequest, HttpStatus.LOCKED);
     }
 
     @ExceptionHandler(UsernameAlreadyExistsException.class)
-    public ResponseEntity<ErrorResponse> handleUsernameAlreadyExistsException(UsernameAlreadyExistsException exception, WebRequest webRequest) {
+    public ResponseEntity<ErrorResponse> handleUsernameAlreadyExistsException(
+            UsernameAlreadyExistsException exception, WebRequest webRequest) {
         return buildErrorResponse(exception, webRequest, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(EmailAlreadyExistsException.class)
-    public ResponseEntity<ErrorResponse> handleEmailAlreadyExistsException(EmailAlreadyExistsException exception, WebRequest webRequest) {
+    public ResponseEntity<ErrorResponse> handleEmailAlreadyExistsException(
+            EmailAlreadyExistsException exception, WebRequest webRequest) {
         return buildErrorResponse(exception, webRequest, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(EmailSendingException.class)
+    public ResponseEntity<ErrorResponse> handleEmailSendingException(
+            EmailSendingException exception, WebRequest webRequest) {
+        return buildErrorResponse(exception, webRequest, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleBadCredentialsException(
+            BadCredentialsException exception, WebRequest webRequest) {
+        return buildErrorResponse(exception, webRequest, HttpStatus.UNAUTHORIZED);
     }
 }

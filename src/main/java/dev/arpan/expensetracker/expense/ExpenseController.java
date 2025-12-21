@@ -53,7 +53,7 @@ public class ExpenseController {
                     ),
                     @ApiResponse(
                             responseCode = "401",
-                            description = "Unauthorized – missing or invalid token"
+                            description = "Unauthorized – missing or invalid accessToken"
                     )
             }
     )
@@ -81,7 +81,7 @@ public class ExpenseController {
                     ),
                     @ApiResponse(
                             responseCode = "401",
-                            description = "Unauthorized – missing or invalid token"
+                            description = "Unauthorized – missing or invalid accessToken"
                     ),
                     @ApiResponse(
                             responseCode = "403",
@@ -123,7 +123,7 @@ public class ExpenseController {
                     ),
                     @ApiResponse(
                             responseCode = "401",
-                            description = "Unauthorized – missing or invalid token"
+                            description = "Unauthorized – missing or invalid accessToken"
                     ),
                     @ApiResponse(
                             responseCode = "403",

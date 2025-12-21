@@ -66,7 +66,7 @@ public class BudgetController {
     @Operation(
             summary = "Set a default budget for the logged-in user",
             description = "Creates or updates the default budget for the authenticated user. "
-                    + "Requires a valid authentication token. "
+                    + "Requires a valid authentication accessToken. "
                     + "Returns the BudgetResponse object representing the default budget.",
             responses = {
                     @ApiResponse(
@@ -98,7 +98,7 @@ public class BudgetController {
     @Operation(
             summary = "Get the default budget of the logged-in user",
             description = "Fetches the default budget associated with the authenticated user. "
-                    + "Requires a valid authentication token. "
+                    + "Requires a valid authentication accessToken. "
                     + "Returns the BudgetResponse object if a default budget is set.",
             responses = {
                     @ApiResponse(
@@ -128,7 +128,7 @@ public class BudgetController {
     @Operation(
             summary = "Set a monthly budget for the logged-in user",
             description = "Creates a new monthly budget associated with the authenticated user. "
-                    + "Requires a valid authentication token. "
+                    + "Requires a valid authentication accessToken. "
                     + "Returns the created BudgetResponse object on success.",
             responses = {
                     @ApiResponse(
@@ -160,7 +160,7 @@ public class BudgetController {
     @Operation(
             summary = "Get all override budgets of the logged-in user",
             description = "Fetches a paginated list of override budgets created by the authenticated user. "
-                    + "Requires a valid authentication token. "
+                    + "Requires a valid authentication accessToken. "
                     + "Defaults to page=0 and size=10 if not provided.",
             responses = {
                     @ApiResponse(
@@ -243,7 +243,7 @@ public class BudgetController {
                     ),
                     @ApiResponse(
                             responseCode = "401",
-                            description = "Unauthorized – missing or invalid token"
+                            description = "Unauthorized – missing or invalid accessToken"
                     ),
                     @ApiResponse(
                             responseCode = "403",

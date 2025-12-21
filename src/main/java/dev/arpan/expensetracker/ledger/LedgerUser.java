@@ -3,6 +3,8 @@ package dev.arpan.expensetracker.ledger;
 import dev.arpan.expensetracker.user.User;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -20,9 +22,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@Table(uniqueConstraints = @UniqueConstraint(
-        columnNames = {"created_by", "email"}
-))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"created_by", "email"}))
 public class LedgerUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,11 +38,11 @@ public class LedgerUser {
     private List<LedgerEntry> entries;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by", nullable = false)
+    @JoinColumn(name = "created_by", nullable = false, foreignKey = @ForeignKey(name = "fk_ledger_user_created_by"))
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User createdBy;
 
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdAt;
 }
-

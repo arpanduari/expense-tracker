@@ -4,7 +4,7 @@ user:
 login:
   success: Login successful
 token:
-  expired: Refresh token has expired
+  expired: Refresh accessToken has expired
 forgot:
   password:
     email:
@@ -16,7 +16,7 @@ forgot:
 reset:
   password:
     invalid:
-      token: Invalid password reset token
+      token: Invalid password reset accessToken
     success: Password reset successful
 change:
   password:
@@ -35,7 +35,7 @@ password:
     link:
       sent: Password reset link sent to your email
     invalid:
-      token: Invalid password reset token
+      token: Invalid password reset accessToken
     success: Password changed successfully
     old:
       mismatch: Old password does not match

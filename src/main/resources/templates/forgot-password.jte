@@ -276,14 +276,14 @@
                         <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="button-table">
                             <tr>
                                 <td class="button-cell">
-                                    <a href="${data.get("restLink")}" class="button-link">Reset Password</a>
+                                    <a href="${data.get("resetLink")}" class="button-link">Reset Password</a>
                                 </td>
                             </tr>
                         </table>
 
                         <!-- Alternative link -->
                         <p class="alternative-text">If the link doesn't work, paste this link to your browser:</p>
-                        <a href="${data.get("restLink")}" class="reset-link">${data.get("restLink")}</a>
+                        <a href="${data.get("resetLink")}" class="reset-link">${data.get("resetLink")}</a>
 
                         <!-- Security notice -->
                         <p class="security-notice">

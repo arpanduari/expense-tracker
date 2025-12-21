@@ -8,6 +8,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
  */
 @Schema(description = "Data transfer object for Refresh Request")
 public record RefreshRequest(
-        @Schema(description = "Refresh token")
+        @Schema(description = "Refresh accessToken")
         String refreshToken) {
 }

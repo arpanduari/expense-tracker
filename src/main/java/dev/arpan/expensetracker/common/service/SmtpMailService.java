@@ -1,5 +1,6 @@
 package dev.arpan.expensetracker.common.service;
 
+import dev.arpan.expensetracker.exception.EmailSendingException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -24,15 +25,14 @@ public class SmtpMailService implements MailService {
     public void sendMail(String toEmail, String subject, String content) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_RELATED,
-                    StandardCharsets.UTF_8.name()
-            );
+            MimeMessageHelper helper = new MimeMessageHelper(
+                    message, MimeMessageHelper.MULTIPART_MODE_RELATED, StandardCharsets.UTF_8.name());
             helper.setSubject(subject);
             helper.setText(content, true);
             helper.setTo(toEmail);
             mailSender.send(message);
         } catch (MessagingException e) {
-            throw new RuntimeException(e);
+            throw new EmailSendingException("Failed to send email", e);
         }
     }
 }

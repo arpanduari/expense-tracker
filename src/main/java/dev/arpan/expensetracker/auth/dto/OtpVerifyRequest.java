@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  */
 @Schema(description = "Data transfer object for OTP Verification Request")
 public record OtpVerifyRequest(
-        @Schema(description = "Verification token")
+        @Schema(description = "Verification accessToken")
         String token,
         @Schema(description = "OTP")
         String otp) {

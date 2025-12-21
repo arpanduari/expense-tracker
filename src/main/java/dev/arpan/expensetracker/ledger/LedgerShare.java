@@ -4,6 +4,8 @@ import dev.arpan.expensetracker.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 /**
  * @author arpan
  * @since 10/3/25
@@ -14,7 +16,9 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "ledger_shares", uniqueConstraints = @UniqueConstraint(columnNames = {"shared_by_user_id", "ledger_user_id"}))
+@Table(
+        name = "ledger_shares",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"shared_by_user_id", "ledger_user_id"}))
 public class LedgerShare {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,4 +33,6 @@ public class LedgerShare {
     private LedgerUser ledgerUser;
 
     private String token;
+
+    private LocalDateTime expiryDate;
 }

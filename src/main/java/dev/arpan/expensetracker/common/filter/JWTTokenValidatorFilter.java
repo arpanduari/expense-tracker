@@ -39,12 +39,12 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
                 Claims claims = jwtUtil.parseToken(jwt);
                 String sub = claims.get("sub", String.class);
                 if (!Objects.equals(sub, JWTConstants.JWT_SUBJECT)) {
-                    throw new BadRequestException("Invalid token");
+                    throw new BadRequestException("Invalid accessToken");
                 }
                 String username = claims.get("username", String.class);
                 Long userId = claims.get(ApplicationConstants.USER_ID, Long.class);
                 if (jwtUtil.isTokenExpired(claims.getExpiration())) {
-                    throw new BadRequestException("Invalid or Expired token");
+                    throw new BadRequestException("Invalid or Expired accessToken");
                 }
 
                 User user = User.builder()

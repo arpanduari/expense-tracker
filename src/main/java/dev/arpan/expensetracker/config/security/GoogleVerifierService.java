@@ -31,12 +31,12 @@ public class GoogleVerifierService {
             GoogleIdToken idToken = verifier.verify(idTokenString);
 
             if (idToken == null) {
-                throw new RuntimeException("Invalid Google Id token, Verification Failed.");
+                throw new RuntimeException("Invalid Google Id accessToken, Verification Failed.");
             } else {
                 return idToken.getPayload();
             }
         } catch (Exception e) {
-            throw new RuntimeException("Failed to verify Google ID token: " + e.getMessage(), e);
+            throw new RuntimeException("Failed to verify Google ID accessToken: " + e.getMessage(), e);
         }
     }
 }

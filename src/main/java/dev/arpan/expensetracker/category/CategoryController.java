@@ -68,7 +68,7 @@ public class CategoryController {
     @Operation(
             summary = "Create a new Category for the logged in user",
             description = """
-                    Creates a new category associated with the authenticated user. Requires a valid authentication token.
+                    Creates a new category associated with the authenticated user. Requires a valid authentication accessToken.
                     Returns the created CategoryResponse object on success.
                     """,
             responses = {
@@ -106,7 +106,7 @@ public class CategoryController {
     @Operation(
             summary = "Update an existing category",
             description = "Updates the details of an existing category belonging to the authenticated user. "
-                    + "Requires a valid authentication token. "
+                    + "Requires a valid authentication accessToken. "
                     + "Returns the updated CategoryResponse object on success.",
             responses = {
                     @ApiResponse(
@@ -155,7 +155,7 @@ public class CategoryController {
     @Operation(
             summary = "Delete a category",
             description = "Deletes an existing category belonging to the authenticated user. "
-                    + "Requires a valid authentication token. "
+                    + "Requires a valid authentication accessToken. "
                     + "Returns no content on successful deletion.",
             responses = {
                     @ApiResponse(

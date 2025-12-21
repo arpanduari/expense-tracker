@@ -8,9 +8,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
  */
 @Schema(description = "Data transfer object for Login Response")
 public record LoginResponse(
-        @Schema(description = "JWT token")
-        String token,
-        @Schema(description = "Refresh JWT token")
+        @Schema(description = "JWT accessToken")
+        String accessToken,
+        @Schema(description = "Refresh JWT accessToken")
         String refreshToken,
         @Schema(description = "User name")
         String username

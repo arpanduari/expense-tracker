@@ -7,6 +7,6 @@ gg:
 app:
   config:
     mail:
-      fromEmail: ${SEND_GRID_MAIL}
-      fromName: ${SEND_GRID_NAME}
-      apiKey: ${SEND_GRID_API_KEY}
+      from: ${RESEND_MAIL}
+      name: ${RESEND_NAME}
+      apiKey: ${RESEND_API_KEY}

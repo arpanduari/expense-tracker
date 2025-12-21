@@ -41,7 +41,7 @@ public class OtpService {
 
     public VerifyResponse verifyOtp(String token, String otp) {
         OtpVerification otpVerification = otpVerificationRepository.findByToken(token)
-                .orElseThrow(() -> new RuntimeException("Invalid token"));
+                .orElseThrow(() -> new RuntimeException("Invalid accessToken"));
         if (otpVerification.getExpiryTime().isBefore(LocalDateTime.now())) {
             return new VerifyResponse("OTP has expired. Please resend OTP", HttpStatus.GONE);
         }
