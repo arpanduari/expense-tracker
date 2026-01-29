@@ -56,7 +56,6 @@ public class OtpService {
 
         profileImageEventProducer.sendProfileImageEvent(user.getUsername());
 
-
         String loginUrl = frontendPath + "/login";
 
         accountCreatedMessageProducer.sendAccountCreatedMessage(user.getEmail(), user.getUsername(), loginUrl);

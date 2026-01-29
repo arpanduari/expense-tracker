@@ -1,6 +1,7 @@
 package dev.arpan.expensetracker.report;
 
 import dev.arpan.expensetracker.constants.file.FileNameConstants;
+import dev.arpan.expensetracker.exception.ExcelReportGenerationException;
 import dev.arpan.expensetracker.expense.Expense;
 import dev.arpan.expensetracker.user.User;
 import org.apache.poi.ss.usermodel.*;
@@ -8,6 +9,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -18,57 +20,81 @@ import java.util.List;
  */
 @Component
 public class ExcelReportGenerator implements ReportGenerator {
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     @Override
     public byte[] generate(User user, LocalDate startDate, LocalDate endDate, List<Expense> expenses) {
-        try (
-                Workbook workbook = new XSSFWorkbook();
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ) {
-            int idx = 0;
+        try (Workbook workbook = new XSSFWorkbook();
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+
             Sheet sheet = workbook.createSheet("ExpenseWise");
-            CellStyle headerCellStyle = workbook.createCellStyle();
-            Font headerFont = workbook.createFont();
-            headerFont.setBold(true);
-            headerCellStyle.setFont(headerFont);
+            int rowIndex = 0;
+
+            // Styles
+            CellStyle headerCellStyle = createHeaderStyle(workbook);
+            CellStyle dateStyle = createDateStyle(workbook);
 
             // User info section
-            Row userRow = sheet.createRow(idx++);
-            userRow.createCell(0).setCellValue("Email");
-            userRow.createCell(1).setCellValue("Start Date");
-            Row userDataRow = sheet.createRow(idx++);
-            userDataRow.createCell(0).setCellValue(user.getEmail());
-            userDataRow.createCell(1).setCellValue(startDate.format(dateTimeFormatter));
-            userDataRow.createCell(2).setCellValue(endDate.format(dateTimeFormatter));
+            Row headerRow = sheet.createRow(rowIndex++);
+            headerRow.createCell(0).setCellValue("Email");
+            headerRow.createCell(1).setCellValue("Start Date");
+            headerRow.createCell(2).setCellValue("End Date");
 
-            ++idx;
+            Row userRow = sheet.createRow(rowIndex++);
+            userRow.createCell(0).setCellValue(user.getEmail());
+            userRow.createCell(1).setCellValue(startDate.format(DATE_FORMATTER));
+            userRow.createCell(2).setCellValue(endDate.format(DATE_FORMATTER));
 
-            Row tableHeader = sheet.createRow(idx++);
+            ++rowIndex;
+
+            // Table Headers
             String[] tableHeaders = {"Category", "Description", "Amount(" + user.getCurrency() + ")", "Created Date"};
+
+            Row tableHeader = sheet.createRow(rowIndex++);
+
             for (int i = 0; i < tableHeaders.length; ++i) {
                 Cell cell = tableHeader.createCell(i);
                 cell.setCellValue(tableHeaders[i]);
                 cell.setCellStyle(headerCellStyle);
             }
+
             for (Expense expense : expenses) {
-                Row row = sheet.createRow(idx++);
+                Row row = sheet.createRow(rowIndex++);
                 row.createCell(0).setCellValue(expense.getCategory().getName());
                 row.createCell(1).setCellValue(expense.getDescription());
                 row.createCell(2).setCellValue(expense.getAmount());
-                row.createCell(3).setCellValue(expense.getCreatedDate().format(dateTimeFormatter));
+
+                Cell dateCell = row.createCell(3);
+                dateCell.setCellValue(Date.valueOf(expense.getCreatedDate()));
+                dateCell.setCellStyle(dateStyle);
             }
 
             for (int i = 0; i < tableHeaders.length; ++i) {
                 sheet.autoSizeColumn(i);
             }
-            workbook.write(out);
-            return out.toByteArray();
+
+            workbook.write(outputStream);
+            return outputStream.toByteArray();
 
         } catch (Exception ex) {
-            throw new RuntimeException("Error while generating excel report.");
+            throw new ExcelReportGenerationException("Error while generating excel report.");
         }
+    }
 
+    private CellStyle createHeaderStyle(Workbook workbook) {
+        Font font = workbook.createFont();
+        font.setBold(true);
+
+        CellStyle style = workbook.createCellStyle();
+        style.setFont(font);
+        return style;
+    }
+
+    private CellStyle createDateStyle(Workbook workbook) {
+        CreationHelper helper = workbook.getCreationHelper();
+        CellStyle style = workbook.createCellStyle();
+        style.setDataFormat(helper.createDataFormat().getFormat("dd-MM-yyyy"));
+        return style;
     }
 
     @Override

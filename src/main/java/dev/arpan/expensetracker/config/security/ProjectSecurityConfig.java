@@ -1,6 +1,5 @@
 package dev.arpan.expensetracker.config.security;
 
-import dev.arpan.expensetracker.auth.AuthService;
 import dev.arpan.expensetracker.common.filter.JWTTokenValidatorFilter;
 import dev.arpan.expensetracker.common.filter.RateLimiterFilter;
 import dev.arpan.expensetracker.config.properties.ApiProperties;
@@ -46,7 +45,7 @@ public class ProjectSecurityConfig {
      * Uses JWT + stateless requests instead of session-based authentication.
      */
     @Bean
-    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity httpSecurity, AuthService authService)
+    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity httpSecurity)
             throws Exception {
 
         // Apply all authorization/permit rules in a separate method
@@ -73,7 +72,16 @@ public class ProjectSecurityConfig {
 
         configureFilters(httpSecurity);
         configureOAuth(httpSecurity);
-
+        /*
+                httpSecurity.exceptionHandling(
+                        exception -> exception.authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                            response.setContentType("application/json");
+                            response.getWriter().write("""
+                                    {"error":"Forbidden","message":"%s"}
+                                """.formatted(authException.getMessage()));
+                        }));
+        */
         return httpSecurity.build();
     }
 
@@ -109,6 +117,8 @@ public class ProjectSecurityConfig {
                 .requestMatchers(apiProperties.getFullPath() + "/ledger/shared-entries")
                 .permitAll()
                 .requestMatchers("/api-docs/**", "/swagger-ui/**", "/swagger-ui.html/**")
+                .permitAll()
+                .requestMatchers(apiProperties.getFullPath() + "/ledger/share/public/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated();

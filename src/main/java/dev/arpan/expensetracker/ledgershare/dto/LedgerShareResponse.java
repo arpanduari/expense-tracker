@@ -1,6 +1,8 @@
-package dev.arpan.expensetracker.ledger.dto;
+package dev.arpan.expensetracker.ledgershare.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+
+import java.util.UUID;
 
 /**
  * @author arpan
@@ -8,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  */
 @Schema(description = "Data Transfer Object for Ledger Share Response")
 public record LedgerShareResponse(
+        UUID id,
         String publicLink
 ) {
 }

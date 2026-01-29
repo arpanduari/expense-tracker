@@ -3,6 +3,7 @@ package dev.arpan.expensetracker.auth;
 import dev.arpan.expensetracker.auth.dto.*;
 import dev.arpan.expensetracker.user.util.UserUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -25,7 +26,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("${api.base}${api.version}/auth")
 @RequiredArgsConstructor
-@Tag(name = "Authentication Management", description = "Operations related to Authentication")
+@Tag(
+        name = "Authentication Management",
+        description = "APIs related to user authentication, authorization, OTP verification, and password management")
 public class AuthController {
     private final AuthService authService;
     private final OtpService otpService;
@@ -68,6 +71,27 @@ public class AuthController {
     }
 
     @PostMapping("/login/web")
+    @Operation(
+            summary = "User Login for web",
+            description = """
+                 Authenticates user credentials for web applications.
+                        - Access token is returned in response body
+                        - Refresh token is stored in an HttpOnly cookie
+                """,
+            responses = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "User logged in successfully",
+                        content = @Content(schema = @Schema(implementation = WebLoginResponse.class)),
+                        headers = {
+                            @Header(
+                                    name = "Set-Cookie",
+                                    description = "HttpOnly refresh token cookie",
+                                    schema = @Schema(implementation = String.class))
+                        }),
+                @ApiResponse(responseCode = "400", description = "Invalid request payload"),
+                @ApiResponse(responseCode = "401", description = "Invalid username or password")
+            })
     public ResponseEntity<WebLoginResponse> loginWeb(
             @RequestBody @Valid LoginRequest loginRequest, HttpServletResponse response) {
         LoginResponse loginResponse = authService.login(loginRequest);
@@ -83,6 +107,19 @@ public class AuthController {
     }
 
     @PostMapping("/refresh/web")
+    @Operation(
+            summary = "Refresh access token (Web)",
+            description = """
+                Generates a new access token using refresh token
+                stored in HttpOnly cookies.
+                """,
+            responses = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Access token refreshed successfully",
+                        content = @Content(schema = @Schema(implementation = WebRefreshResponse.class))),
+                @ApiResponse(responseCode = "401", description = "Missing or invalid refresh token")
+            })
     public ResponseEntity<WebRefreshResponse> refreshWebToken(
             @CookieValue(value = "refreshToken", required = false) String refreshCookie, HttpServletResponse response) {
         if (refreshCookie == null || refreshCookie.isEmpty()) {
@@ -102,6 +139,18 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK).body(new WebRefreshResponse(refreshResponse.accessToken()));
     }
 
+    @Operation(
+            summary = "User login (Mobile)",
+            description = """
+                Authenticates user for mobile clients.
+                Access and refresh tokens are returned in response body.
+                """,
+            responses = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Login successful",
+                        content = @Content(schema = @Schema(implementation = MobileLoginResponse.class)))
+            })
     @PostMapping("/login/mobile")
     public ResponseEntity<MobileLoginResponse> loginMobile(@RequestBody @Valid LoginRequest loginRequest) {
         LoginResponse loginResponse = authService.login(loginRequest);
@@ -111,6 +160,18 @@ public class AuthController {
     }
 
     @PostMapping("/refresh/mobile")
+    @Operation(
+            summary = "Refresh access token (Mobile)",
+            description = """
+                Generates new access and refresh tokens using a valid refresh token.
+                """,
+            responses = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Token refreshed successfully",
+                        content = @Content(schema = @Schema(implementation = MobileRefreshResponse.class))),
+                @ApiResponse(responseCode = "401", description = "Invalid or expired refresh token")
+            })
     public ResponseEntity<MobileRefreshResponse> refreshMobileToken(@RequestBody @Valid RefreshRequest refreshRequest) {
         RefreshResponse refreshResponse = authService.refreshToken(refreshRequest.refreshToken());
         return refreshResponse == null
@@ -160,6 +221,20 @@ public class AuthController {
     }
 
     @PostMapping("/reset-password")
+    @Operation(
+            summary = "Reset password",
+            description = """
+                Resets user password using a valid reset token.
+                Typically used after initiating the forgot password flow.
+                """,
+            responses = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Password reset successfully",
+                        content = @Content(schema = @Schema(implementation = ResetPasswordResponse.class))),
+                @ApiResponse(responseCode = "400", description = "Invalid reset token or password"),
+                @ApiResponse(responseCode = "401", description = "Reset token expired or invalid")
+            })
     public ResponseEntity<ResetPasswordResponse> resetPassword(
             @RequestBody @Valid ResetPasswordRequest resetPasswordRequest) {
         ResetPasswordResponse resetPasswordResponse = authService.resetPassword(resetPasswordRequest);
@@ -167,6 +242,21 @@ public class AuthController {
     }
 
     @PostMapping("/forgot-password")
+    @Operation(
+            summary = "Forgot password",
+            description = """
+                Initiates the password reset flow.
+                Sends a password reset link or OTP to the registered email address.
+                This endpoint is public.
+                """,
+            responses = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Password reset instructions sent successfully",
+                        content = @Content(schema = @Schema(implementation = ForgotPasswordResponse.class))),
+                @ApiResponse(responseCode = "400", description = "Invalid email format"),
+                @ApiResponse(responseCode = "404", description = "User with given email not found")
+            })
     public ResponseEntity<ForgotPasswordResponse> forgotPassword(
             @Valid @RequestBody ForgotPasswordRequest forgotPasswordRequest) {
         ForgotPasswordResponse forgotPasswordResponse = authService.forgotPassword(forgotPasswordRequest);
@@ -174,6 +264,15 @@ public class AuthController {
     }
 
     @PatchMapping("/change-password")
+    @Operation(
+            summary = "Change password",
+            description = "Allows an authenticated user to change their password",
+            responses = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Password changed successfully",
+                        content = @Content(schema = @Schema(implementation = ChangePasswordResponse.class)))
+            })
     public ResponseEntity<ChangePasswordResponse> changePassword(
             @Valid @RequestBody ChangePasswordRequest changePasswordRequest, Authentication authentication) {
         Long userId = userUtil.getUserId(authentication);
@@ -182,6 +281,20 @@ public class AuthController {
     }
 
     @PostMapping("/google")
+    @Operation(
+            summary = "Login with Google",
+            description = """
+                Authenticates or registers a user using Google OAuth.
+                Accepts a Google ID token obtained from the frontend.
+                """,
+            responses = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Google login successful",
+                        content = @Content(schema = @Schema(implementation = LoginResponse.class))),
+                @ApiResponse(responseCode = "400", description = "Invalid Google ID token"),
+                @ApiResponse(responseCode = "401", description = "Google authentication failed")
+            })
     public ResponseEntity<LoginResponse> loginWithGoogle(@RequestBody GoogleLoginRequest googleLoginRequest) {
         LoginResponse loginResponse = authService.googleLogin(googleLoginRequest.idToken());
         return ResponseEntity.ok(loginResponse);

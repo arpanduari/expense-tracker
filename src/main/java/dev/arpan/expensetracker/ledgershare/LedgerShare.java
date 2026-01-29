@@ -1,10 +1,12 @@
-package dev.arpan.expensetracker.ledger;
+package dev.arpan.expensetracker.ledgershare;
 
+import dev.arpan.expensetracker.ledger.LedgerUser;
 import dev.arpan.expensetracker.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.util.UUID;
 
 /**
  * @author arpan
@@ -16,13 +18,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(
-        name = "ledger_shares",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"shared_by_user_id", "ledger_user_id"}))
+@Table(name = "ledger_shares")
 public class LedgerShare {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shared_by_user_id", nullable = false)
@@ -32,7 +32,6 @@ public class LedgerShare {
     @JoinColumn(name = "ledger_user_id", nullable = false)
     private LedgerUser ledgerUser;
 
-    private String token;
-
-    private LocalDateTime expiryDate;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Instant expiresAt;
 }

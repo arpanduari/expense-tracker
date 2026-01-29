@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
  */
 @Schema(description = "Data transfer object for Reset Password Request")
 public record ResetPasswordRequest(
-        Long id,
-        String token,
-        String newPassword) {
-}
+        @Schema(description = "id") Long id,
+        @Schema(description = "Reset token") String token,
+        @Schema(description = "New password") String newPassword) {}

@@ -17,5 +17,5 @@ public interface ReportGenerator {
 
     String getMediaType();
 
-    public ReportType getType();
+    ReportType getType();
 }

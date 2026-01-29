@@ -29,56 +29,53 @@ public class ProfileImageService {
     private final UserRepository userRepository;
     private final CloudinaryService cloudinaryService;
 
-
     @Transactional
     public void addDefaultProfileImage(String username) {
-        User user = userRepository.findByUsername(username)
+        User user = userRepository
+                .findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
         MultipartFile profileImage = createProfileImage(username);
-        CloudinaryUploadResponse cloudinaryUploadResponse = cloudinaryService
-                .uploadFile(profileImage, "profile-images", user.getPublicId());
+        CloudinaryUploadResponse cloudinaryUploadResponse =
+                cloudinaryService.uploadFile(profileImage, "profile-images", user.getPublicId());
 
         user.setPublicId(cloudinaryUploadResponse.publicId());
         user.setSecureUrl(cloudinaryUploadResponse.url());
 
         userRepository.save(user);
     }
-
 
     @Transactional
-    public ProfilePictureUploadResponse uploadProfileImage(Long userId, MultipartFile profileImage) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId + ""));
-        CloudinaryUploadResponse cloudinaryUploadResponse = cloudinaryService.uploadFile(profileImage,
-                "profile-images", user.getPublicId());
+    public ProfilePictureUploadResponse uploadProfileImage(User user, MultipartFile profileImage) {
+        User existingUser = userRepository
+                .findById(user.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", user.getId() + ""));
+        CloudinaryUploadResponse cloudinaryUploadResponse =
+                cloudinaryService.uploadFile(profileImage, "profile-images", existingUser.getPublicId());
 
-        user.setPublicId(cloudinaryUploadResponse.publicId());
-        user.setSecureUrl(cloudinaryUploadResponse.url());
+        existingUser.setPublicId(cloudinaryUploadResponse.publicId());
+        existingUser.setSecureUrl(cloudinaryUploadResponse.url());
 
-        userRepository.save(user);
+        userRepository.save(existingUser);
 
-        return new ProfilePictureUploadResponse(user.getSecureUrl(), "Profile picture uploaded successfully");
+        return new ProfilePictureUploadResponse(existingUser.getSecureUrl(), "Profile picture uploaded successfully");
     }
 
-
-    public ProfilePictureDeleteResponse deleteProfileImage(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId + ""));
-        cloudinaryService.deleteFile(user.getUsername());
+    public ProfilePictureDeleteResponse deleteProfileImage(User user) {
+        User existingUser = userRepository
+                .findById(user.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", user.getId() + ""));
+        cloudinaryService.deleteFile(existingUser.getUsername());
         return new ProfilePictureDeleteResponse(true, "Profile picture deleted successfully");
     }
-
 
     private MultipartFile createProfileImage(String username) {
         try {
             String fileName = username.toLowerCase() + "-avatar";
-            File pngImage = Jadenticon.from(username).withSize(400)
-                    .png(fileName);
+            File pngImage = Jadenticon.from(username).withSize(400).png(fileName);
             byte[] pngBytes = FileUtils.readFileToByteArray(pngImage);
             return new InMemoryMultipartFile(pngBytes, "avatar", fileName, "image/png");
         } catch (IOException | TranscoderException e) {
             throw new RuntimeException("Failed to create profile image.");
         }
     }
-
 }

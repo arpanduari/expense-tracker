@@ -95,9 +95,3 @@ app:
   google:
     android:
       client-id: ${GOOGLE_ANDROID_CLIENT_ID}
-
-logging:
-  level:
-    org.springframework.security: TRACE
-    org.springframework.web.filter: TRACE
-    org.springframework.security.web.FilterChainProxy: TRACE

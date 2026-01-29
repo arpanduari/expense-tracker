@@ -8,5 +8,5 @@ import io.swagger.v3.oas.annotations.media.Schema;
  */
 @Schema(description = "Data transfer object for Web Login response")
 public record WebLoginResponse(
-        @Schema(description = "Access accessToken") String accessToken,
+        @Schema(description = "accessToken for authentication") String accessToken,
         @Schema(description = "User name") String username) {}

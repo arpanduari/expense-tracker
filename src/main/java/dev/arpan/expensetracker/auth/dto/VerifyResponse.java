@@ -7,6 +7,10 @@ import org.springframework.http.HttpStatus;
  * @author arpan
  * @since 8/5/25
  */
-@Schema(description = "")
-public record VerifyResponse(String message, HttpStatus status) {
+@Schema(description = "Data transfer object for Verification Response")
+public record VerifyResponse(
+        @Schema(description = "Message", example = "Verification successful")
+        String message,
+
+        HttpStatus status) {
 }

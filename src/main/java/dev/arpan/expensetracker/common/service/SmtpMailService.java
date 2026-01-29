@@ -1,9 +1,9 @@
 package dev.arpan.expensetracker.common.service;
 
-import dev.arpan.expensetracker.exception.EmailSendingException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
  * @author arpan
  * @since 10/6/25
  */
+@Slf4j
 @Service
 @Profile("dev")
 @RequiredArgsConstructor
@@ -32,7 +33,7 @@ public class SmtpMailService implements MailService {
             helper.setTo(toEmail);
             mailSender.send(message);
         } catch (MessagingException e) {
-            throw new EmailSendingException("Failed to send email", e);
+            log.error("Error sending email to {}: {}", toEmail, e.getLocalizedMessage());
         }
     }
 }

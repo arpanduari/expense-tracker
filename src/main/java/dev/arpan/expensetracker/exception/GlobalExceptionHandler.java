@@ -123,15 +123,21 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(exception, webRequest, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(EmailSendingException.class)
-    public ResponseEntity<ErrorResponse> handleEmailSendingException(
-            EmailSendingException exception, WebRequest webRequest) {
-        return buildErrorResponse(exception, webRequest, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorResponse> handleBadCredentialsException(
             BadCredentialsException exception, WebRequest webRequest) {
         return buildErrorResponse(exception, webRequest, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(MaximumShareLimitReachedException.class)
+    public ResponseEntity<ErrorResponse> handleMaximumShareLimitReachedException(
+            MaximumShareLimitReachedException exception, WebRequest webRequest) {
+        return buildErrorResponse(exception, webRequest, HttpStatus.TOO_MANY_REQUESTS);
+    }
+
+    @ExceptionHandler(ResourceExpiredException.class)
+    public ResponseEntity<ErrorResponse> handleResourceExpiredException(
+            ResourceExpiredException exception, WebRequest webRequest) {
+        return buildErrorResponse(exception, webRequest, HttpStatus.GONE);
     }
 }

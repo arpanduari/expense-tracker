@@ -7,6 +7,6 @@ gg:
 app:
   config:
     mail:
-      from: ${RESEND_MAIL}
-      name: ${RESEND_NAME}
-      apiKey: ${RESEND_API_KEY}
+      from: ${BREVO_MAIL}
+      replyTo: ${BREVO_REPLY_TO}
+      apiKey: ${BREVO_API_KEY}

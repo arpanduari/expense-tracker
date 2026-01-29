@@ -13,7 +13,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author arpan
@@ -33,22 +32,18 @@ public class LedgerController {
             summary = "Create a new Ledger user",
             description = "Creates a new Ledger user and return the created user",
             responses = {
-                    @ApiResponse(
-                            responseCode = "201", description = "Ledger User created successfully",
-                            content = @Content(
-                                    schema = @Schema(
-                                            implementation = LedgerUserResponse.class
-                                    )
-                            )
-                    ),
-                    @ApiResponse(responseCode = "400", description = "Invalid request payload"),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized access"),
-            }
-    )
+                @ApiResponse(
+                        responseCode = "201",
+                        description = "Ledger User created successfully",
+                        content = @Content(schema = @Schema(implementation = LedgerUserResponse.class))),
+                @ApiResponse(responseCode = "400", description = "Invalid request payload"),
+                @ApiResponse(responseCode = "401", description = "Unauthorized access"),
+            })
     @PostMapping("/contact")
-    public ResponseEntity<LedgerUserResponse> createLedgerUser(@RequestBody LedgerUserRequest ledgerUserRequest,
-                                                               @AuthenticationPrincipal CustomUserDetails userDetails) {
-        LedgerUserResponse ledgerUserResponse = ledgerService.createLedgerUser(userDetails.getUser(), ledgerUserRequest);
+    public ResponseEntity<LedgerUserResponse> createLedgerUser(
+            @RequestBody LedgerUserRequest ledgerUserRequest, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        LedgerUserResponse ledgerUserResponse =
+                ledgerService.createLedgerUser(userDetails.getUser(), ledgerUserRequest);
         return ResponseEntity.ok(ledgerUserResponse);
     }
 
@@ -56,45 +51,38 @@ public class LedgerController {
             summary = "Update existing Ledger user",
             description = "Updates a existing ledger user and return the updated user",
             responses = {
-                    @ApiResponse(
-                            responseCode = "200", description = "Ledger user updated successfully",
-                            content = @Content(
-                                    schema = @Schema(
-                                            implementation = LedgerUserResponse.class
-                                    )
-                            )
-                    )
-            }
-    )
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Ledger user updated successfully",
+                        content = @Content(schema = @Schema(implementation = LedgerUserResponse.class)))
+            })
     @PatchMapping("/contact/{id:\\d+}")
-    public ResponseEntity<LedgerUserResponse> updateLedgerUser(@PathVariable Long id,
-                                                               @RequestBody LedgerUserRequest ledgerUserRequest,
-                                                               @AuthenticationPrincipal CustomUserDetails userDetails
-    ) {
-        LedgerUserResponse ledgerUserResponse = ledgerService.updateLedgerUser(userDetails.getUser(), id, ledgerUserRequest);
+    public ResponseEntity<LedgerUserResponse> updateLedgerUser(
+            @PathVariable Long id,
+            @RequestBody LedgerUserRequest ledgerUserRequest,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        LedgerUserResponse ledgerUserResponse =
+                ledgerService.updateLedgerUser(userDetails.getUser(), id, ledgerUserRequest);
         return ResponseEntity.ok(ledgerUserResponse);
     }
 
     @DeleteMapping("/contact/{id:\\d+}")
-    public ResponseEntity<Void> deleteLedgerUser(@PathVariable Long id,
-                                                 @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<Void> deleteLedgerUser(
+            @PathVariable Long id, @AuthenticationPrincipal CustomUserDetails userDetails) {
         ledgerService.deleteLedgerUser(userDetails.getUser(), id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/entry")
     public ResponseEntity<LedgerEntryResponse> createLedgerEntry(
-            @RequestBody
-            @Valid
-            LedgerEntryRequest ledgerEntryRequest) {
+            @RequestBody @Valid LedgerEntryRequest ledgerEntryRequest) {
         LedgerEntryResponse ledgerEntryResponse = ledgerService.createLedgerEntry(ledgerEntryRequest);
         return ResponseEntity.ok(ledgerEntryResponse);
     }
 
     @GetMapping("/entry/{id:\\d+}")
     public ResponseEntity<LedgerEntryResponse> getLedgerEntry(
-            @PathVariable Long id,
-            @AuthenticationPrincipal CustomUserDetails userDetails) {
+            @PathVariable Long id, @AuthenticationPrincipal CustomUserDetails userDetails) {
         LedgerEntryResponse ledgerEntryResponse = ledgerService.getLedgerEntry(userDetails.getUser(), id);
         return ResponseEntity.ok(ledgerEntryResponse);
     }
@@ -103,46 +91,30 @@ public class LedgerController {
     public ResponseEntity<LedgerEntryResponse> updateLedgerEntry(
             @PathVariable Long id,
             @RequestBody @Valid LedgerEntryRequest ledgerEntryRequest,
-            @AuthenticationPrincipal CustomUserDetails userDetails
-    ) {
-        LedgerEntryResponse ledgerEntryResponse = ledgerService.updateLedgerEntry(id, ledgerEntryRequest, userDetails.getUser());
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        LedgerEntryResponse ledgerEntryResponse =
+                ledgerService.updateLedgerEntry(id, ledgerEntryRequest, userDetails.getUser());
         return ResponseEntity.ok(ledgerEntryResponse);
     }
 
-
     @DeleteMapping("/entry/{id:\\d+}")
-    public ResponseEntity<Void> deleteLedgerEntry(@PathVariable Long id,
-                                                  @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<Void> deleteLedgerEntry(
+            @PathVariable Long id, @AuthenticationPrincipal CustomUserDetails userDetails) {
         ledgerService.deleteLedgerEntry(userDetails.getUser(), id);
         return ResponseEntity.noContent().build();
     }
 
-
     @GetMapping("/contacts")
-    public ResponseEntity<List<LedgerUserEntryResponse>> getAllContacts(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<List<LedgerUserEntryResponse>> getAllContacts(
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
         List<LedgerUserEntryResponse> contacts = ledgerService.getAllContacts(userDetails.getUser());
         return ResponseEntity.ok(contacts);
     }
 
     @GetMapping("/contacts/{ledgerUser:\\d+}/entries")
     public ResponseEntity<List<LedgerEntryResponse>> getUserTransactions(
-            @PathVariable Long ledgerUser,
-            @AuthenticationPrincipal CustomUserDetails userDetails) {
+            @PathVariable Long ledgerUser, @AuthenticationPrincipal CustomUserDetails userDetails) {
         List<LedgerEntryResponse> ledgerEntries = ledgerService.getAllLedgerEntries(userDetails.getUser(), ledgerUser);
-        return ResponseEntity.ok(ledgerEntries);
-    }
-
-    @PostMapping("/share")
-    public ResponseEntity<LedgerShareResponse> shareLedger(
-            @RequestBody @Valid LedgerShareRequest ledgerShareRequest,
-            @AuthenticationPrincipal CustomUserDetails userDetails) {
-        LedgerShareResponse ledgerShareResponse = ledgerService.shareLedger(ledgerShareRequest, userDetails.getUser());
-        return ResponseEntity.ok(ledgerShareResponse);
-    }
-
-    @GetMapping("/shared-entries")
-    public ResponseEntity<List<LedgerEntryResponse>> getSharedLedgerEntries(@RequestParam UUID token) {
-        List<LedgerEntryResponse> ledgerEntries = ledgerService.getSharedLedger(token);
         return ResponseEntity.ok(ledgerEntries);
     }
 }

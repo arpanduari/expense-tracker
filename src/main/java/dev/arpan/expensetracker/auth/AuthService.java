@@ -62,7 +62,8 @@ public class AuthService {
             throw new EmailAlreadyExistsException("User already exists with email: " + registerRequest.email());
         }
         if (userRepository.existsUserByUsername(registerRequest.username())) {
-            throw new UsernameAlreadyExistsException("Username already exists with username: " + registerRequest.username());
+            throw new UsernameAlreadyExistsException(
+                    "Username already exists with username: " + registerRequest.username());
         }
 
         User user = UserMapper.toUser(registerRequest);
@@ -73,10 +74,9 @@ public class AuthService {
         OtpVerification otpVerification = OtpUtil.createOtpVerification(savedUser.getEmail());
         otpVerificationRepository.save(otpVerification);
         otpService.sendOtp(registerRequest.email(), otpVerification.getOtp(), savedUser.getUsername());
-        return new RegisterResponse(messageSource.getMessage("user.register.success", null, getLocale()),
-                otpVerification.getToken());
+        return new RegisterResponse(
+                messageSource.getMessage("user.register.success", null, getLocale()), otpVerification.getToken());
     }
-
 
     public RefreshResponse refreshToken(String refreshToken) {
         try {
@@ -96,39 +96,39 @@ public class AuthService {
 
     public LoginResponse login(LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.userIdentifier(),
-                        loginRequest.password())
-        );
-        Long userId = ((CustomUserDetails) authentication.getPrincipal()).getUser().getId();
+                new UsernamePasswordAuthenticationToken(loginRequest.userIdentifier(), loginRequest.password()));
+        Long userId =
+                ((CustomUserDetails) authentication.getPrincipal()).getUser().getId();
         String accessToken = jwtUtil.generateAccessToken(authentication.getName(), userId);
         String refreshToken = jwtUtil.generateRefreshToken(authentication.getName(), userId);
         return new LoginResponse(accessToken, refreshToken, authentication.getName());
     }
 
     public ForgotPasswordResponse forgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
-        User user = userRepository.findByEmail(forgotPasswordRequest.email())
-                .orElseThrow(() -> new ResourceNotFoundException("User", "username or email",
-                        forgotPasswordRequest.email()));
+        User user = userRepository
+                .findByEmail(forgotPasswordRequest.email())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User", "username or email", forgotPasswordRequest.email()));
 
-        passwordResetTokenRepository.findByUserIdAndExpiryTimeAfter(user.getId(), LocalDateTime.now())
+        passwordResetTokenRepository
+                .findByUserIdAndExpiryTimeAfter(user.getId(), LocalDateTime.now())
                 .ifPresent(token -> {
-                            Duration duration = Duration.between(LocalDateTime.now(), token.getExpiryTime());
-                            throw new PasswordResetTokenAlreadySentException(
-                                    messageSource.getMessage("forgot.password.already.sent", new Object[]{duration.toMinutes()}, getLocale()
-                                    ));
-                        }
-                );
+                    Duration duration = Duration.between(LocalDateTime.now(), token.getExpiryTime());
+                    throw new PasswordResetTokenAlreadySentException(messageSource.getMessage(
+                            "forgot.password.already.sent", new Object[] {duration.toMinutes()}, getLocale()));
+                });
 
         String uuid = UUID.randomUUID().toString();
 
-        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByUserId(user.getId())
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository
+                .findByUserId(user.getId())
                 .map(existing -> {
-                            existing.setTokenHash(passwordEncoder.encode(uuid));
-                            existing.setExpiryTime(LocalDateTime.now().plusHours(1L));
-                            existing.setCreatedAt(LocalDateTime.now());
-                            return existing;
-                        }
-                ).orElseGet(() -> forgotPasswordUtil.buildResetPasswordRequest(uuid, user));
+                    existing.setTokenHash(passwordEncoder.encode(uuid));
+                    existing.setExpiryTime(LocalDateTime.now().plusHours(1L));
+                    existing.setCreatedAt(LocalDateTime.now());
+                    return existing;
+                })
+                .orElseGet(() -> forgotPasswordUtil.buildResetPasswordRequest(uuid, user));
 
         passwordResetToken = passwordResetTokenRepository.save(passwordResetToken);
 
@@ -140,13 +140,17 @@ public class AuthService {
     }
 
     public ResetPasswordResponse resetPassword(ResetPasswordRequest resetPasswordRequest) {
-        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findById(resetPasswordRequest.id())
-                .orElseThrow(() -> new ResourceNotFoundException("Password reset accessToken", "id", resetPasswordRequest.id() + ""));
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository
+                .findById(resetPasswordRequest.id())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Password reset accessToken", "id", resetPasswordRequest.id() + ""));
         if (!passwordEncoder.matches(resetPasswordRequest.token(), passwordResetToken.getTokenHash())) {
             throw new ResourceNotFoundException("Password reset accessToken", "id", resetPasswordRequest.id() + "");
         }
-        User user = userRepository.findById(passwordResetToken.getUser().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", passwordResetToken.getUser().getId() + ""));
+        User user = userRepository
+                .findById(passwordResetToken.getUser().getId())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "User", "id", passwordResetToken.getUser().getId() + ""));
         isValidPassword(user.getUsername(), user.getEmail(), resetPasswordRequest.newPassword());
         user.setPassword(passwordEncoder.encode(resetPasswordRequest.newPassword()));
         userRepository.save(user);
@@ -159,19 +163,20 @@ public class AuthService {
     }
 
     public ChangePasswordResponse changePassword(Long userId, ChangePasswordRequest changePasswordRequest) {
-        User user = userRepository.findById(userId)
+        User user = userRepository
+                .findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId + ""));
 
         isValidPassword(user.getUsername(), user.getEmail(), changePasswordRequest.newPassword());
 
         if (!passwordEncoder.matches(changePasswordRequest.oldPassword(), user.getPassword())) {
-            throw new PasswordNotMatchingException(messageSource.getMessage("change.password.old.mismatch",
-                    null, getLocale()));
+            throw new PasswordNotMatchingException(
+                    messageSource.getMessage("change.password.old.mismatch", null, getLocale()));
         }
 
         if (passwordEncoder.matches(changePasswordRequest.newPassword(), user.getPassword())) {
-            throw new PasswordNotMatchingException(messageSource.getMessage("change.password.same.as.old",
-                    null, getLocale()));
+            throw new PasswordNotMatchingException(
+                    messageSource.getMessage("change.password.same.as.old", null, getLocale()));
         }
 
         user.setPassword(passwordEncoder.encode(changePasswordRequest.newPassword()));
@@ -185,13 +190,16 @@ public class AuthService {
 
     public void isValidPassword(String username, String email, String newPassword) {
         if (newPassword.length() < 8) {
-            throw new PasswordPolicyViolationException(messageSource.getMessage("password.min.length", null, getLocale()));
+            throw new PasswordPolicyViolationException(
+                    messageSource.getMessage("password.min.length", null, getLocale()));
         }
         if (!newPassword.matches(".*[A-Z].*")) {
-            throw new PasswordPolicyViolationException(messageSource.getMessage("password.uppercase", null, getLocale()));
+            throw new PasswordPolicyViolationException(
+                    messageSource.getMessage("password.uppercase", null, getLocale()));
         }
         if (!newPassword.matches(".*[a-z].*")) {
-            throw new PasswordPolicyViolationException(messageSource.getMessage("password.lowercase", null, getLocale()));
+            throw new PasswordPolicyViolationException(
+                    messageSource.getMessage("password.lowercase", null, getLocale()));
         }
         if (!newPassword.matches(".*\\d.*")) {
             throw new PasswordPolicyViolationException(messageSource.getMessage("password.digit", null, getLocale()));
@@ -200,10 +208,12 @@ public class AuthService {
             throw new PasswordPolicyViolationException(messageSource.getMessage("password.special", null, getLocale()));
         }
         if (newPassword.toLowerCase().contains(username.toLowerCase())) {
-            throw new PasswordPolicyViolationException(messageSource.getMessage("password.contains.username", null, getLocale()));
+            throw new PasswordPolicyViolationException(
+                    messageSource.getMessage("password.contains.username", null, getLocale()));
         }
         if (newPassword.toLowerCase().contains(email.toLowerCase())) {
-            throw new PasswordPolicyViolationException(messageSource.getMessage("password.contains.email", null, getLocale()));
+            throw new PasswordPolicyViolationException(
+                    messageSource.getMessage("password.contains.email", null, getLocale()));
         }
     }
 
@@ -213,7 +223,7 @@ public class AuthService {
 
     public LoginResponse googleLogin(String token) {
         GoogleIdToken.Payload payload = googleVerifier.verifyGoogleIdToken(token);
-
+        /// TODO: Change name to email first part
         String email = payload.getEmail();
         String name = (String) payload.get("name");
         String picture = (String) payload.get("picture");
@@ -228,8 +238,7 @@ public class AuthService {
     }
 
     private User createUserFromGoogle(String email, String name, String pictureUrl, String providerId) {
-        User user = userRepository.findByEmail(email)
-                .orElse(null);
+        User user = userRepository.findByEmail(email).orElse(null);
         if (user == null) {
             user = User.builder()
                     .email(email)

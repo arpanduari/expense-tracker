@@ -8,4 +8,5 @@ import io.swagger.v3.oas.annotations.media.Schema;
  */
 @Schema(description = "Data transfer object for Web Refresh response")
 public record WebRefreshResponse(
-        String accessToken){}
+        @Schema(description = "accessToken for authentication")
+        String accessToken) {}

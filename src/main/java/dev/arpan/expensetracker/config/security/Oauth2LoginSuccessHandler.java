@@ -1,6 +1,5 @@
 package dev.arpan.expensetracker.config.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.arpan.expensetracker.auth.util.JWTUtil;
 import dev.arpan.expensetracker.user.User;
 import dev.arpan.expensetracker.user.UserRepository;
@@ -14,7 +13,6 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * @author arpan
@@ -30,22 +28,19 @@ public class Oauth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
     private String frontendPath;
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+    public void onAuthenticationSuccess(
+            HttpServletRequest request, HttpServletResponse response, Authentication authentication)
+            throws IOException {
         CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
 
         User user = oAuth2User.getUser();
 
-        String accessToken = jwtUtil.generateAccessToken(user.getUsername(), user.getId());
         String refreshToken = jwtUtil.generateRefreshToken(user.getUsername(), user.getId());
-
-        Map<String, String> tokens = Map.of(
-                "accessToken", accessToken
-        );
 
         response.setContentType("application/json;charset=UTF-8");
         response.setCharacterEncoding("UTF-8");
 
-        ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", refreshToken)
+        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", refreshToken)
                 .httpOnly(true)
                 .secure(true)
                 .path("/")
@@ -53,7 +48,6 @@ public class Oauth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
                 .sameSite("Strict")
                 .build();
         response.addHeader("Set-Cookie", refreshCookie.toString());
-
-        new ObjectMapper().writeValue(response.getWriter(), tokens);
+        getRedirectStrategy().sendRedirect(request, response, frontendPath + "/oauth-success");
     }
 }
