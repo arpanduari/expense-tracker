@@ -27,24 +27,6 @@ spring:
               - email
               - profile
 
-  mail:
-    host: ${MAIL_HOST}
-    port: 587
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
-    protocol: smtp
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-            required: true
-          connectiontimeout: 5000
-          timeout: 5000
-          writetimeout: 5000
-    default-encoding: UTF-8
-
   rabbitmq:
     host: ${RABBITMQ_HOST}
     port: ${RABBITMQ_PORT}
@@ -99,7 +81,7 @@ app:
   logo: https://i.imghippo.com/files/SuCD1097ccM.png
   static-logo: expense-wise-logo.png
   cors:
-    allowed-origins: "https://expensewise2025.netlify.app, http://localhost:3000, http://localhost:3001, http://localhost:3002, http://localhost:3003, http://localhose:3004"
+    allowed-origins: "https://expensewise2025.netlify.app, http://localhost:3000, http://localhost:3001"
 
   android:
     deeplink:
