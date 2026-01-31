@@ -36,7 +36,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/java-maven-app:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/expense-tracker:latest
 
       - name: Extract docker metadata
         id: meta
@@ -83,7 +83,7 @@ jobs:
                -d '{
                  "chat_id": "${{ secrets.TELEGRAM_CHAT_ID }}",
                  "parse_mode": "HTML",
-                 "text": "<b>🚀 ExpenseWise Deployment Successful!</b>\n\n<b>📦 Docker Image:</b> <code>${{ secrets.DOCKERHUB_USERNAME }}/expensewise:latest</code>\n<b>🔖 Commit:</b> <code>'"${GITHUB_SHA:0:7}"'</code>\n<b>💬 Message:</b> '"${COMMIT_MSG}"'\n<b>🌿 Branch:</b> <code>${{ github.ref_name }}</code>\n<b>👤 Deployed by:</b> ${{ github.actor }}\n<b>🕐 Time:</b> '"$(date -u +'%Y-%m-%d %H:%M:%S UTC')"'\n\n✅ App is now live on Render!",
+                 "text": "<b>🚀 ExpenseWise Deployment Successful!</b>\n\n<b>📦 Docker Image:</b> <code>${{ secrets.DOCKERHUB_USERNAME }}/expense-tracker:latest</code>\n<b>🔖 Commit:</b> <code>'"${GITHUB_SHA:0:7}"'</code>\n<b>💬 Message:</b> '"${COMMIT_MSG}"'\n<b>🌿 Branch:</b> <code>${{ github.ref_name }}</code>\n<b>👤 Deployed by:</b> ${{ github.actor }}\n<b>🕐 Time:</b> '"$(date -u +'%Y-%m-%d %H:%M:%S UTC')"'\n\n✅ App is now live on Render!",
                  "reply_markup": {
                    "inline_keyboard": [[
                      {"text": "🔗 View on Render", "url": "https://dashboard.render.com"},
