@@ -52,6 +52,15 @@ spring:
     password: ${RABBITMQ_PASSWORD}
     virtual-host: ${RABBITMQ_VIRTUAL_HOST}
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+  endpoint:
+    health:
+      show-details: never
+
 springdoc:
   api-docs:
     path: /api-docs

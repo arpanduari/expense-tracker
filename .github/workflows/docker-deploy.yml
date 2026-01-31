@@ -59,8 +59,21 @@ jobs:
           echo "Deploying to render..."
           curl -X POST -d {} ${{ secrets.RENDER_DEPLOY_HOOK }}
 
-      - name: Wait for render deployment
-        run: sleep 60
+      - name: Wait until app is live
+        run: |
+          echo "Waiting for app to become healthy..."
+          for i in {1..30}; do
+            STATUS=$(curl -s https://expense-tracker-1p6d.onrender.com/actuator/health | grep UP || true)
+            if [ "$STATUS" != "" ]; then
+              echo "App is live!"
+              exit 0
+            fi
+            echo "Still starting..."
+            sleep 6
+          done
+          echo "App failed to start in time"
+          exit 1
+
       - name: Send Telegram Success Notification
         if: success()
         run: |

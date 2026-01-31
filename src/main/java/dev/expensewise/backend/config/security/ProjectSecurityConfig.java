@@ -45,8 +45,7 @@ public class ProjectSecurityConfig {
      * Uses JWT + stateless requests instead of session-based authentication.
      */
     @Bean
-    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity httpSecurity)
-            throws Exception {
+    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
         // Apply all authorization/permit rules in a separate method
         // keeps this bean readable and avoids long method chains inline.
@@ -119,6 +118,10 @@ public class ProjectSecurityConfig {
                 .requestMatchers("/api-docs/**", "/swagger-ui/**", "/swagger-ui.html/**")
                 .permitAll()
                 .requestMatchers(apiProperties.getFullPath() + "/ledger/share/public/**")
+                .permitAll()
+                .requestMatchers("/actuator/health")
+                .permitAll()
+                .requestMatchers("/actuator/info")
                 .permitAll()
                 .anyRequest()
                 .authenticated();
