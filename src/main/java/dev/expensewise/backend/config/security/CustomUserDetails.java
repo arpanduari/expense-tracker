@@ -1,4 +1,4 @@
-package dev.expensewise.backend.security;
+package dev.expensewise.backend.config.security;
 
 import dev.expensewise.backend.user.User;
 import org.springframework.security.core.GrantedAuthority;

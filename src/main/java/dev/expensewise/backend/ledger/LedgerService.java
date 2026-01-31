@@ -2,7 +2,6 @@ package dev.expensewise.backend.ledger;
 
 import dev.expensewise.backend.exception.ForbiddenException;
 import dev.expensewise.backend.exception.ResourceNotFoundException;
-import dev.arpan.expensetracker.ledger.dto.*;
 import dev.expensewise.backend.ledger.dto.*;
 import dev.expensewise.backend.ledgershare.LedgerShareRepository;
 import dev.expensewise.backend.projection.ILedgerUserEntryDetails;

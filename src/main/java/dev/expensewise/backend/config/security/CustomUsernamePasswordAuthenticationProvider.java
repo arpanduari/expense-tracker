@@ -1,7 +1,6 @@
 package dev.expensewise.backend.config.security;
 
 import dev.expensewise.backend.exception.OTPNotVerifiedException;
-import dev.expensewise.backend.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;

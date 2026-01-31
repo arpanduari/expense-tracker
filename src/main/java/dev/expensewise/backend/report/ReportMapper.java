@@ -1,7 +1,5 @@
 package dev.expensewise.backend.report;
 
-import dev.arpan.expensetracker.projection.*;
-import dev.arpan.expensetracker.report.dto.*;
 import dev.expensewise.backend.projection.*;
 import dev.expensewise.backend.report.dto.*;
 import org.springframework.stereotype.Component;

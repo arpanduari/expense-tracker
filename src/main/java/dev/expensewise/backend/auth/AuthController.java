@@ -1,6 +1,5 @@
 package dev.expensewise.backend.auth;
 
-import dev.arpan.expensetracker.auth.dto.*;
 import dev.expensewise.backend.auth.dto.*;
 import dev.expensewise.backend.user.util.UserUtil;
 import io.swagger.v3.oas.annotations.Operation;

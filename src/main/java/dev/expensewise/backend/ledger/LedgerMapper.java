@@ -1,6 +1,5 @@
 package dev.expensewise.backend.ledger;
 
-import dev.arpan.expensetracker.ledger.dto.*;
 import dev.expensewise.backend.ledger.dto.*;
 import dev.expensewise.backend.projection.ILedgerUserEntryDetails;
 import org.springframework.stereotype.Component;

@@ -1,6 +1,6 @@
 package dev.expensewise.backend.user.util;
 
-import dev.expensewise.backend.security.CustomUserDetails;
+import dev.expensewise.backend.config.security.CustomUserDetails;
 import dev.expensewise.backend.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;

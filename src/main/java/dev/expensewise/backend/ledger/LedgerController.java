@@ -1,8 +1,7 @@
 package dev.expensewise.backend.ledger;
 
-import dev.arpan.expensetracker.ledger.dto.*;
 import dev.expensewise.backend.ledger.dto.*;
-import dev.expensewise.backend.security.CustomUserDetails;
+import dev.expensewise.backend.config.security.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

@@ -2,7 +2,7 @@ package dev.expensewise.backend.profile;
 
 import dev.expensewise.backend.profile.dto.ProfilePictureDeleteResponse;
 import dev.expensewise.backend.profile.dto.ProfilePictureUploadResponse;
-import dev.expensewise.backend.security.CustomUserDetails;
+import dev.expensewise.backend.config.security.CustomUserDetails;
 import dev.expensewise.backend.user.util.UserUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

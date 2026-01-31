@@ -8,10 +8,10 @@
         <version>3.5.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>dev.arpan</groupId>
-    <artifactId>expense-tracker</artifactId>
+    <groupId>dev.expensewise</groupId>
+    <artifactId>expensewise</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>expense-tracker</name>
+    <name>expensewise</name>
     <description>expense-tracker</description>
     <url/>
     <licenses>

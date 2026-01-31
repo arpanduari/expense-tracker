@@ -4,7 +4,7 @@ import dev.expensewise.backend.constants.application.PageConstants;
 import dev.expensewise.backend.ledger.dto.LedgerEntryResponse;
 import dev.expensewise.backend.ledgershare.dto.LedgerShareRequest;
 import dev.expensewise.backend.ledgershare.dto.LedgerShareResponse;
-import dev.expensewise.backend.security.CustomUserDetails;
+import dev.expensewise.backend.config.security.CustomUserDetails;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

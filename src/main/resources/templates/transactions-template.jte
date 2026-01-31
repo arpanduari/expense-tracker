@@ -1,6 +1,6 @@
 @import java.time.format.DateTimeFormatter
 @import java.util.List
-@import dev.arpan.expensetracker.expense.Expense
+@import dev.expensewise.backend.expense.Expense
 
 @param String logoUrl
 @param String username

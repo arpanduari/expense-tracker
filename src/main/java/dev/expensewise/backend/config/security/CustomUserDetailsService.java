@@ -1,6 +1,5 @@
 package dev.expensewise.backend.config.security;
 
-import dev.expensewise.backend.security.CustomUserDetails;
 import dev.expensewise.backend.user.User;
 import dev.expensewise.backend.user.UserRepository;
 import lombok.RequiredArgsConstructor;

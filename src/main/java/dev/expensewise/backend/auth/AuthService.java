@@ -1,7 +1,6 @@
 package dev.expensewise.backend.auth;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import dev.arpan.expensetracker.auth.dto.*;
 import dev.expensewise.backend.auth.dto.*;
 import dev.expensewise.backend.auth.util.ForgotPasswordUtil;
 import dev.expensewise.backend.auth.util.JWTService;
@@ -9,12 +8,11 @@ import dev.expensewise.backend.auth.util.OtpUtil;
 import dev.expensewise.backend.common.mapper.UserMapper;
 import dev.expensewise.backend.config.security.GoogleVerifierService;
 import dev.expensewise.backend.constants.application.ApplicationConstants;
-import dev.arpan.expensetracker.exception.*;
 import dev.expensewise.backend.exception.*;
 import dev.expensewise.backend.messaging.account.ChangePasswordMessageProducer;
 import dev.expensewise.backend.messaging.account.ResetSuccessMessageProducer;
 import dev.expensewise.backend.messaging.auth.ForgotPasswordMessageProducer;
-import dev.expensewise.backend.security.CustomUserDetails;
+import dev.expensewise.backend.config.security.CustomUserDetails;
 import dev.expensewise.backend.user.User;
 import dev.expensewise.backend.user.UserRepository;
 import io.jsonwebtoken.Claims;

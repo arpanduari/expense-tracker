@@ -92,6 +92,10 @@ app:
   cors:
     allowed-origins: "https://expensewise2025.netlify.app, http://localhost:3000, http://localhost:3001, http://localhost:3002, http://localhost:3003, http://localhose:3004"
 
+  android:
+    deeplink:
+      scheme: dev.expensewise.android
+
   google:
     android:
-      client-id: ${GOOGLE_ANDROID_CLIENT_ID}
+      client-id: ${GOOGLE_CLIENT_ID}

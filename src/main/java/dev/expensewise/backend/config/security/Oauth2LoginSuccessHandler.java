@@ -74,7 +74,7 @@ public class Oauth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
             HttpServletRequest request, HttpServletResponse response, String accessToken, String refreshToken)
             throws IOException {
         String deepLink = String.format(
-                "%s://oauth/callback?accessToken=%s&refreshToken=%s",
+                "%s://oauth2redirect/callback?accessToken=%s&refreshToken=%s",
                 androidDeepLinkScheme,
                 URLEncoder.encode(accessToken, StandardCharsets.UTF_8),
                 URLEncoder.encode(refreshToken, StandardCharsets.UTF_8));

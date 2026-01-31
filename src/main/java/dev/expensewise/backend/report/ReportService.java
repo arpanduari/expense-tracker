@@ -5,7 +5,6 @@ import dev.expensewise.backend.projection.ICategoryExpenseResponse;
 import dev.expensewise.backend.projection.IDailyExpense;
 import dev.expensewise.backend.projection.IInsightResponse;
 import dev.expensewise.backend.projection.IMonthlyReportResponse;
-import dev.arpan.expensetracker.report.dto.*;
 import dev.expensewise.backend.report.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

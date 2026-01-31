@@ -3,7 +3,7 @@ package dev.expensewise.backend.common.filter;
 import dev.expensewise.backend.auth.util.JWTService;
 import dev.expensewise.backend.constants.application.ApplicationConstants;
 import dev.expensewise.backend.constants.security.JWTConstants;
-import dev.expensewise.backend.security.CustomUserDetails;
+import dev.expensewise.backend.config.security.CustomUserDetails;
 import dev.expensewise.backend.user.User;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;

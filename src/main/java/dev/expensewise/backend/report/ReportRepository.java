@@ -1,7 +1,6 @@
 package dev.expensewise.backend.report;
 
 import dev.expensewise.backend.expense.Expense;
-import dev.arpan.expensetracker.projection.*;
 import dev.expensewise.backend.projection.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
