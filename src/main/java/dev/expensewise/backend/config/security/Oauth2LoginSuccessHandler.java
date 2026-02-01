@@ -1,6 +1,5 @@
 package dev.expensewise.backend.config.security;
 
-import dev.expensewise.backend.auth.util.JWTService;
 import dev.expensewise.backend.user.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

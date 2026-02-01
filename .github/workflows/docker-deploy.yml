@@ -62,6 +62,7 @@ jobs:
       - name: Wait until app is live
         run: |
           echo "Waiting for app to become healthy..."
+          sleep 45
           for i in {1..30}; do
             STATUS=$(curl -s https://expense-tracker-1p6d.onrender.com/actuator/health | grep UP || true)
             if [ "$STATUS" != "" ]; then

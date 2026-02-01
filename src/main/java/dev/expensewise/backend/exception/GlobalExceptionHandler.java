@@ -102,8 +102,8 @@ public class GlobalExceptionHandler {
         return build(exception, webRequest, HttpStatus.LOCKED);
     }
 
-    @ExceptionHandler(BadCredentialsException.class)
-    public ProblemDetail handleBadCredentialsException(BadCredentialsException exception, WebRequest webRequest) {
+    @ExceptionHandler({BadCredentialsException.class, InvalidTokenException.class})
+    public ProblemDetail handleBadCredentialsException(RuntimeException exception, WebRequest webRequest) {
         return build(exception, webRequest, HttpStatus.UNAUTHORIZED);
     }
 

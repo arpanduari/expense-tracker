@@ -1,9 +1,10 @@
-package dev.expensewise.backend.auth.util;
+package dev.expensewise.backend.config.security;
 
-import dev.expensewise.backend.config.security.JWTConfig;
 import dev.expensewise.backend.constants.application.ApplicationConstants;
 import dev.expensewise.backend.constants.security.JWTConstants;
+import dev.expensewise.backend.exception.InvalidTokenException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.Objects;
 
 /**
  * @author arpan
@@ -54,17 +54,24 @@ public class JWTService {
                 .compact();
     }
 
-    public Claims parseToken(String token) {
+    public Claims parseToken(String token, TokenType expectedType) {
+        try{
         Claims claims = Jwts.parser()
                 .verifyWith(getSecretKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
-        String subject = claims.get("sub", String.class);
-        if (!Objects.equals(subject, JWTConstants.JWT_SUBJECT)) {
-            throw new RuntimeException("Invalid accessToken");
+        String subject = claims.getSubject();
+        if (TokenType.ACCESS == expectedType && !JWTConstants.JWT_SUBJECT.equals(subject)) {
+                throw new InvalidTokenException("Invalid accessToken");
+        }
+        if (TokenType.REFRESH == expectedType && !JWTConstants.JWT_REFRESH_SUBJECT.equals(subject)) {
+                throw new InvalidTokenException("Invalid refreshToken");
         }
         return claims;
+        }catch (JwtException ex){
+            throw new InvalidTokenException("Invalid token");
+        }
     }
 
     public boolean isTokenExpired(Date expiration) {

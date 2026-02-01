@@ -3,10 +3,11 @@ package dev.expensewise.backend.auth;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import dev.expensewise.backend.auth.dto.*;
 import dev.expensewise.backend.auth.util.ForgotPasswordUtil;
-import dev.expensewise.backend.auth.util.JWTService;
+import dev.expensewise.backend.config.security.JWTService;
 import dev.expensewise.backend.auth.util.OtpUtil;
 import dev.expensewise.backend.common.mapper.UserMapper;
 import dev.expensewise.backend.config.security.GoogleVerifierService;
+import dev.expensewise.backend.config.security.TokenType;
 import dev.expensewise.backend.constants.application.ApplicationConstants;
 import dev.expensewise.backend.exception.*;
 import dev.expensewise.backend.messaging.account.ChangePasswordMessageProducer;
@@ -80,7 +81,7 @@ public class AuthService {
 
     public RefreshResponse refreshToken(String refreshToken) {
         try {
-            Claims claims = jwtService.parseToken(refreshToken);
+            Claims claims = jwtService.parseToken(refreshToken, TokenType.REFRESH);
             if (jwtService.isTokenExpired(claims.getExpiration())) {
                 return null;
             }

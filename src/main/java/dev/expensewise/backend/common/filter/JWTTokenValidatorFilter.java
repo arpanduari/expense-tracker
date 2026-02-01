@@ -1,6 +1,7 @@
 package dev.expensewise.backend.common.filter;
 
-import dev.expensewise.backend.auth.util.JWTService;
+import dev.expensewise.backend.config.security.JWTService;
+import dev.expensewise.backend.config.security.TokenType;
 import dev.expensewise.backend.constants.application.ApplicationConstants;
 import dev.expensewise.backend.constants.security.JWTConstants;
 import dev.expensewise.backend.config.security.CustomUserDetails;
@@ -38,7 +39,7 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
         if (jwt != null && jwt.startsWith("Bearer ")) {
             jwt = jwt.substring(7);
             try {
-                Claims claims = jwtService.parseToken(jwt);
+                Claims claims = jwtService.parseToken(jwt, TokenType.ACCESS);
                 Authentication authentication = createAuthentication(claims);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (Exception ex) {
