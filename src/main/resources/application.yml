@@ -34,6 +34,11 @@ spring:
     password: ${RABBITMQ_PASSWORD}
     virtual-host: ${RABBITMQ_VIRTUAL_HOST}
 
+  mvc:
+    view:
+      prefix:
+      suffix:
+
 management:
   endpoints:
     web:
@@ -62,9 +67,10 @@ cloudinary:
 
 gg:
   jte:
-    templateLocation: src/main/resources/templates
+    templateLocation: classpath:/templates/
     templateSuffix: .jte
-    developmentMode: true
+    developmentMode: ${JTE_DEV_MODE:true}
+    usePrecompiledTemplates: false
 
 app:
   queue:
@@ -86,7 +92,12 @@ app:
   android:
     deeplink:
       scheme: dev.expensewise.android
+    package: dev.expensewise.android
+    scheme: expensewise
 
   google:
     android:
       client-id: ${GOOGLE_CLIENT_ID}
+
+  backend:
+    path: https://expense-tracker-1p6d.onrender.com

@@ -1,5 +1,6 @@
 package dev.expensewise.backend.ledgershare;
 
+import dev.expensewise.backend.config.properties.ApiProperties;
 import dev.expensewise.backend.exception.ForbiddenException;
 import dev.expensewise.backend.exception.MaximumShareLimitReachedException;
 import dev.expensewise.backend.exception.ResourceExpiredException;
@@ -13,6 +14,7 @@ import dev.expensewise.backend.ledgershare.dto.LedgerShareRequest;
 import dev.expensewise.backend.ledgershare.dto.LedgerShareResponse;
 import dev.expensewise.backend.user.User;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,31 +30,27 @@ import java.util.UUID;
  * @since 12/22/25
  */
 @Service
+@RequiredArgsConstructor
 public class LedgerShareService {
     private final LedgerUserRepository ledgerUserRepository;
     private final LedgerShareRepository ledgerShareRepository;
     private final LedgerRepository ledgerRepository;
     private final LedgerMapper ledgerMapper;
+    private final ApiProperties apiProperties;
 
     @Value("${app.frontend.path}")
     private String frontendPath;
 
-    public LedgerShareService(
-            LedgerUserRepository ledgerUserRepository,
-            LedgerShareRepository ledgerShareRepository,
-            LedgerMapper ledgerMapper,
-            LedgerRepository ledgerRepository) {
-        this.ledgerUserRepository = ledgerUserRepository;
-        this.ledgerShareRepository = ledgerShareRepository;
-        this.ledgerMapper = ledgerMapper;
-        this.ledgerRepository = ledgerRepository;
-    }
+    @Value("${app.backend.path}")
+    private String backendPath;
 
-    public LedgerShareResponse shareLedger(LedgerShareRequest ledgerShareRequest, User user) {
+    private static final String PUBLIC_LINK = "%s%s%s/ledger/share/public/link/%s";
+
+    public LedgerShareResponse shareLedger(LedgerShareRequest shareRequest, User user) {
         LedgerUser ledgerUser = ledgerUserRepository
-                .findById(ledgerShareRequest.ledgerUserId())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Ledger User", "ID", ledgerShareRequest.ledgerUserId() + " "));
+                .findById(shareRequest.ledgerUserId())
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Ledger User", "ID", shareRequest.ledgerUserId() + " "));
 
         if (notAuthorizedUser(ledgerUser.getId(), user.getId())) {
             throw new ForbiddenException("You are not authorized to share this.");
@@ -63,18 +61,19 @@ public class LedgerShareService {
 
         Optional<LedgerShare> optionalLedgerShare = checkNonExpiry(ledgerShares);
 
-        if (!ledgerShares.isEmpty() && optionalLedgerShare.isPresent() && ledgerShareRequest.expiryDuration() == null) {
+        if (!ledgerShares.isEmpty() && optionalLedgerShare.isPresent() && shareRequest.expiryDuration() == null) {
             UUID id = optionalLedgerShare.get().getId();
-            return new LedgerShareResponse(id, frontendPath + "/ledger/share/" + id);
+            String publicLink =
+                    PUBLIC_LINK.formatted(backendPath, apiProperties.getBase(), apiProperties.getVersion(), id);
+            return new LedgerShareResponse(id, publicLink);
         }
 
         if (ledgerShares.size() == 10) {
             throw new MaximumShareLimitReachedException("You have reached the maximum number of shares.");
         }
 
-        Instant expiry = ledgerShareRequest.expiryDuration() == null
-                ? null
-                : Instant.now().plus(ledgerShareRequest.expiryDuration());
+        Instant expiry =
+                shareRequest.expiryDuration() == null ? null : Instant.now().plus(shareRequest.expiryDuration());
 
         LedgerShare ledgerShare = LedgerShare.builder()
                 .sharedBy(user)
@@ -85,7 +84,8 @@ public class LedgerShareService {
         ledgerShare = ledgerShareRepository.save(ledgerShare);
 
         UUID id = ledgerShare.getId();
-        return new LedgerShareResponse(id, frontendPath + "/ledger/share/" + id);
+        String publicLink = PUBLIC_LINK.formatted(backendPath, apiProperties.getBase(), apiProperties.getVersion(), id);
+        return new LedgerShareResponse(id, publicLink);
     }
 
     public Page<LedgerEntryResponse> getSharedLedger(UUID id, int page, int size) {
@@ -96,6 +96,7 @@ public class LedgerShareService {
         if (ledgerShare.getExpiresAt() != null && ledgerShare.getExpiresAt().isBefore(Instant.now())) {
             throw new ResourceExpiredException("Shared Entries have expired.");
         }
+
         Pageable pageable = Pageable.ofSize(size).withPage(page);
 
         return ledgerRepository
@@ -120,8 +121,20 @@ public class LedgerShareService {
     public List<LedgerShareResponse> getAllLedgerShares(User user, Long ledgerUserId) {
         return ledgerShareRepository.findBySharedByIdAndLedgerUserId(user.getId(), ledgerUserId).stream()
                 .map(entry -> new LedgerShareResponse(
-                        entry.getId(), entry.getExpiresAt().toString()))
+                        entry.getId(),
+                        PUBLIC_LINK.formatted(
+                                backendPath, apiProperties.getBase(), apiProperties.getVersion(), entry.getId())))
                 .toList();
+    }
+
+    public boolean isValidShare(UUID id) {
+        Optional<LedgerShare> ledgerShare = ledgerShareRepository.findById(id);
+        if (ledgerShare.isEmpty()) {
+            return false;
+        }
+        LedgerShare share = ledgerShare.get();
+
+        return share.getExpiresAt() == null || !share.getExpiresAt().isBefore(Instant.now());
     }
 
     private boolean notAuthorizedUser(Long ledgerUserId, Long userId) {

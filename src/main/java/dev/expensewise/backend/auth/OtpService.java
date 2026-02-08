@@ -4,6 +4,7 @@ import dev.expensewise.backend.auth.dto.OtpResendResponse;
 import dev.expensewise.backend.auth.dto.VerifyResponse;
 import dev.expensewise.backend.auth.util.OtpUtil;
 import dev.expensewise.backend.exception.ResourceNotFoundException;
+import dev.expensewise.backend.exception.UserAlreadyVerifiedException;
 import dev.expensewise.backend.messaging.account.AccountCreatedMessageProducer;
 import dev.expensewise.backend.messaging.auth.OtpProducer;
 import dev.expensewise.backend.messaging.profile.ProfileImageEventProducer;
@@ -33,14 +34,13 @@ public class OtpService {
     @Value("${app.frontend.path}")
     private String frontendPath;
 
-
     public void sendOtp(String toEmail, String otp, String username) {
         otpProducer.sendOtpMessage(toEmail, otp, username);
     }
 
-
     public VerifyResponse verifyOtp(String token, String otp) {
-        OtpVerification otpVerification = otpVerificationRepository.findByToken(token)
+        OtpVerification otpVerification = otpVerificationRepository
+                .findByToken(token)
                 .orElseThrow(() -> new RuntimeException("Invalid accessToken"));
         if (otpVerification.getExpiryTime().isBefore(LocalDateTime.now())) {
             return new VerifyResponse("OTP has expired. Please resend OTP", HttpStatus.GONE);
@@ -48,8 +48,10 @@ public class OtpService {
         if (!otpVerification.getOtp().equals(otp)) {
             return new VerifyResponse("Invalid OTP", HttpStatus.UNAUTHORIZED);
         }
-        User user = userRepository.findByUsernameOrEmail(otpVerification.getEmail(), otpVerification.getEmail())
-                .orElseThrow(() -> new RuntimeException("Invalid email"));
+        User user = userRepository
+                .findByUsernameOrEmail(otpVerification.getEmail(), otpVerification.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("user", "email", otpVerification.getEmail()));
+
         user.setVerified(true);
         user.setVerifiedDate(LocalDate.now());
         userRepository.save(user);
@@ -60,21 +62,25 @@ public class OtpService {
 
         accountCreatedMessageProducer.sendAccountCreatedMessage(user.getEmail(), user.getUsername(), loginUrl);
 
-        otpVerificationRepository.delete(otpVerification);
+        otpVerificationRepository.deleteAllByEmail(otpVerification.getEmail());
+
         return new VerifyResponse("OTP verified successfully", HttpStatus.OK);
-
     }
-
 
     public OtpResendResponse resendOtp(String toEmail) {
-        otpVerificationRepository.findByEmail(toEmail)
-                .orElseThrow(() -> new RuntimeException("Invalid email"));
+        User user = userRepository
+                .findByEmail(toEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "email", toEmail));
+
+        if (user.isVerified()) {
+            throw new UserAlreadyVerifiedException(toEmail);
+        }
+        otpVerificationRepository.deleteAllByEmail(toEmail);
+
         OtpVerification otpVerification = OtpUtil.createOtpVerification(toEmail);
         otpVerificationRepository.save(otpVerification);
-        User user = userRepository.findByEmail(toEmail)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "email", toEmail));
         sendOtp(toEmail, otpVerification.getOtp(), user.getUsername());
-        return new OtpResendResponse("OTP Resend successfully. Please check your email for verification", otpVerification.getToken());
+        return new OtpResendResponse(
+                "OTP Resend successfully. Please check your email for verification", otpVerification.getToken());
     }
-
 }

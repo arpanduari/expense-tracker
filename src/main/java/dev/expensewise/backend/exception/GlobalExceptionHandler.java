@@ -1,6 +1,7 @@
 package dev.expensewise.backend.exception;
 
 import jakarta.validation.ConstraintViolationException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -11,16 +12,27 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * @author arpan
  * @since 8/3/25
  */
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
+    private static final Pattern EMAIL_PATTERN =
+            Pattern.compile("\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b");
+    private static final Pattern UUID_PATTERN =
+            Pattern.compile("\\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\\b");
+    private static final Pattern NUMERIC_ID_PATTERN = Pattern.compile("\\b(id|ID|userId|user_id)\\s*[:=]?\\s*\\d+\\b");
+
+    private final ErrorCodeMapper errorCodeMapper;
+
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ProblemDetail handleMethodNotAllowed(HttpRequestMethodNotSupportedException ex, WebRequest request) {
         ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.METHOD_NOT_ALLOWED);
@@ -81,7 +93,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({
         UsernameAlreadyExistsException.class,
         EmailAlreadyExistsException.class,
-        DataIntegrityViolationException.class
+        DataIntegrityViolationException.class,
+        UserAlreadyVerifiedException.class
     })
     public ProblemDetail handleConflict(RuntimeException ex, WebRequest request) {
         return build(ex, request, HttpStatus.CONFLICT);
@@ -119,12 +132,30 @@ public class GlobalExceptionHandler {
     }
 
     private ProblemDetail build(Exception ex, WebRequest webRequest, HttpStatus status) {
+        ApiErrorCode errorCode = errorCodeMapper.mapException(ex);
+
         ProblemDetail problem = ProblemDetail.forStatus(status);
-        problem.setTitle(ex.getClass().getSimpleName());
-        problem.setDetail(ex.getMessage());
-        problem.setProperty("timeStamp", LocalDateTime.now());
-        problem.setProperty("path", webRequest.getDescription(false));
-        problem.setProperty("errorCode", ex.getClass().getSimpleName());
+        problem.setTitle(status.getReasonPhrase());
+
+        problem.setDetail(sanitizeMessage(ex.getMessage(), errorCode));
+
+        problem.setProperty("timeStamp", Instant.now());
+        problem.setProperty("errorCode", errorCode.getCode());
         return problem;
+    }
+
+    private String sanitizeMessage(String message, ApiErrorCode errorCode) {
+        if (message == null || message.isBlank()) {
+            return errorCode.getDefaultMessage();
+        }
+        // Remove email addresses
+        String sanitized = EMAIL_PATTERN.matcher(message).replaceAll("[email]");
+
+        // Remove potential UUIDs (resource IDs)
+        sanitized = UUID_PATTERN.matcher(sanitized).replaceAll("[uuid]");
+
+        // Remove potential numeric IDs
+        sanitized = NUMERIC_ID_PATTERN.matcher(sanitized).replaceAll("[id]");
+        return sanitized;
     }
 }

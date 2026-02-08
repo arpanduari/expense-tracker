@@ -123,6 +123,8 @@ public class ProjectSecurityConfig {
                 .permitAll()
                 .requestMatchers("/actuator/info")
                 .permitAll()
+                .requestMatchers("/universal-link.html")
+                .permitAll()
                 .anyRequest()
                 .authenticated();
     }
