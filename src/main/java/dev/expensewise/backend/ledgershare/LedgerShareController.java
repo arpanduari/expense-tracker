@@ -8,7 +8,6 @@ import dev.expensewise.backend.ledgershare.dto.LedgerShareResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
@@ -84,8 +83,6 @@ public class LedgerShareController {
             @PathVariable UUID id,
             @RequestHeader(value = HttpHeaders.USER_AGENT, required = false) String userAgent,
             Model model) {
-
-        log.info("User Agent: {}", userAgent);
 
         if (!ledgerService.isValidShare(id)) {
             model.addAttribute("shareId", id);
