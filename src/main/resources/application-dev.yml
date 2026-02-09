@@ -12,3 +12,6 @@ spring:
           starttls:
             enable: true
             required: true
+
+jte:
+  development-mode: true

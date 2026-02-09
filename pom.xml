@@ -147,7 +147,12 @@
         <dependency>
             <groupId>gg.jte</groupId>
             <artifactId>jte-spring-boot-starter-3</artifactId>
-            <version>3.1.9</version>
+            <version>3.2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>gg.jte</groupId>
+            <artifactId>jte-runtime</artifactId>
+            <version>3.2.2</version>
         </dependency>
         <dependency>
             <groupId>com.itextpdf</groupId>
@@ -206,6 +211,7 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -218,10 +224,11 @@
                     </excludes>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>gg.jte</groupId>
                 <artifactId>jte-maven-plugin</artifactId>
-                <version>3.2.1</version>
+                <version>3.2.2</version>
                 <executions>
                     <execution>
                         <id>generate-jte</id>
@@ -240,15 +247,25 @@
                 </executions>
                 <configuration>
                     <sourceDirectory>${project.basedir}/src/main/resources/templates</sourceDirectory>
-
-                    <targetDirectory>${project.build.directory}</targetDirectory>
-
+                    <targetDirectory>${project.build.directory}/generated-sources/jte</targetDirectory>
                     <contentType>Html</contentType>
                     <packageName>gg.jte.generated.precompiled</packageName>
                 </configuration>
             </plugin>
-
         </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+            </resource>
+            <!-- Include pre-compiled JTE classes in the output -->
+            <resource>
+                <directory>${project.build.directory}/generated-sources/jte</directory>
+                <targetPath>./</targetPath>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
     </build>
 
 </project>

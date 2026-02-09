@@ -16,8 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 import java.util.UUID;
@@ -26,7 +26,6 @@ import java.util.UUID;
  * @author arpan
  * @since 12/22/25
  */
-@Slf4j
 @Controller
 @RequestMapping("${api.base}${api.version}/ledger/share")
 public class LedgerShareController {
@@ -81,25 +80,28 @@ public class LedgerShareController {
     }
 
     @GetMapping("/public/link/{id}")
-    public ModelAndView handleUniversalLink(
-            @PathVariable UUID id, @RequestHeader(value = HttpHeaders.USER_AGENT, required = false) String userAgent) {
+    public String handleUniversalLink(
+            @PathVariable UUID id,
+            @RequestHeader(value = HttpHeaders.USER_AGENT, required = false) String userAgent,
+            Model model) {
+
+        log.info("User Agent: {}", userAgent);
 
         if (!ledgerService.isValidShare(id)) {
-            ModelAndView mv = new ModelAndView("link-expired");
-            mv.addObject("shareId", id);
-            return mv;
+            model.addAttribute("shareId", id);
+            return "link-expired";
         }
 
         PlatformInfo platformInfo = detectPlatform(userAgent);
 
-        ModelAndView mv = new ModelAndView("share-page");
-        mv.addObject("shareId", id);
-        mv.addObject("isAndroid", platformInfo.isAndroid());
-        mv.addObject("isIos", platformInfo.isIos());
-        mv.addObject("androidScheme", androidScheme);
-        mv.addObject("androidPackage", androidPackage);
-        mv.addObject("frontendPath", frontEndPath);
-        return mv;
+        model.addAttribute("shareId", id);
+        model.addAttribute("isAndroid", platformInfo.isAndroid());
+        model.addAttribute("isIos", platformInfo.isIos());
+        model.addAttribute("androidScheme", androidScheme);
+        model.addAttribute("androidPackage", androidPackage);
+        model.addAttribute("frontendPath", frontEndPath);
+
+        return "share-page";
     }
 
     private PlatformInfo detectPlatform(String userAgent) {

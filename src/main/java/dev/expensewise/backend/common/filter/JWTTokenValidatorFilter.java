@@ -54,8 +54,15 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return request.getRequestURI().startsWith("/api/v1/auth")
-                && !request.getRequestURI().equals("/api/v1/auth/change-password");
+        String uri = request.getRequestURI();
+        return uri.startsWith("/api/v1/auth") && !uri.equals("/api/v1/auth/change-password")
+                || uri.startsWith("/api/v1/ledger/share/public/")
+                || uri.equals("/api/v1/ledger/shared-entries")
+                || uri.startsWith("/api-docs/")
+                || uri.startsWith("/swagger-ui/")
+                || uri.startsWith("/actuator/health")
+                || uri.startsWith("/actuator/info")
+                || uri.equals("/universal-link.html");
     }
 
     private Authentication createAuthentication(Claims claims) throws BadRequestException {
